@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Rigid viewport bounds to force full screen lock and cancel dynamic tap zooms -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <title>Dairy Dashboard Premium</title>
+    <style>
+        /* Anti-Copy Protection Setup: Disables dragging selection highlights */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            box-sizing: border-box;
+        }
+        /* Permits input panels text writing mode authorization overrides */
+        input, select, textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+            font-size: 16px !important; /* Forces mobile browsers to cancel automatic field zoom on click */
+        }
+        
+        /* FIXED IT CAREFULLY: Removed centering flex box to kill the floating box layout completely */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            touch-action: none; /* Disables standard system dual tap and pinch gestures natively */
+        }
+
+        /* FIXED IT CAREFULLY: Converted the old floating glass-panel box into a rigid 100% full screen container layout */
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.35); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: none;
+            width: 100%; 
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; 
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Auth Screen remains centered independently on launch screen viewport */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4); padding: 30px;
+            border-radius: 24px; width: calc(100% - 30px); max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .auth-container h2 { margin: 0 0 10px 0; color: #1e293b; font-size: 24px; }
+        .auth-container p { margin: 0 0 20px 0; color: #475569; font-size: 14px; }
+        .auth-link { color: #9333ea; cursor: pointer; font-weight: 600; text-decoration: underline; }
+        
+        .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+        .pass-wrapper input { padding-right: 40px !important; }
+        .eye-toggle { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 14px; user-select: none; z-index: 5; }
+        
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; flex-wrap: wrap; gap: 15px; 
+            width: 100%;
+        }
+        .header-title-area { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+        h1 { margin: 0; font-size: 22px; color: #1e293b; font-weight: 700; }
+        .header-title-area p { margin: 0; font-size: 13px; color: #475569; width: 100%; }
+        .header-rate-box {
+            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 12px; padding: 6px 12px; display: flex; align-items: center; gap: 6px;
+        }
+        .header-rate-box input {
+            width: 50px !important; padding: 4px 6px !important; border: none !important;
+            background: transparent !important; font-weight: bold; font-size: 14px; color: #9333ea;
+            text-align: center; outline: none;
+        }
+        
+        nav { display: flex; gap: 5px; background: rgba(255,255,255,0.4); padding: 5px; border-radius: 30px; flex-wrap: wrap; }
+        nav a { text-decoration: none; color: #334155; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; transition: 0.3s; cursor: pointer; }
+        nav a.active { background: #ffffff; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        
+        /* Rigid full-width desktop/mobile system framework adjustments */
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; width: 100%; box-sizing: border-box; flex-grow: 1; }
+        @media (max-width: 992px) { .main-grid { grid-template-columns: 1fr; } }
+        .space-y { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; width: 100%; }
+        .glass-card { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 16px; padding: 16px; box-sizing: border-box; width: 100%; }
+        .stats-card span { font-size: 10px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stats-card h3 { margin: 6px 0; font-size: 18px; color: #0f172a; word-break: break-all; }
+        
+        .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+        @media (max-width: 650px) { .forms-row { grid-template-columns: 1fr; } }
+        
+        .glass-card h4 { margin: 0 0 12px 0; font-size: 14px; color: #1e293b; }
+        .form-group { display: flex; flex-direction: column; gap: 10px; }
+        .form-flex { display: flex; gap: 8px; align-items: center; }
+        input, select { 
+            width: 100%; padding: 10px 12px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.5); 
+            background: rgba(255,255,255,0.7); font-size: 13px; outline: none; 
+            box-sizing: border-box; 
+        }
+        button { width: 100%; padding: 11px; border: none; border-radius: 12px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .btn-purple { background: #9333ea; color: white; }
+        .btn-dark { background: #1e293b; color: white; }
+        .btn-red { background: #dc2626; color: white; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 500px; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #334155; }
+        
+        .act-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0; margin-right: 12px; }
+        .act-btn:last-child { margin-right: 0; }
+        
+        .chart-placeholder { height: 150px; display: flex; align-items: flex-end; gap: 10px; padding-top: 15px; justify-content: space-between; }
+        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+        .bar { width: 100%; background: rgba(147, 51, 234, 0.6); border-radius: 6px; height: 0%; transition: height 0.4s; }
+        .circle-gauge { width: 100px; height: 100px; border-radius: 50%; border: 8px dashed #9333ea; display: flex; align-items: center; justify-content: center; margin: 15px auto; font-size: 22px; font-weight: 800; }
+        .flex-split { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 12px; }
+        .hidden { display: none !important; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .modal-box { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 24px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .modal-box h5 { margin: 0 0 10px 0; font-size: 18px; color: #1e293b; }
+        .modal-box p { margin: 0 0 20px 0; font-size: 14px; color: #475569; }
+        .modal-flex { display: flex; gap: 10px; justify-content: center; }
+        .modal-flex button { width: auto; padding: 8px 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div id="appModal" class="modal-overlay hidden" onclick="handleOutsideClick(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h5 id="modalTitle">Confirm Action</h5>
+            <p id="modalMsg">Kya aap sach me ye badlav karna chahte hain?</p>
+            <div class="modal-flex">
+                <button id="modalCancelBtn" class="btn-dark">Cancel</button>
+                <button id="modalConfirmBtn" class="btn-purple">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Module -->
+    <div id="auth-login-view" class="auth-container">
+        <h2>Welcome Back</h2>
+        <p>Apne account me login karein</p>
+        <div class="form-group">
+            <input type="text" id="loginUser" placeholder="Username" onkeydown="handleEnterNav(event, 'loginPass')">
+            <div class="pass-wrapper">
+                <input type="password" id="loginPass" placeholder="Password" onkeydown="handleEnterNav(event, 'LOGIN_TRIGGER')">
+                <span class="eye-toggle" onclick="togglePassView('loginPass')">👁️</span>
+            </div>
+            <button onclick="handleLogin()" class="btn-purple">Sign In</button>
+            <p style="font-size:12px; margin-top:10px;">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
+        </div>
+    </div>
+    <div id="auth-register-view" class="auth-container hidden">
+        <h2>Create Account</h2>
+        <p>Apni farm aur profile details register karein</p>
+        <div class="form-group">
+            <input type="text" id="regName" placeholder="Owner Full Name" onkeydown="handleEnterNav(event, 'regFarm')">
+            <input type="text" id="regFarm" placeholder="Farm Name (e.g., Krishna Dairy)" onkeydown="handleEnterNav(event, 'regUser')">
+            <input type="text" id="regUser" placeholder="Choose Username" onkeydown="handleEnterNav(event, 'regPass')">
+            <div class="pass-wrapper">
+                <input type="password" id="regPass" placeholder="Choose Password" onkeydown="handleEnterNav(event, 'regConfirmPass')">
+                <span class="eye-toggle" onclick="toggleRegisterPassView()">👁️</span>
+            </div>
+            <div class="pass-wrapper">
+                <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
+            </div>
+            <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
+            <p style="font-size:12px; margin-top:10px;">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
+        </div>
+    </div>
+
+    <!-- Core Application View Container -->
+    <div id="app-workspace-view" class="glass-panel hidden">
+        <header>
+            <div class="header-title-area">
+                <h1 style="display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span id="lblDisplayFarmName">My Farm Dairy</span> 
+                    <span style="color: rgba(30, 41, 59, 0.4); font-weight: 300;">|</span>
+                    <span id="lblDisplayOwnerName" style="color: #9333ea;">Owner Name</span>
+                </h1>
+                <p style="margin-top: 4px;">Live tracking active. Farm status check karein.</p>
+            </div>
+            <div class="header-rate-box">
+                <span style="font-size: 12px; font-weight: 600; color: #475569;">Milk Rate: ₹</span>
+                <input type="number" id="milkPriceInput" value="36" oninput="calc()">
+                <span style="font-size: 12px; font-weight: 600; color: #475569;">/L</span>
+            </div>
+            <nav>
+                <a id="t-dash" onclick="tab('dash')" class="active">Dashboard</a>
+                <a id="t-milk" onclick="tab('milk')">Milk Logs</a>
+                <a id="t-cat" onclick="catTab()">Cattle Info</a>
+                <a id="t-exp" onclick="tab('exp')">Expenses Logs</a>
+                <a id="t-set" onclick="tab('set')">Settings ⚙️</a>
+            </nav>
+        </header>
+
+        <div class="main-grid">
+            <div class="space-y">
+                <div class="stats-row">
+                    <div class="glass-card stats-card"><span>Total Cattle</span><h3 id="cCount">0 Cows</h3></div>
+                    <div class="glass-card stats-card"><span>Total Milk Income</span><h3 id="mIncomeText" style="color: #16a34a;">₹0</h3><p id="mCount" style="margin:0;font-size:11px;color:#475569;">0.0 Liters</p></div>
+                    <div class="glass-card stats-card"><span>Total Expenses</span><h3 id="eCountText" style="color: #dc2626;">₹0</h3></div>
+                    <div class="glass-card stats-card" style="background: rgba(147, 51, 234, 0.12); border: 1px solid rgba(147, 51, 234, 0.3);">
+                        <span style="color:#7c3aed;">Net Wallet Balance</span>
+                        <h3 id="netBalanceText" style="color: #7c3aed; font-weight: 700;">₹0</h3>
+                        <p id="mAvg" style="margin:0;font-size:11px;color:#6d28d9;">Avg: 0L/cow</p>
+                    </div>
+                </div>
+
+                <div id="page-dash" class="space-y">
+                    <div class="forms-row">
+                        <div class="glass-card">
+                            <h4>🥛 Daily Milk Entry</h4>
+                            <div class="form-group">
+                                <select id="mSelect" onkeydown="handleEnterNav(event, 'mLiters')">
+                                    <option value="ALL_COWS" selected>🌟 All Cows Collective (Total Herd Production)</option>
+                                </select>
+                                <div class="form-flex">
+                                    <input type="number" id="mLiters" placeholder="Liters" step="0.1" onkeydown="handleEnterNav(event, 'mFat')">
+                                    <select id="mShift">
+                                        <option value="Morning" selected>Morning Shift</option>
+                                        <option value="Evening">Evening Shift</option>
+                                    </select>
+                                </div>
+                                <div class="form-flex">
+                                    <input type="number" id="mFat" placeholder="Fat %" step="0.1" onkeydown="handleEnterNav(event, 'mSnf')">
+                                    <input type="number" id="mSnf" placeholder="SNF %" step="0.1" onkeydown="handleEnterNav(event, 'MILK_TRIGGER')">
+                                </div>
+                                <button id="mBtn" onclick="addMilk()" class="btn-purple">Save Entry</button>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h4>🐄 Add New Cow</h4>
+                            <div class="form-group">
+                                <div class="form-flex">
+                                    <input type="text" id="cTag" placeholder="Tag No." onkeydown="handleEnterNav(event, 'cBreed')">
+                                    <select id="cBreed" onkeydown="handleEnterNav(event, 'cCond')">
+                                        <option value="Gir Cow">Gir Cow</option>
+                                        <option value="Sahiwal">Sahiwal</option>
+                                        <option value="Jersey">Jersey</option>
+                                        <option value="Holstein Friesian (HF)">Holstein Friesian (HF)</option>
+                                        <option value="Tharparkar">Tharparkar</option>
+                                    </select>
+                                </div>
+                                <div class="form-flex">
+                                    <select id="cCond" onchange="chkPreg()" onkeydown="handleEnterNav(event, 'COW_CONDITION_ROUTE')">
+                                        <option>Healthy</option>
+                                        <option>Sick</option>
+                                        <option>Pregnant</option>
+                                    </select>
+                                </div>
+                                <div id="pDateDiv" class="hidden">
+                                    <label style="font-size:11px; font-weight:600; color:#475569;">Insemination Date (DD-MM-YYYY):</label>
+                                    <input type="date" id="cPregDate" onkeydown="handleEnterNav(event, 'COW_TRIGGER')">
+                                </div>
+                                <button id="cBtn" onclick="addCow()" class="btn-dark">Register Cow</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forms-row">
+                        <div class="glass-card" style="grid-column: span 2;">
+                            <h4>💸 Add Farm Expense</h4>
+                            <div class="form-group">
+                                <div class="form-flex">
+                                    <input type="text" id="exDetails" placeholder="Expense Details (e.g., Organic Feed 5 Bags)" onkeydown="handleEnterNav(event, 'exAmount')">
+                                    <select id="exCat">
+                                        <option>Feed / Chara</option>
+                                        <option>Medical Care</option>
+                                        <option>Fuel / Transport</option>
+                                        <option>Maintenance</option>
+                                        <option>Labor Wages</option>
+                                    </select>
+                                    <input type="number" id="exAmount" placeholder="Amount (₹)" onkeydown="handleEnterNav(event, 'EXPENSE_TRIGGER')">
+                                    <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width: auto; padding: 10px 24px;">Add Log</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-milk" class="glass-card hidden">
+                    <h4>🥛 Complete Milk Production History Registry</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Cow ID</th><th>Day</th><th>Shift</th><th>Quantity</th><th>Quality Rates</th><th>Recorded Timestamp</th><th>Actions</th></tr></thead>
+                            <tbody id="tb-milk"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="page-cat" class="glass-card hidden">
+                    <h4>🐄 Complete Registered Cattle Inventory History</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Tag Number</th><th>Breed Type</th><th>Current Condition</th><th>Pregnancy Target Status</th><th>Actions</th></tr></thead>
+                            <tbody id="tb-cat"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="page-exp" class="glass-card hidden">
+                    <h4>💸 Complete Farm Expense Ledger Book</h4>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Expense Details</th><th>Budget Category</th><th>Amount Spent</th><th>Actions</th></tr></thead>
+                            <tbody id="tb-expenses"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="page-set" class="glass-card hidden">
+                    <h4>⚙️ Profile Account Settings</h4>
+                    <div class="form-group" style="max-width: 350px;">
+                        <div>
+                            <label style="font-size:11px; font-weight:600; color:#475569;">Change Username:</label>
+                            <input type="text" id="setNewUser" placeholder="Enter new username" onkeydown="handleEnterNav(event, 'setCurrentPass')">
+                        </div>
+                        <div style="margin-top: 5px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px;">
+                            <h5 style="margin: 0 0 10px 0; font-size: 13px; color: #1e293b;">🔒 Change Password Portal</h5>
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:600; color:#475569;">Current Password:</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="setCurrentPass" placeholder="Enter current password" onkeydown="handleEnterNav(event, 'setNewPass')">
+                                <span class="eye-toggle" onclick="toggleSettingsPassView()">👁️</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:600; color:#475569;">New Password:</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="setNewPass" placeholder="Enter new password" onkeydown="handleEnterNav(event, 'setConfirmPass')">
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size:11px; font-weight:600; color:#475569;">Confirm New Password:</label>
+                            <div class="pass-wrapper">
+                                <input type="password" id="setConfirmPass" placeholder="Confirm new password" onkeydown="handleEnterNav(event, 'SETTINGS_TRIGGER')">
+                            </div>
+                        </div>
+                        <div class="form-flex" style="margin-top:10px;">
+                            <button onclick="updateSettings()" class="btn-purple" style="width:50%;">Update Profile</button>
+                            <button onclick="handleLogout()" class="btn-red" style="width:50%;">Secure Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y">
+                <div class="glass-card">
+                    <h4 style="font-size:12px;color:#64748b;text-transform:uppercase;margin:0;">Weekly Production</h4>
+                    <div class="chart-placeholder">
+                        <div class="bar-container"><div class="bar" id="b-Mon"></div><span style="font-size:11px;">Mon</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Tue"></div><span style="font-size:11px;">Tue</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Wed"></div><span style="font-size:11px;">Wed</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Thu"></div><span style="font-size:11px;">Thu</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Fri"></div><span style="font-size:11px;">Fri</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Sat"></div><span style="font-size:11px;">Sat</span></div>
+                        <div class="bar-container"><div class="bar" id="b-Sun"></div><span style="font-size:11px;">Sun</span></div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <h4 style="font-size:12px;color:#64748b;text-transform:uppercase;margin:0 0 10px 0;">Quality Analytics</h4>
+                    <div class="circle-gauge"><span id="g-fat">0.0%</span></div>
+                    <div class="flex-split">
+                        <div>Avg SNF<p id="g-snf" style="margin:4px 0 0 0;font-weight:bold;font-size:14px;">0.0%</p></div>
+                        <div>Target<p style="margin:4px 0 0 0;font-weight:bold;font-size:14px;color:#9333ea;">9.0%</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.cows = []; window.milk = []; window.expenses = [];
+        window.userProfile = { name: "Owner Name", farmName: "My Farm Dairy", user: "admin", pass: "admin123" };
+        window.isLogged = false;
+        window.eM = null; window.eC = null; window.eE = null;
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        let modalConfirmCallback = null;
+
+        function loadDB() {
+            try {
+                window.cows = JSON.parse(localStorage.getItem('dairy_cows')) || [];
+                window.milk = JSON.parse(localStorage.getItem('dairy_milk')) || [];
+                window.expenses = JSON.parse(localStorage.getItem('dairy_expenses')) || [];
+                if(localStorage.getItem('dairy_profile')) {
+                    window.userProfile = JSON.parse(localStorage.getItem('dairy_profile'));
+                }
+                window.isLogged = localStorage.getItem('dairy_logged') === 'true';
+            } catch(err) { console.error("Memory Storage Recovery Engine Failure Hook.", err); }
+        }
+        function syncDB() {
+            try {
+                localStorage.setItem('dairy_cows', JSON.stringify(window.cows));
+                localStorage.setItem('dairy_milk', JSON.stringify(window.milk));
+                localStorage.setItem('dairy_expenses', JSON.stringify(window.expenses));
+                localStorage.setItem('dairy_profile', JSON.stringify(window.userProfile));
+            } catch(err) { console.error("Database Save Execution Error Hook.", err); }
+        }
+
+        function handleOutsideClick(event) {
+            let modalElement = document.getElementById('appModal');
+            if (event.target === modalElement) closeModal();
+        }
+
+        function togglePassView(id) {
+            let el = document.getElementById(id);
+            if(el) el.type = (el.type === "password") ? "text" : "password";
+        }
+
+        function toggleRegisterPassView() {
+            let p = document.getElementById('regPass'); let cp = document.getElementById('regConfirmPass');
+            if(p && cp) { p.type = (p.type === "password") ? "text" : "password"; cp.type = p.type; }
+        }
+
+        function toggleSettingsPassView() {
+            let curr = document.getElementById('setCurrentPass'); let p = document.getElementById('setNewPass'); let cp = document.getElementById('setConfirmPass');
+            if(curr && p && cp) { curr.type = (curr.type === "password") ? "text" : "password"; p.type = curr.type; cp.type = curr.type; }
+        }
+
+        function toggleAuthScreens(view) {
+            document.getElementById('auth-login-view').classList.add('hidden');
+            document.getElementById('auth-register-view').classList.add('hidden');
+            if(view === 'login') document.getElementById('auth-login-view').classList.remove('hidden');
+            if(view === 'register') document.getElementById('auth-register-view').classList.remove('hidden');
+        }
+
+        function openModal(title, msg, onConfirm) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMsg').innerText = msg;
+            document.getElementById('appModal').classList.remove('hidden');
+            modalConfirmCallback = onConfirm;
+        }
+
+        function closeModal() {
+            document.getElementById('appModal').classList.add('hidden');
+            modalConfirmCallback = null;
+        }
+
+        document.getElementById('modalCancelBtn').onclick = closeModal;
+        document.getElementById('modalConfirmBtn').onclick = function() {
+            if(modalConfirmCallback) modalConfirmCallback();
+            closeModal();
+        };
+
+        function chkPreg() {
+            let div = document.getElementById('pDateDiv'); let cond = document.getElementById('cCond');
+            if(div && cond) div.classList.toggle('hidden', cond.value !== 'Pregnant');
+        }
+
+        function handleEnterNav(event, targetId) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (targetId === 'LOGIN_TRIGGER') handleLogin();
+                else if (targetId === 'REG_TRIGGER') handleRegister();
+                else if (targetId === 'MILK_TRIGGER') addMilk();
+                else if (targetId === 'COW_TRIGGER') addCow();
+                else if (targetId === 'EXPENSE_TRIGGER') addExpense();
+                else if (targetId === 'SETTINGS_TRIGGER') updateSettings();
+                else if (targetId === 'COW_CONDITION_ROUTE') {
+                    if(document.getElementById('cCond').value === 'Pregnant') document.getElementById('cPregDate').focus();
+                    else addCow();
+                } else {
+                    let nextEl = document.getElementById(targetId);
+                    if (nextEl) nextEl.focus();
+                }
+            }
+        }
+
+        function handleLogin() {
+            let u = document.getElementById('loginUser').value.trim();
+            let p = document.getElementById('loginPass').value;
+            if(!u || !p) return openModal('Auth Alert', 'Kripya Username aur Password enter karein!', null);
+            if(u === window.userProfile.user && p === window.userProfile.pass) {
+                localStorage.setItem('dairy_logged', 'true');
+                window.isLogged = true;
+                launchWorkspace();
+            } else { openModal('Auth Error', 'Galat Username ya Password!', null); }
+        }
+        function handleRegister() {
+            let n = document.getElementById('regName').value.trim();
+            let f = document.getElementById('regFarm').value.trim();
+            let u = document.getElementById('regUser').value.trim();
+            let p = document.getElementById('regPass').value;
+            let cp = document.getElementById('regConfirmPass').value;
+            if(!n || !f || !u || !p || !cp) return openModal('Input Alert', 'Kripya saari details fill karein!', null);
+            if(p !== cp) return openModal('Password Alert', 'Passwords match nahi ho rahe hain!', null);
+            window.userProfile = { name: n, farmName: f, user: u, pass: p };
+            syncDB();
+            openModal('Success', 'Account ban gaya! Sign In karein.', function() { toggleAuthScreens('login'); document.getElementById('loginUser').value = u; });
+        }
+
+        function launchWorkspace() {
+            document.getElementById('auth-login-view').classList.add('hidden');
+            document.getElementById('auth-register-view').classList.add('hidden');
+            document.getElementById('app-workspace-view').classList.remove('hidden');
+            document.getElementById('lblDisplayFarmName').innerText = window.userProfile.farmName;
+            document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
+            rMilk(); rCat(); rExp(); calc();
+        }
+
+        function tab(t) {
+            ['dash', 'milk', 'cat', 'exp', 'set'].forEach(id => {
+                let btn = document.getElementById('t-' + id); let pg = document.getElementById('page-' + id);
+                if(btn) btn.classList.remove('active'); if(pg) pg.classList.add('hidden');
+            });
+            let targetBtn = document.getElementById('t-' + t); let targetPg = document.getElementById('page-' + t);
+            if(targetBtn) targetBtn.classList.add('active'); if(targetPg) targetPg.classList.remove('hidden');
+            if(t === 'milk') rMilk(); if(t === 'cat') rCat(); if(t === 'exp') rExp();
+            if(t === 'set') { 
+                document.getElementById('setNewUser').value = window.userProfile.user; 
+                document.getElementById('setCurrentPass').value = ''; 
+                document.getElementById('setNewPass').value = ''; 
+                document.getElementById('setConfirmPass').value = ''; 
+            }
+        }
+        function catTab() { tab('cat'); }
+
+        function calcPreg(dStr) {
+            if(!dStr) return { dStr: '-', rStr: '-' };
+            let d = new Date(dStr); if(isNaN(d.getTime())) return { dStr: '-', rStr: '-' };
+            d.setMonth(d.getMonth() + 9); d.setDate(d.getDate() + 9);
+            let targetStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
+            let diff = Math.ceil((d.getTime() - new Date().setHours(0,0,0,0)) / 86400000);
+            return { dStr: targetStr, rStr: diff <= 0 ? "Delivery Time! 🎉" : `${Math.floor(diff/30)}m ${diff%30}d left` };
+        }
+
+        function rMilk() {
+            let html = '';
+            window.milk.forEach((e, i) => {
+                let displayName = e.tag === 'ALL_COWS' ? '🌟 All Cows Collective' : e.tag;
+                html += `<tr><td><b>${displayName}</b></td>
+                <td><span style="background: rgba(147, 51, 234, 0.12); color: #7c3aed; padding: 2px 6px; border-radius: 6px; font-size: 11px; font-weight: 600;">${e.day}</span></td>
+                <td>${e.shift}</td><td>${e.liters}L</td><td>F:${e.fat}%|S:${e.snf}%</td>
+                <td><span style="font-size:12px;color:#64748b;font-weight:500;">${e.date}</span></td>
+                <td><button class="act-btn" onclick="edM(${i})">✏️</button><button class="act-btn" onclick="delM(${i})">❌</button></td></tr>`;
+            });
+            let container = document.getElementById('tb-milk'); if(container) container.innerHTML = html;
+            updHafteKaChart();
+        }
+
+        function rCat() {
+            let html = '';
+            window.cows.forEach((e, i) => {
+                let p = e.cond === 'Pregnant' ? calcPreg(e.pDate) : null;
+                html += `<tr><td><b>${e.tag}</b></td><td>${e.breed}</td><td>${e.cond}</td><td>${p ? p.dStr+' ('+p.rStr+')' : '-'}</td>
+                <td><button class="act-btn" onclick="edC(${i})">✏️</button><button class="act-btn" onclick="delC(${i})">❌</button></td></tr>`;
+            });
+            let container = document.getElementById('tb-cat'); if(container) container.innerHTML = html;
+            updDropdown();
+        }
+        function rExp() {
+            let html = '';
+            window.expenses.forEach((e, i) => {
+                html += `<tr><td>${e.details}</td><td>${e.cat}</td><td style="color:#dc2626;font-weight:600;">₹${e.amount}</td>
+                <td><button class="act-btn" onclick="edEx(${i})">✏️</button><button class="act-btn" onclick="delEx(${i})">❌</button></td></tr>`;
+            });
+            let container = document.getElementById('tb-expenses'); if(container) container.innerHTML = html;
+        }
+
+        function updDropdown() {
+            let opt = '<option value="ALL_COWS" selected>🌟 All Cows Collective (Total Herd Production)</option>';
+            window.cows.forEach(c => opt += `<option value="${c.tag}">${c.tag} (${c.breed})</option>`);
+            let el = document.getElementById('mSelect'); if(el) el.innerHTML = opt;
+        }
+
+        function updHafteKaChart() {
+            let w = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
+            window.milk.forEach(e => { if(w.hasOwnProperty(e.day)) w[e.day] += parseFloat(e.liters) || 0; });
+            let max = Math.max(...Object.values(w), 10);
+            for(let d in w) {
+                let pct = (w[d] / max) * 100;
+                let b = document.getElementById(`b-${d}`);
+                if(b) b.style.height = w[d] > 0 ? `${Math.max(pct, 10)}%` : '0%';
+            }
+        }
+
+        function addCow() {
+            let tag = document.getElementById('cTag').value.trim();
+            let breed = document.getElementById('cBreed').value;
+            let cond = document.getElementById('cCond').value;
+            let pDate = document.getElementById('cPregDate').value;
+            
+            if(!tag) return openModal('Input Alert', 'Kripya Cow Tag No. enter karein!', null);
+            if(cond === 'Pregnant' && !pDate) return openModal('Input Alert', 'Kripya Insemination date dalein!', null);
+            
+            if(window.eC !== null) { 
+                window.cows[window.eC] = { tag, breed, cond, pDate }; 
+                window.eC = null; document.getElementById('cBtn').innerText = "Register Cow";
+            } else { 
+                if(window.cows.some(c => c.tag.toLowerCase() === tag.toLowerCase())) return openModal('Duplicate Alert', 'Tag pehle se add hai!', null);
+                window.cows.unshift({ tag, breed, cond, pDate }); 
+            }
+            syncDB(); document.getElementById('cTag').value = ''; document.getElementById('cPregDate').value = ''; document.getElementById('cCond').value = 'Healthy';
+            chkPreg(); rCat(); calc();
+        }
+
+        function edC(i) { 
+            let e = window.cows[i]; document.getElementById('cTag').value = e.tag; document.getElementById('cBreed').value = e.breed; document.getElementById('cCond').value = e.cond; document.getElementById('cPregDate').value = e.pDate || ''; 
+            chkPreg(); window.eC = i; document.getElementById('cBtn').innerText = "Update Cow"; tab('dash'); 
+        }
+
+        function delC(i) { 
+            openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() { 
+                let t = window.cows[i].tag; window.cows.splice(i, 1); window.milk = window.milk.filter(m=>m.tag!==t); syncDB(); calc(); rCat(); rMilk(); 
+            }); 
+        }
+
+        function addMilk() {
+            let tag = document.getElementById('mSelect').value; let liters = document.getElementById('mLiters').value.trim();
+            let shift = document.getElementById('mShift').value; let fat = document.getElementById('mFat').value.trim(); let snf = document.getElementById('mSnf').value.trim();
+            if(!liters || !fat || !snf) return openModal('Input Alert', 'Kripya saari milk details enter karein!', null);
+            let d = new Date(); let dStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; let dayName = dayNames[d.getDay()];
+            let record = { tag, liters: parseFloat(liters), shift, fat: parseFloat(fat), snf: parseFloat(snf), date: dStr, day: dayName };
+            if(window.eM !== null) { window.milk[window.eM] = record; window.eM = null; document.getElementById('mBtn').innerText = "Save Entry"; } 
+            else { window.milk.unshift(record); }
+            syncDB(); document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
+            rMilk(); calc();
+        }
+        function edM(i) { 
+            let e = window.milk[i]; document.getElementById('mSelect').value = e.tag; document.getElementById('mLiters').value = e.liters; document.getElementById('mShift').value = e.shift; document.getElementById('mFat').value = e.fat; document.getElementById('mSnf').value = e.snf; 
+            window.eM = i; document.getElementById('mBtn').innerText = "Update Entry"; tab('dash'); 
+        }
+
+        function delM(i) { openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() { window.milk.splice(i, 1); syncDB(); calc(); rMilk(); }); }
+
+        function addExpense() {
+            let details = document.getElementById('exDetails').value.trim(); let cat = document.getElementById('exCat').value; let amount = document.getElementById('exAmount').value.trim();
+            if(!details || !amount) return openModal('Input Alert', 'Kripya expense details aur amount fill karein!', null);
+            let record = { details, cat, amount: parseFloat(amount) };
+            if(window.eE !== null) { window.expenses[window.eE] = record; window.eE = null; document.getElementById('exBtn').innerText = "Add Log"; } 
+            else { window.expenses.unshift(record); }
+            syncDB(); document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
+            rExp(); calc();
+        }
+
+        function edEx(i) { let e = window.expenses[i]; document.getElementById('exDetails').value = e.details; document.getElementById('exCat').value = e.cat; document.getElementById('exAmount').value = e.amount; window.eE = i; document.getElementById('exBtn').innerText = "Update Log"; tab('dash'); }
+        function delEx(i) { openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() { window.expenses.splice(i, 1); syncDB(); calc(); rExp(); }); }
+
+        function updateSettings() {
+            let newUser = document.getElementById('setNewUser').value.trim(); let currPass = document.getElementById('setCurrentPass').value;
+            let newPass = document.getElementById('setNewPass').value; let confirmPass = document.getElementById('setConfirmPass').value;
+            if(!newUser) return openModal('Input Alert', 'Username khali nahi choda ja sakta!', null);
+            if(currPass || newPass || confirmPass) {
+                if(currPass !== window.userProfile.pass) return openModal('Password Error', 'Current Password galat hai! Kripya sahi password enter karein.', null);
+                if(!newPass || !confirmPass) return openModal('Input Alert', 'Kripya New Password aur Confirm New Password dono enter karein!', null);
+                if(newPass !== confirmPass) return openModal('Password Alert', 'New Password aur Confirm New Password match nahi ho rahe!', null);
+                window.userProfile.pass = newPass;
+            }
+            window.userProfile.user = newUser; syncDB();
+            openModal('Settings Updated', 'Aapki details successfully save aur update ho gayi hain!', function() { tab('dash'); launchWorkspace(); });
+        }
+
+        function handleLogout() {
+            openModal('Secure Log Out', 'क्या आप सच में App से Log Out करना चाहते हैं?', function() {
+                localStorage.setItem('dairy_logged', 'false'); window.isLogged = false;
+                document.getElementById('app-workspace-view').classList.add('hidden'); document.getElementById('auth-login-view').classList.remove('hidden');
+                document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = ''; tab('dash');
+            });
+        }
+
+        function calc() {
+            let ratePerLiter = parseFloat(document.getElementById('milkPriceInput').value) || 0;
+            let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
+            let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
+            let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
+            let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+            let totalIncome = tM * ratePerLiter; let netBalance = totalIncome - tE;
+            
+            document.getElementById('cCount').innerText = window.cows.length + " Cows";
+            document.getElementById('mCount').innerText = tM.toFixed(1) + " Liters";
+            document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 1});
+            document.getElementById('eCountText').innerText = "₹" + tE.toLocaleString('en-IN');
+            
+            let balElement = document.getElementById('netBalanceText');
+            if(balElement) {
+                balElement.innerText = (netBalance >= 0 ? "₹" : "-₹") + Math.abs(netBalance).toLocaleString('en-IN', {maximumFractionDigits: 1});
+                balElement.style.color = netBalance >= 0 ? "#16a34a" : "#dc2626";
+            }
+            
+            document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length).toFixed(1) : 0) + "L/cow";
+            document.getElementById('g-fat').innerText = (window.milk.length > 0 ? (tF / window.milk.length).toFixed(1) : 0.0) + "%";
+            document.getElementById('g-snf').innerText = (window.milk.length > 0 ? (tS / window.milk.length).toFixed(1) : 0.0) + "%";
+        }
+
+        window.onload = function() {
+            loadDB();
+            if (window.isLogged) launchWorkspace();
+            else toggleAuthScreens('login');
+        };
+
+        // ========================================================
+        // MASTER DETECT LAYER: BLOCKS PINCH, DOUBLE TAP & HOTKEYS
+        // ========================================================
+        document.addEventListener('touchstart', function (e) {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+
+        let lastTapTime = 0;
+        document.addEventListener('touchend', function (e) {
+            let now = (new Date()).getTime();
+            if (now - lastTapTime <= 300) e.preventDefault();
+            lastTapTime = now;
+        }, false);
+
+        document.addEventListener('wheel', function (e) {
+            if (e.ctrlKey) e.preventDefault();
+        }, { passive: false });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
