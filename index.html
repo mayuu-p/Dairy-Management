@@ -554,7 +554,7 @@
                 <td><span style="background: rgba(147, 51, 234, 0.12); color: #7c3aed; padding: 2px 6px; border-radius: 6px; font-size: 11px; font-weight: 600;">${e.day}</span></td>
                 <td>${e.shift}</td><td>${e.liters}L</td><td>F:${e.fat}%|S:${e.snf}%</td>
                 <td><span style="font-size:12px;color:#64748b;font-weight:500;">${e.date}</span></td>
-                <td><button class="act-btn" onclick="edM(${i})">✏️</button><button class="act-btn" onclick="delM(${i})">❌</button></td></tr>`;
+                <td><button class="act-btn" onclick="edM(${i})">Edit</button><button class="act-btn" onclick="delM(${i})">❌</button></td></tr>`;
             });
             let container = document.getElementById('tb-milk'); if(container) container.innerHTML = html;
             updHafteKaChart();
@@ -565,7 +565,7 @@
             window.cows.forEach((e, i) => {
                 let p = e.cond === 'Pregnant' ? calcPreg(e.pDate) : null;
                 html += `<tr><td><b>${e.tag}</b></td><td>${e.breed}</td><td>${e.cond}</td><td>${p ? p.dStr+' ('+p.rStr+')' : '-'}</td>
-                <td><button class="act-btn" onclick="edC(${i})">✏️</button><button class="act-btn" onclick="delC(${i})">❌</button></td></tr>`;
+                <td><button class="act-btn" onclick="edC(${i})">Edit</button><button class="act-btn" onclick="delC(${i})">❌</button></td></tr>`;
             });
             let container = document.getElementById('tb-cat'); if(container) container.innerHTML = html;
             updDropdown();
@@ -574,7 +574,7 @@
             let html = '';
             window.expenses.forEach((e, i) => {
                 html += `<tr><td>${e.details}</td><td>${e.cat}</td><td style="color:#dc2626;font-weight:600;">₹${e.amount}</td>
-                <td><button class="act-btn" onclick="edEx(${i})">✏️</button><button class="act-btn" onclick="delEx(${i})">❌</button></td></tr>`;
+                <td><button class="act-btn" onclick="edEx(${i})">Edit</button><button class="act-btn" onclick="delEx(${i})">❌</button></td></tr>`;
             });
             let container = document.getElementById('tb-expenses'); if(container) container.innerHTML = html;
         }
