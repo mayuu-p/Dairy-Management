@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
+        /* --- reset & base --- */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -12,6 +13,8 @@
             user-select: none;
             -webkit-touch-callout: none;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
         }
         input, select, textarea {
             -webkit-user-select: text !important;
@@ -19,198 +22,591 @@
             -ms-user-select: text !important;
             user-select: text !important;
             font-size: 16px !important;
+            -webkit-tap-highlight-color: transparent !important;
+            outline: none !important;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
         html, body {
             width: 100%;
             height: 100%;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a12;
+            font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
             overflow: hidden;
             touch-action: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, rgba(88, 86, 214, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(255, 69, 58, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: none;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             width: 100%;
             height: 100vh;
             margin: 0;
             padding: 0;
-            box-shadow: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
+            z-index: 1;
+            will-change: transform;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(88, 86, 214, 0.02) 0%, transparent 60%);
+            pointer-events: none;
         }
         .app-header {
             flex-shrink: 0;
-            padding: 10px 14px 6px 14px;
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 14px 20px 8px 20px;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(88, 86, 214, 0.03) 0%, transparent 60%);
+            pointer-events: none;
         }
         .app-body {
             flex: 1 1 auto;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 10px 14px 14px 14px;
+            padding: 14px 20px 20px 20px;
+            scroll-behavior: smooth;
+            z-index: 1;
+        }
+        .app-body::-webkit-scrollbar {
+            width: 3px;
+        }
+        .app-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .app-body::-webkit-scrollbar-thumb {
+            background: rgba(94, 92, 230, 0.15);
+            border-radius: 4px;
+        }
+        .app-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(94, 92, 230, 0.25);
         }
         .auth-container {
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 30px;
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 36px;
+            border-radius: 32px;
             width: calc(100% - 30px);
-            max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 440px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             text-align: center;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            overflow: hidden;
+            z-index: 100;
         }
-        .auth-container h2 { margin: 0 0 10px 0; color: #1e293b; font-size: 24px; }
-        .auth-container p { margin: 0 0 16px 0; color: #475569; font-size: 14px; }
-        .auth-link { color: #9333ea; cursor: pointer; font-weight: 600; text-decoration: underline; }
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 60% 40%, rgba(88, 86, 214, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .auth-container h2 { margin: 0 0 10px 0; color: #fff; font-size: 28px; font-weight: 700; position: relative; z-index: 1; letter-spacing: -0.5px; }
+        .auth-container p { margin: 0 0 18px 0; color: rgba(255,255,255,0.4); font-size: 15px; position: relative; z-index: 1; }
+        .auth-link { color: #5e5ce6; cursor: pointer; font-weight: 600; text-decoration: none; position: relative; z-index: 1; border-bottom: 1px solid rgba(94, 92, 230, 0.2); }
         .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-        .pass-wrapper input { padding-right: 40px !important; }
-        .eye-toggle { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 14px; user-select: none; z-index: 5; }
+        .pass-wrapper input { padding-right: 44px !important; }
+        .eye-toggle { position: absolute; right: 12px; cursor: pointer; color: rgba(255,255,255,0.3); font-size: 16px; user-select: none; z-index: 5; transition: color 0.3s ease; padding: 4px; border-radius: 50%; }
+        .eye-toggle:hover { color: rgba(255,255,255,0.6); }
+        .eye-toggle:active { color: #5e5ce6; }
         .app-header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
         }
-        .header-title-area { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-        .header-title-area h1 { margin: 0; font-size: 18px; color: #1e293b; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .header-title-area p { margin: 0; font-size: 10px; color: #475569; width: 100%; }
+        .header-title-area { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .header-title-area h1 { margin: 0; font-size: 20px; color: #fff; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; text-shadow: 0 2px 10px rgba(0,0,0,0.2); letter-spacing: -0.3px; }
+        .header-title-area p { margin: 0; font-size: 11px; color: rgba(255,255,255,0.3); width: 100%; }
         .header-rate-box {
-            background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(147, 51, 234, 0.3);
-            border-radius: 12px; padding: 4px 12px; display: flex; align-items: center; gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .header-rate-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(88, 86, 214, 0.05) 0%, transparent 70%);
+            pointer-events: none;
         }
         .header-rate-box input {
-            width: 60px !important; padding: 4px 6px !important; border: none !important;
-            background: transparent !important; font-weight: bold; font-size: 16px; color: #9333ea;
-            text-align: center; outline: none;
+            width: 65px !important;
+            padding: 4px 8px !important;
+            border: none !important;
+            background: transparent !important;
+            font-weight: 600;
+            font-size: 17px;
+            color: #5e5ce6;
+            text-align: center;
+            outline: none;
+            position: relative;
+            z-index: 1;
         }
-        .header-rate-box span { font-size: 12px; font-weight: 600; color: #475569; }
+        .header-rate-box span { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.35); position: relative; z-index: 1; }
         nav {
-            display: flex; gap: 4px; background: rgba(255,255,255,0.3); padding: 4px; border-radius: 30px; flex-wrap: wrap;
-            margin-top: 4px;
+            display: flex;
+            gap: 6px;
+            background: rgba(255,255,255,0.02);
+            padding: 6px;
+            border-radius: 30px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            position: relative;
+            overflow: visible;
+            border: 1px solid rgba(255,255,255,0.03);
         }
         nav a {
-            text-decoration: none; color: #334155; padding: 6px 14px; border-radius: 20px;
-            font-size: 12px; font-weight: 500; cursor: pointer;
+            text-decoration: none;
+            color: rgba(255,255,255,0.4);
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
             white-space: nowrap;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
         }
-        nav a.active { background: #ffffff; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; width: 100%; }
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            background: radial-gradient(circle at center, rgba(88, 86, 214, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+        nav a.active {
+            background: rgba(88, 86, 214, 0.2);
+            color: #fff;
+            box-shadow: 0 4px 25px rgba(88, 86, 214, 0.12);
+        }
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; width: 100%; }
         @media (max-width: 992px) { .main-grid { grid-template-columns: 1fr; } }
-        .space-y { display: flex; flex-direction: column; gap: 14px; width: 100%; }
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; width: 100%; }
+        .space-y { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; width: 100%; }
         .glass-card {
-            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 14px;
-            padding: 12px 14px; box-sizing: border-box; width: 100%;
-        }
-        .stats-card span { font-size: 9px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stats-card h3 { margin: 4px 0; font-size: 17px; color: #0f172a; word-break: break-all; }
-        .stats-card p { font-size: 11px; margin: 2px 0; color: #475569; }
-        .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
-        @media (max-width: 650px) { .forms-row { grid-template-columns: 1fr; } }
-        .glass-card h4 { margin: 0 0 8px 0; font-size: 14px; color: #1e293b; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        input, select {
-            width: 100%; padding: 8px 12px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.7); font-size: 14px; outline: none;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 20px;
+            padding: 16px 18px;
             box-sizing: border-box;
-            min-height: 38px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.12);
+            will-change: transform;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
-        input:focus, select:focus { border-color: #9333ea; box-shadow: 0 0 0 2px rgba(147,51,234,0.2); }
-        .form-flex input, .form-flex select { flex: 1; min-width: 50px; }
-        button { width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 42px; }
-        .btn-purple { background: #9333ea; color: white; }
-        .btn-purple:hover { background: #7e22ce; }
-        .btn-dark { background: #1e293b; color: white; }
-        .btn-dark:hover { background: #0f172a; }
-        .btn-red { background: #dc2626; color: white; }
-        .btn-red:hover { background: #b91c1c; }
-        .btn-green { background: #16a34a; color: white; }
-        .btn-green:hover { background: #15803d; }
-        .btn-sm { padding: 6px 12px; width: auto; font-size: 12px; min-height: 34px; }
-        .btn-whatsapp { background: #25D366; color: white; }
-        .btn-whatsapp:hover { background: #1da851; }
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 500px; }
-        th, td { padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #334155; }
-        th { font-weight: 600; background: rgba(147,51,234,0.08); }
-        .act-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 4px; display: inline-flex; align-items: center; }
-        .act-edit { color: #2563eb; margin-right: 12px; }
-        .act-delete { color: #dc2626; }
-        .chart-placeholder { height: 100px; display: flex; align-items: flex-end; gap: 4px; padding-top: 6px; justify-content: space-between; }
-        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
-        .bar { width: 100%; background: rgba(147, 51, 234, 0.6); border-radius: 3px; height: 0%; min-height: 3px; transition: height 0.3s ease; }
-        .bar-label { font-size: 8px; color: #64748b; font-weight: 500; }
-        .circle-gauge { width: 70px; height: 70px; border-radius: 50%; border: 5px dashed #9333ea; display: flex; align-items: center; justify-content: center; margin: 6px auto; font-size: 15px; font-weight: 800; }
-        .flex-split { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 10px; }
-        .flex-split p { font-size: 14px; font-weight: 700; margin: 4px 0 0 0; }
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 60% 40%, rgba(88, 86, 214, 0.02) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .glass-card:hover { transform: translateY(-2px); box-shadow: 0 8px 45px rgba(88, 86, 214, 0.06); border-color: rgba(255,255,255,0.07); }
+        .stats-card span { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; position: relative; z-index: 1; }
+        .stats-card h3 { margin: 6px 0; font-size: 22px; color: #fff; word-break: break-all; position: relative; z-index: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: 700; letter-spacing: -0.5px; }
+        .stats-card p { font-size: 12px; margin: 2px 0; color: rgba(255,255,255,0.3); position: relative; z-index: 1; }
+        .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+        @media (max-width: 650px) { .forms-row { grid-template-columns: 1fr; } }
+        .glass-card h4 { margin: 0 0 10px 0; font-size: 15px; color: #fff; font-weight: 600; position: relative; z-index: 1; letter-spacing: -0.2px; }
+        .form-group { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+        .form-flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            min-height: 44px;
+            transition: border 0.3s ease;
+            position: relative;
+            z-index: 1;
+            -webkit-tap-highlight-color: transparent;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        input::placeholder, select { color: rgba(255,255,255,0.2); }
+        input:focus, select:focus { border-color: rgba(88, 86, 214, 0.25); background: rgba(255,255,255,0.04); }
+        .form-flex input, .form-flex select { flex: 1; min-width: 60px; }
+
+        button {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            min-height: 48px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            z-index: 1;
+            letter-spacing: 0.3px;
+            transform: translateY(0);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+            -webkit-tap-highlight-color: transparent;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 200%;
+            height: 300%;
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        button::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        button > * { position: relative; z-index: 1; }
+        button:active { transform: scale(0.96); }
+
+        .btn-purple { background: linear-gradient(135deg, #5e5ce6, #4f46e5, #6d28d9); color: white; box-shadow: 0 4px 30px rgba(94, 92, 230, 0.2); }
+        .btn-purple:hover { box-shadow: 0 6px 40px rgba(94, 92, 230, 0.35); }
+        .btn-dark { background: linear-gradient(135deg, #2c2c3e, #1a1a2e, #0f0f1a); color: white; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+        .btn-dark:hover { box-shadow: 0 6px 40px rgba(0,0,0,0.4); }
+        .btn-red { background: linear-gradient(135deg, #ff453a, #e3352b, #cc2b22); color: white; box-shadow: 0 4px 30px rgba(255, 69, 58, 0.15); }
+        .btn-red:hover { box-shadow: 0 6px 40px rgba(255, 69, 58, 0.25); }
+        .btn-green { background: linear-gradient(135deg, #30d158, #28b846, #1f9a3a); color: white; box-shadow: 0 4px 30px rgba(48, 209, 88, 0.15); }
+        .btn-green:hover { box-shadow: 0 6px 40px rgba(48, 209, 88, 0.25); }
+        .btn-share-cattle { background: linear-gradient(135deg, #f59e0b, #d97706, #b45309); color: white; box-shadow: 0 4px 30px rgba(245, 158, 11, 0.2); }
+        .btn-share-cattle:hover { box-shadow: 0 6px 40px rgba(245, 158, 11, 0.35); }
+        .btn-share-milk { background: linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8); color: white; box-shadow: 0 4px 30px rgba(59, 130, 246, 0.2); }
+        .btn-share-milk:hover { box-shadow: 0 6px 40px rgba(59, 130, 246, 0.35); }
+        .btn-share-expenses { background: linear-gradient(135deg, #ec4899, #db2777, #be185d); color: white; box-shadow: 0 4px 30px rgba(236, 72, 153, 0.2); }
+        .btn-share-expenses:hover { box-shadow: 0 6px 40px rgba(236, 72, 153, 0.35); }
+        .btn-share-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9); color: white; box-shadow: 0 4px 30px rgba(139, 92, 246, 0.2); }
+        .btn-share-all:hover { box-shadow: 0 6px 40px rgba(139, 92, 246, 0.35); }
+        .btn-sm { padding: 8px 16px; width: auto; font-size: 13px; min-height: 38px; }
+
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; position: relative; z-index: 1; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 500px; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: rgba(255,255,255,0.65); }
+        th { font-weight: 600; color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.015); }
+        .act-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 6px; display: inline-flex; align-items: center; position: relative; z-index: 1; transition: transform 0.2s ease; -webkit-tap-highlight-color: transparent; }
+        .act-btn:active { transform: scale(0.8); }
+        .act-edit { color: #5e5ce6; margin-right: 14px; }
+        .act-delete { color: #ff453a; }
+        .action-cell { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+
+        .chart-placeholder { height: 120px; display: flex; align-items: flex-end; gap: 6px; padding-top: 8px; justify-content: space-between; position: relative; z-index: 1; }
+        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; height: 100%; justify-content: flex-end; }
+        .bar {
+            width: 100%;
+            border-radius: 6px;
+            height: 0%;
+            min-height: 3px;
+            transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(94, 92, 230, 0.04);
+        }
+        .bar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        #b-Mon { background: linear-gradient(180deg, rgba(94, 92, 230, 0.7), rgba(79, 70, 229, 0.3)); }
+        #b-Tue { background: linear-gradient(180deg, rgba(139, 92, 246, 0.7), rgba(124, 58, 237, 0.3)); }
+        #b-Wed { background: linear-gradient(180deg, rgba(59, 130, 246, 0.7), rgba(37, 99, 235, 0.3)); }
+        #b-Thu { background: linear-gradient(180deg, rgba(16, 185, 129, 0.7), rgba(5, 150, 105, 0.3)); }
+        #b-Fri { background: linear-gradient(180deg, rgba(245, 158, 11, 0.7), rgba(217, 119, 6, 0.3)); }
+        #b-Sat { background: linear-gradient(180deg, rgba(239, 68, 68, 0.7), rgba(220, 38, 38, 0.3)); }
+        #b-Sun { background: linear-gradient(180deg, rgba(236, 72, 153, 0.7), rgba(219, 39, 119, 0.3)); }
+        .bar-label { font-size: 9px; color: rgba(255,255,255,0.3); font-weight: 500; margin-top: 2px; }
+        .bar-value { font-size: 8px; color: rgba(255,255,255,0.2); margin-bottom: 1px; }
+        .chart-stats { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: rgba(255,255,255,0.2); position: relative; z-index: 1; }
+        .chart-stats span { background: rgba(255,255,255,0.03); padding: 2px 10px; border-radius: 10px; }
+
+        .quality-circle-container { position: relative; width: 140px; height: 140px; margin: 6px auto; }
+        .quality-circle { width: 140px; height: 140px; border-radius: 50%; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(94, 92, 230, 0.05); border: 2px solid rgba(255,255,255,0.05); }
+        .quality-circle svg { transform: rotate(-90deg); width: 140px; height: 140px; }
+        .quality-circle .bg-circle { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 10; }
+        .quality-circle .progress-fat { fill: none; stroke: #5e5ce6; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .quality-circle .progress-snf { fill: none; stroke: #30d158; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .quality-circle .progress-income { fill: none; stroke: #f59e0b; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .quality-circle .progress-expenses { fill: none; stroke: #ff453a; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .quality-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; z-index: 2; }
+        .quality-center .main-value { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+        .quality-center .main-label { font-size: 9px; color: rgba(255,255,255,0.3); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .quality-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 8px; font-size: 9px; color: rgba(255,255,255,0.5); position: relative; z-index: 1; }
+        .quality-legend .legend-item { display: flex; align-items: center; gap: 4px; }
+        .quality-legend .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .quality-legend .legend-value { color: #fff; font-weight: 600; margin-left: auto; }
+
+        /* --- modals --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+        #breedModal .modal-box {
+            position: fixed;
+            top: auto;
+            bottom: auto;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 340px;
+            width: 90%;
+            max-height: 70vh;
+            overflow: hidden;
+            animation: slideUp 0.25s ease-out;
+        }
+        .modal-box {
+            background: rgba(20, 18, 35, 0.96);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 24px 28px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+            animation: modalBoxIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes modalBoxIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 40% 60%, rgba(94, 92, 230, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .modal-box h5 { margin: 0 0 6px 0; font-size: 18px; color: #fff; position: relative; z-index: 1; flex-shrink: 0; }
+        .modal-box p { margin: 0 0 12px 0; font-size: 14px; color: rgba(255,255,255,0.4); position: relative; z-index: 1; flex-shrink: 0; }
+        .modal-flex { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; flex-shrink: 0; }
+        .modal-flex button { width: auto; padding: 10px 24px; font-size: 14px; min-height: 40px; }
+
+        /* breed list — compact, no scroll, all visible */
+        .popup-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            z-index: 1;
+            padding: 4px 0;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .popup-list::-webkit-scrollbar { width: 2px; }
+        .popup-list::-webkit-scrollbar-track { background: transparent; }
+        .popup-list::-webkit-scrollbar-thumb { background: rgba(94, 92, 230, 0.3); border-radius: 4px; }
+
+        .popup-item {
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.15s ease;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            -webkit-tap-highlight-color: transparent;
+            text-align: left;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        .popup-item:hover { background: rgba(94, 92, 230, 0.08); border-color: rgba(94, 92, 230, 0.12); transform: scale(1.01); }
+        .popup-item:active { transform: scale(0.96); }
+
         .hidden { display: none !important; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .modal-box { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 20px 24px; border-radius: 18px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .modal-box h5 { margin: 0 0 8px 0; font-size: 18px; color: #1e293b; }
-        .modal-box p { margin: 0 0 14px 0; font-size: 13px; color: #475569; }
-        .modal-flex { display: flex; gap: 10px; justify-content: center; }
-        .modal-flex button { width: auto; padding: 8px 20px; font-size: 13px; min-height: 36px; }
         .flex-wrap { flex-wrap: wrap; }
-        .gap-1 { gap: 4px; }
+        .gap-1 { gap: 6px; }
         .items-center { align-items: center; }
-        .text-sm { font-size: 12px; }
-        .text-xs { font-size: 10px; }
+        .text-sm { font-size: 13px; }
+        .text-xs { font-size: 11px; }
         .font-bold { font-weight: 600; }
-        .mt-1 { margin-top: 4px; }
-        .mb-1 { margin-bottom: 4px; }
+        .mt-1 { margin-top: 6px; }
+        .mb-1 { margin-bottom: 6px; }
         .w-auto { width: auto; }
         .flex-1 { flex: 1; }
         .flex-2 { flex: 2; }
-        .border-t { border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 8px; margin-top: 6px; }
-        .export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; }
-        .export-grid button { padding: 8px 6px; font-size: 11px; min-height: 38px; }
-        .action-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .popup-list { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; }
-        .popup-item { padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .popup-item:hover { background: rgba(147,51,234,0.15); }
-        .setting-group { display: flex; flex-direction: column; gap: 6px; }
-        .setting-row { display: flex; gap: 8px; align-items: center; }
+        .border-t { border-top: 1px solid rgba(255,255,255,0.03); padding-top: 10px; margin-top: 8px; }
+        .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .share-grid button { padding: 12px; font-size: 14px; min-height: 48px; }
+        .setting-group { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
+        .setting-row { display: flex; gap: 10px; align-items: center; }
         .setting-row input { flex: 1; }
-        .setting-row button { width: auto; padding: 6px 14px; font-size: 12px; min-height: 34px; }
-        .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-        .share-grid button { padding: 10px; font-size: 13px; min-height: 44px; }
+        .setting-row button { width: auto; padding: 8px 18px; font-size: 13px; min-height: 38px; }
+        .password-field-with-eye { position: relative; width: 100%; }
+        .password-field-with-eye input { padding-right: 44px !important; }
+        .password-field-with-eye .eye-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.3);
+            font-size: 16px;
+            user-select: none;
+            z-index: 5;
+            transition: color 0.3s ease;
+            padding: 4px;
+            border-radius: 50%;
+        }
+        .password-field-with-eye .eye-toggle:hover { color: rgba(255,255,255,0.6); }
+        .password-field-with-eye .eye-toggle:active { color: #5e5ce6; }
+
         @media (max-width: 480px) {
-            .app-header { padding: 6px 10px; }
-            .app-body { padding: 6px 10px 10px 10px; }
-            .glass-card { padding: 10px 10px; }
-            .stats-card h3 { font-size: 14px; }
-            nav a { font-size: 10px; padding: 4px 10px; }
-            .header-title-area h1 { font-size: 15px; }
-            .header-rate-box input { width: 50px !important; font-size: 14px; }
-            .glass-card h4 { font-size: 12px; }
-            input, select { font-size: 13px; min-height: 34px; padding: 6px 10px; }
-            button { font-size: 12px; min-height: 36px; padding: 8px; }
+            .app-header { padding: 10px 14px; }
+            .app-body { padding: 10px 14px 14px 14px; }
+            .glass-card { padding: 12px 14px; }
+            .stats-card h3 { font-size: 18px; }
+            nav a { font-size: 11px; padding: 6px 12px; }
+            .header-title-area h1 { font-size: 17px; }
+            .header-rate-box input { width: 55px !important; font-size: 15px; }
+            .glass-card h4 { font-size: 13px; }
+            input, select { font-size: 13px; min-height: 40px; padding: 8px 12px; }
+            button { font-size: 13px; min-height: 42px; padding: 10px; }
             .share-grid { grid-template-columns: 1fr; }
+            .chart-placeholder { height: 90px; }
+            .quality-circle-container { width: 110px; height: 110px; }
+            .quality-circle { width: 110px; height: 110px; }
+            .quality-circle svg { width: 110px; height: 110px; }
+            .quality-center .main-value { font-size: 16px; }
+            #breedModal .modal-box { max-width: 300px; padding: 18px 16px; }
+            .popup-item { font-size: 13px; padding: 7px 10px; }
         }
         @media (min-width: 768px) and (max-width: 1024px) {
             .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .glass-card h4 { font-size: 13px; }
-            input, select { font-size: 13px; min-height: 36px; }
-            button { font-size: 13px; min-height: 38px; }
+            .glass-card h4 { font-size: 14px; }
+            input, select { font-size: 14px; min-height: 42px; }
+            button { font-size: 14px; min-height: 44px; }
         }
     </style>
 </head>
@@ -228,7 +624,41 @@
         </div>
     </div>
 
-    <!-- Shift Popup Modal -->
+    <!-- Edit Confirmation Modal -->
+    <div id="editModal" class="modal-overlay hidden" onclick="closeEditModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h5>Edit Record</h5>
+            <p id="editModalMsg">Kya aap is record ko edit karna chahte hain?</p>
+            <div class="modal-flex">
+                <button onclick="closeEditModal()" class="btn-dark">Cancel</button>
+                <button id="editConfirmBtn" class="btn-purple">Edit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breed Selection Popup - FIXED: compact, all visible, like reference image -->
+    <div id="breedModal" class="modal-overlay hidden" onclick="closeBreedModal(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h5>🐄 Select Breed</h5>
+            <div class="popup-list" id="breedSelectList">
+                <div class="popup-item" onclick="selectBreed('Gir')">🐄 Gir</div>
+                <div class="popup-item" onclick="selectBreed('Sahiwal')">🐄 Sahiwal</div>
+                <div class="popup-item" onclick="selectBreed('Jersey')">🐄 Jersey</div>
+                <div class="popup-item" onclick="selectBreed('Holstein Friesian (HF)')">🐄 Holstein Friesian (HF)</div>
+                <div class="popup-item" onclick="selectBreed('Tharparkar')">🐄 Tharparkar</div>
+                <div class="popup-item" onclick="selectBreed('Red Sindhi')">🐄 Red Sindhi</div>
+                <div class="popup-item" onclick="selectBreed('Kankrej')">🐄 Kankrej</div>
+                <div class="popup-item" onclick="selectBreed('Deoni')">🐄 Deoni</div>
+                <div class="popup-item" onclick="selectBreed('Rathi')">🐄 Rathi</div>
+                <div class="popup-item" onclick="selectBreed('Hariana')">🐄 Hariana</div>
+                <div class="popup-item" onclick="selectBreed('Mewati')">🐄 Mewati</div>
+                <div class="popup-item" onclick="selectBreed('Punganur')">🐄 Punganur</div>
+            </div>
+            <button onclick="closeBreedModal()" class="btn-dark" style="margin-top:8px;padding:8px;font-size:13px;min-height:36px;">Close</button>
+        </div>
+    </div>
+
+    <!-- Shift Popup -->
     <div id="shiftModal" class="modal-overlay hidden" onclick="closeShiftPopup(event)">
         <div class="modal-box" onclick="event.stopPropagation()" style="max-width:280px;">
             <h5>Select Shift</h5>
@@ -236,11 +666,11 @@
                 <div class="popup-item" onclick="selectShift('Morning')">🌅 Morning</div>
                 <div class="popup-item" onclick="selectShift('Evening')">🌇 Evening</div>
             </div>
-            <button onclick="closeShiftPopup()" class="btn-dark" style="margin-top:8px;padding:4px;">Cancel</button>
+            <button onclick="closeShiftPopup()" class="btn-dark" style="margin-top:8px;padding:8px;font-size:13px;min-height:36px;">Close</button>
         </div>
     </div>
 
-    <!-- Condition Popup Modal -->
+    <!-- Condition Popup -->
     <div id="condModal" class="modal-overlay hidden" onclick="closeCondPopup(event)">
         <div class="modal-box" onclick="event.stopPropagation()" style="max-width:280px;">
             <h5>Select Condition</h5>
@@ -249,22 +679,23 @@
                 <div class="popup-item" onclick="selectCond('Sick')">🤒 Sick</div>
                 <div class="popup-item" onclick="selectCond('Pregnant')">🤰 Pregnant</div>
             </div>
-            <button onclick="closeCondPopup()" class="btn-dark" style="margin-top:8px;padding:4px;">Cancel</button>
+            <button onclick="closeCondPopup()" class="btn-dark" style="margin-top:8px;padding:8px;font-size:13px;min-height:36px;">Close</button>
         </div>
     </div>
 
-    <!-- Expense Category Popup Modal -->
+    <!-- Expense Category Popup -->
     <div id="catPopupModal" class="modal-overlay hidden" onclick="closeCatPopup(event)">
         <div class="modal-box" onclick="event.stopPropagation()" style="max-width:280px;">
             <h5>Select Category</h5>
             <div class="popup-list">
-                <div class="popup-item" onclick="selectCategory('Feed / Chara')">🌾 Feed / Chara</div>
-                <div class="popup-item" onclick="selectCategory('Medical Care')">💊 Medical Care</div>
-                <div class="popup-item" onclick="selectCategory('Fuel / Transport')">⛽ Fuel / Transport</div>
-                <div class="popup-item" onclick="selectCategory('Maintenance')">🔧 Maintenance</div>
-                <div class="popup-item" onclick="selectCategory('Labor Wages')">👨‍🌾 Labor Wages</div>
+                <div class="popup-item" onclick="selectCategory('Feed & Fodder')">🌾 Feed & Fodder</div>
+                <div class="popup-item" onclick="selectCategory('Veterinary Care')">💊 Veterinary Care</div>
+                <div class="popup-item" onclick="selectCategory('Transport & Fuel')">⛽ Transport & Fuel</div>
+                <div class="popup-item" onclick="selectCategory('Equipment Maint.')">🔧 Equipment Maint.</div>
+                <div class="popup-item" onclick="selectCategory('Labour & Wages')">👨‍🌾 Labour & Wages</div>
+                <div class="popup-item" onclick="selectCategory('Miscellaneous')">📦 Miscellaneous</div>
             </div>
-            <button onclick="closeCatPopup()" class="btn-dark" style="margin-top:8px;padding:4px;">Cancel</button>
+            <button onclick="closeCatPopup()" class="btn-dark" style="margin-top:8px;padding:8px;font-size:13px;min-height:36px;">Close</button>
         </div>
     </div>
 
@@ -278,7 +709,7 @@
                 <div class="popup-item" onclick="selectSettingUpdate('username')">👤 Username</div>
                 <div class="popup-item" onclick="selectSettingUpdate('password')">🔒 Password</div>
             </div>
-            <button onclick="closeSettingsPopup()" class="btn-dark" style="margin-top:8px;padding:4px;">Cancel</button>
+            <button onclick="closeSettingsPopup()" class="btn-dark" style="margin-top:8px;padding:8px;font-size:13px;min-height:36px;">Close</button>
         </div>
     </div>
 
@@ -293,7 +724,7 @@
                 <span class="eye-toggle" onclick="togglePassView('loginPass')">👁️</span>
             </div>
             <button onclick="handleLogin()" class="btn-purple">Sign In</button>
-            <p style="font-size:12px; margin-top:10px;">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
+            <p style="font-size:13px; margin-top:14px; color:rgba(255,255,255,0.35);">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
         </div>
     </div>
     <div id="auth-register-view" class="auth-container hidden">
@@ -305,28 +736,27 @@
             <input type="text" id="regUser" placeholder="Choose Username" onkeydown="handleEnterNav(event, 'regPass')">
             <div class="pass-wrapper">
                 <input type="password" id="regPass" placeholder="Choose Password" onkeydown="handleEnterNav(event, 'regConfirmPass')">
-                <span class="eye-toggle" onclick="toggleRegisterPassView()">👁️</span>
+                <span class="eye-toggle" onclick="togglePassView('regPass')">👁️</span>
             </div>
             <div class="pass-wrapper">
                 <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
             </div>
             <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
-            <p style="font-size:12px; margin-top:10px;">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
+            <p style="font-size:13px; margin-top:14px; color:rgba(255,255,255,0.35);">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
         </div>
     </div>
 
     <!-- Main App Workspace -->
     <div id="app-workspace-view" class="glass-panel hidden">
-        <!-- Fixed Header -->
         <div class="app-header">
             <div class="app-header-inner">
                 <div class="header-title-area">
                     <h1>
                         <span id="lblDisplayFarmName">My Farm Dairy</span>
-                        <span style="color: rgba(30, 41, 59, 0.3); font-weight: 300;">|</span>
-                        <span id="lblDisplayOwnerName" style="color: #9333ea; font-size: 16px;">Owner</span>
+                        <span style="color: rgba(255,255,255,0.12); font-weight: 300;">|</span>
+                        <span id="lblDisplayOwnerName" style="color: #5e5ce6; font-size: 17px;">Owner</span>
                     </h1>
-                    <p style="margin:0; font-size:10px; color:#475569; width:100%;">Live tracking active.</p>
+                    <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.25); width:100%;">Live tracking active</p>
                 </div>
                 <div class="header-rate-box">
                     <span>₹</span>
@@ -340,22 +770,21 @@
                 <a id="t-cat" onclick="catTab()">Cattle</a>
                 <a id="t-exp" onclick="tab('exp')">Expenses</a>
                 <a id="t-set" onclick="tab('set')">Settings</a>
-                <a id="t-export" onclick="tab('export')">📤 Export</a>
+                <a id="t-export" onclick="tab('export')">📤 Share</a>
             </nav>
         </div>
 
-        <!-- Scrollable Body -->
         <div class="app-body" id="appBody">
             <div class="main-grid">
                 <div class="space-y">
                     <!-- Stats -->
                     <div class="stats-row">
                         <div class="glass-card stats-card"><span>Total Cattle</span><h3 id="cCount">0 Cows</h3></div>
-                        <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color: #16a34a;">₹0</h3><p id="mCount">0.0 Liters</p></div>
-                        <div class="glass-card stats-card"><span>Expenses</span><h3 id="eCountText" style="color: #dc2626;">₹0</h3></div>
-                        <div class="glass-card stats-card" style="background: rgba(147, 51, 234, 0.12); border: 1px solid rgba(147, 51, 234, 0.3);">
-                            <span style="color:#7c3aed;">Net Balance</span>
-                            <h3 id="netBalanceText" style="color: #7c3aed; font-weight: 700;">₹0</h3>
+                        <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color: #30d158;">₹0</h3><p id="mCount">0.0 Liters</p></div>
+                        <div class="glass-card stats-card"><span>Expenses</span><h3 id="eCountText" style="color: #ff453a;">₹0</h3></div>
+                        <div class="glass-card stats-card" style="background: rgba(94, 92, 230, 0.03); border: 1px solid rgba(94, 92, 230, 0.06);">
+                            <span style="color: #5e5ce6;">Net Balance</span>
+                            <h3 id="netBalanceText" style="color: #5e5ce6; font-weight: 700;">₹0</h3>
                             <p id="mAvg">Avg: 0L/cow</p>
                         </div>
                     </div>
@@ -366,12 +795,11 @@
                             <div class="glass-card">
                                 <h4>🥛 Daily Milk Entry</h4>
                                 <div class="form-group">
-                                    <select id="mSelect" onkeydown="handleEnterNav(event, 'mLiters')">
-                                        <option value="ALL_COWS" selected>🌟 All Cows (Total Herd)</option>
-                                    </select>
+                                    <input type="text" id="mSelectDisplay" value="🌟 All Cows (Total Herd)" readonly style="cursor:default;background:rgba(255,255,255,0.02);">
+                                    <input type="hidden" id="mSelect" value="ALL_COWS">
                                     <div class="form-flex">
                                         <input type="number" id="mLiters" placeholder="Liters" step="0.1" min="0" oninput="validateNonNegative(this)" onkeydown="handleEnterNav(event, 'mFat')">
-                                        <input type="text" id="mShiftDisplay" placeholder="Shift" readonly onclick="openShiftPopup()" style="cursor:pointer;background:rgba(255,255,255,0.5);min-width:70px;">
+                                        <input type="text" id="mShiftDisplay" placeholder="Shift" readonly onclick="openShiftPopup()" style="cursor:pointer;background:rgba(255,255,255,0.02);min-width:70px;">
                                         <input type="hidden" id="mShift" value="Morning">
                                     </div>
                                     <div class="form-flex">
@@ -387,15 +815,15 @@
                                 <div class="form-group">
                                     <div class="form-flex">
                                         <input type="text" id="cTag" placeholder="Tag No." onkeydown="handleEnterNav(event, 'cBreed')">
-                                        <input type="text" id="cBreedDisplay" placeholder="Select Breed" readonly onclick="openBreedModal()" style="cursor:pointer;background:rgba(255,255,255,0.5);">
-                                        <input type="hidden" id="cBreed" value="Gir Cow">
+                                        <input type="text" id="cBreedDisplay" placeholder="Select Breed" readonly onclick="openBreedModal()" style="cursor:pointer;background:rgba(255,255,255,0.02);">
+                                        <input type="hidden" id="cBreed" value="">
                                     </div>
                                     <div class="form-flex">
-                                        <input type="text" id="cCondDisplay" placeholder="Condition" readonly onclick="openCondPopup()" style="cursor:pointer;background:rgba(255,255,255,0.5);">
+                                        <input type="text" id="cCondDisplay" placeholder="Condition" readonly onclick="openCondPopup()" style="cursor:pointer;background:rgba(255,255,255,0.02);">
                                         <input type="hidden" id="cCond" value="Healthy">
                                     </div>
                                     <div id="pDateDiv" class="hidden">
-                                        <label style="font-size:10px; font-weight:600; color:#475569;">Insemination Date:</label>
+                                        <label style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.3);">Insemination Date:</label>
                                         <input type="date" id="cPregDate" onkeydown="handleEnterNav(event, 'COW_TRIGGER')">
                                     </div>
                                     <button id="cBtn" onclick="addCow()" class="btn-dark">Register Cow</button>
@@ -409,10 +837,10 @@
                                 <div class="form-group">
                                     <div class="form-flex">
                                         <input type="text" id="exDetails" placeholder="Expense Details" onkeydown="handleEnterNav(event, 'exAmount')" style="flex:2;">
-                                        <input type="text" id="exCatDisplay" placeholder="Category" readonly onclick="openCatPopup()" style="cursor:pointer;background:rgba(255,255,255,0.5);flex:1;min-width:80px;">
-                                        <input type="hidden" id="exCat" value="Feed / Chara">
+                                        <input type="text" id="exCatDisplay" placeholder="Category" readonly onclick="openCatPopup()" style="cursor:pointer;background:rgba(255,255,255,0.02);flex:1;min-width:80px;">
+                                        <input type="hidden" id="exCat" value="Feed & Fodder">
                                         <input type="number" id="exAmount" placeholder="Amount (₹)" min="0" oninput="validateNonNegative(this)" onkeydown="handleEnterNav(event, 'EXPENSE_TRIGGER')" style="flex:1;">
-                                        <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto; padding:8px 16px; flex:0 0 auto; min-height:38px;">Add</button>
+                                        <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto; padding:10px 20px; flex:0 0 auto; min-height:42px;">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -457,73 +885,93 @@
                         <h4>⚙️ Profile Settings</h4>
                         <div class="setting-group">
                             <div class="setting-row">
-                                <input type="text" id="setFarmName" placeholder="Farm Name" readonly style="background:rgba(255,255,255,0.4);">
-                                <button onclick="openSettingsPopup()" class="btn-purple btn-sm">Update</button>
+                                <input type="text" id="setFarmName" placeholder="Farm Name" readonly style="background:rgba(255,255,255,0.015);">
+                                <button id="btnFarmName" onclick="toggleEdit('farmName')" class="btn-purple btn-sm">Edit</button>
                             </div>
                             <div class="setting-row">
-                                <input type="text" id="setOwnerName" placeholder="Owner Name" readonly style="background:rgba(255,255,255,0.4);">
-                                <button onclick="openSettingsPopup()" class="btn-purple btn-sm">Update</button>
+                                <input type="text" id="setOwnerName" placeholder="Owner Name" readonly style="background:rgba(255,255,255,0.015);">
+                                <button id="btnOwnerName" onclick="toggleEdit('ownerName')" class="btn-purple btn-sm">Edit</button>
                             </div>
                             <div class="setting-row">
-                                <input type="text" id="setNewUser" placeholder="Username" readonly style="background:rgba(255,255,255,0.4);">
-                                <button onclick="openSettingsPopup()" class="btn-purple btn-sm">Update</button>
+                                <input type="text" id="setNewUser" placeholder="Username" readonly style="background:rgba(255,255,255,0.015);">
+                                <button id="btnUsername" onclick="toggleEdit('username')" class="btn-purple btn-sm">Edit</button>
                             </div>
                             <div class="border-t">
-                                <h5 style="margin: 0 0 6px 0; font-size: 13px; color: #1e293b;">🔒 Change Password</h5>
+                                <h5 style="margin: 0 0 8px 0; font-size: 14px; color: #fff;">🔒 Change Password</h5>
                             </div>
                             <div>
-                                <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:4px;">
-                                <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:4px;">
-                                <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:4px;">
-                                <button onclick="updatePassword()" class="btn-purple" style="padding:6px;">Update Password</button>
+                                <div class="password-field-with-eye">
+                                    <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:6px;">
+                                    <span class="eye-toggle" onclick="togglePassView('setCurrentPass')">👁️</span>
+                                </div>
+                                <div class="password-field-with-eye">
+                                    <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:6px;">
+                                    <span class="eye-toggle" onclick="togglePassView('setNewPass')">👁️</span>
+                                </div>
+                                <div class="password-field-with-eye">
+                                    <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:6px;">
+                                </div>
+                                <button onclick="updatePassword()" class="btn-purple" style="padding:8px;">Update Password</button>
                             </div>
-                            <button onclick="handleLogout()" class="btn-red" style="margin-top:6px;padding:6px;">Log Out</button>
+                            <button onclick="handleLogout()" class="btn-red" style="margin-top:8px;padding:8px;">Log Out</button>
                         </div>
                     </div>
 
-                    <!-- Export Page -->
+                    <!-- Share/Export Page -->
                     <div id="page-export" class="glass-card hidden">
-                        <h4>📤 Export Reports</h4>
-                        <p style="font-size:12px; color:#475569; margin-bottom:6px;">Download PDF or Share via WhatsApp</p>
-                        <div class="export-grid">
-                            <button onclick="exportPDF('cattle')" class="btn-purple btn-sm">🐄 Cattle</button>
-                            <button onclick="exportPDF('milk')" class="btn-purple btn-sm">🥛 Milk</button>
-                            <button onclick="exportPDF('expenses')" class="btn-purple btn-sm">💸 Expenses</button>
-                            <button onclick="exportPDF('all')" class="btn-green btn-sm">📄 All Reports</button>
+                        <h4>📱 Share Reports via WhatsApp</h4>
+                        <p style="font-size:13px; color:rgba(255,255,255,0.3); margin-bottom:10px;">Select report type to share instantly on WhatsApp</p>
+                        <div class="share-grid">
+                            <button onclick="shareWhatsApp('cattle')" class="btn-share-cattle">🐄 Cattle</button>
+                            <button onclick="shareWhatsApp('milk')" class="btn-share-milk">🥛 Milk</button>
+                            <button onclick="shareWhatsApp('expenses')" class="btn-share-expenses">💸 Expenses</button>
+                            <button onclick="shareWhatsApp('all')" class="btn-share-all">📄 All Reports</button>
                         </div>
-                        <div class="border-t" style="margin-top:10px;">
-                            <h5 style="margin: 0 0 8px 0; font-size: 13px; color: #1e293b;">📱 Share via WhatsApp</h5>
-                            <div class="share-grid">
-                                <button onclick="shareWhatsApp('cattle')" class="btn-whatsapp">🐄 Cattle</button>
-                                <button onclick="shareWhatsApp('milk')" class="btn-whatsapp">🥛 Milk</button>
-                                <button onclick="shareWhatsApp('expenses')" class="btn-whatsapp">💸 Expenses</button>
-                                <button onclick="shareWhatsApp('all')" class="btn-whatsapp">📄 All Reports</button>
-                            </div>
-                        </div>
+                        <p style="font-size:12px; color:rgba(255,255,255,0.2); margin-top:12px;">Click any button to open WhatsApp with the report data pre-filled.</p>
                     </div>
                 </div>
 
                 <!-- Right Sidebar -->
                 <div class="space-y">
                     <div class="glass-card">
-                        <h4 style="font-size:11px;color:#64748b;text-transform:uppercase;margin:0 0 4px 0;">Weekly Production</h4>
+                        <h4 style="font-size:12px;color:rgba(255,255,255,0.2);text-transform:uppercase;margin:0 0 4px 0;letter-spacing:1px;">Weekly Production</h4>
                         <div class="chart-placeholder" id="chartContainer">
-                            <div class="bar-container"><div class="bar" id="b-Mon"></div><span class="bar-label">Mon</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Tue"></div><span class="bar-label">Tue</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Wed"></div><span class="bar-label">Wed</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Thu"></div><span class="bar-label">Thu</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Fri"></div><span class="bar-label">Fri</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Sat"></div><span class="bar-label">Sat</span></div>
-                            <div class="bar-container"><div class="bar" id="b-Sun"></div><span class="bar-label">Sun</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Mon"></div><span class="bar-value" id="v-Mon">0</span><span class="bar-label">Mon</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Tue"></div><span class="bar-value" id="v-Tue">0</span><span class="bar-label">Tue</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Wed"></div><span class="bar-value" id="v-Wed">0</span><span class="bar-label">Wed</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Thu"></div><span class="bar-value" id="v-Thu">0</span><span class="bar-label">Thu</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Fri"></div><span class="bar-value" id="v-Fri">0</span><span class="bar-label">Fri</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Sat"></div><span class="bar-value" id="v-Sat">0</span><span class="bar-label">Sat</span></div>
+                            <div class="bar-container"><div class="bar" id="b-Sun"></div><span class="bar-value" id="v-Sun">0</span><span class="bar-label">Sun</span></div>
+                        </div>
+                        <div class="chart-stats">
+                            <span id="weekTotal">📊 Total: 0 L</span>
+                            <span id="weekAvg">📈 Avg: 0 L</span>
                         </div>
                     </div>
 
                     <div class="glass-card">
-                        <h4 style="font-size:11px;color:#64748b;text-transform:uppercase;margin:0 0 4px 0;">Quality Analytics</h4>
-                        <div class="circle-gauge"><span id="g-fat">0.0%</span></div>
-                        <div class="flex-split">
-                            <div>Avg SNF<p id="g-snf">0.0%</p></div>
-                            <div>Target<p style="color:#9333ea;">9.0%</p></div>
+                        <h4 style="font-size:12px;color:rgba(255,255,255,0.2);text-transform:uppercase;margin:0 0 4px 0;letter-spacing:1px;">Quality Analytics</h4>
+                        <div class="quality-circle-container">
+                            <div class="quality-circle">
+                                <svg viewBox="0 0 140 140" id="qualitySvg">
+                                    <circle class="bg-circle" cx="70" cy="70" r="55" />
+                                    <circle class="progress-fat" id="circle-fat" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
+                                    <circle class="progress-snf" id="circle-snf" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
+                                    <circle class="progress-income" id="circle-income" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
+                                    <circle class="progress-expenses" id="circle-expenses" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
+                                </svg>
+                                <div class="quality-center">
+                                    <div class="main-value" id="qualityMainValue">0%</div>
+                                    <div class="main-label">Quality</div>
+                                </div>
+                            </div>
+                            <div class="quality-legend">
+                                <div class="legend-item"><span class="legend-dot" style="background:#5e5ce6;"></span> Fat <span class="legend-value" id="legendFat">0%</span></div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#30d158;"></span> SNF <span class="legend-value" id="legendSnf">0%</span></div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#f59e0b;"></span> Income <span class="legend-value" id="legendIncome">₹0</span></div>
+                                <div class="legend-item"><span class="legend-dot" style="background:#ff453a;"></span> Expenses <span class="legend-value" id="legendExpenses">₹0</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -531,107 +979,52 @@
         </div>
     </div>
 
-    <!-- Breed Selection Modal -->
-    <div id="breedModal" class="modal-overlay hidden" onclick="closeBreedModal(event)">
-        <div class="modal-box" onclick="event.stopPropagation()" style="max-width:300px;">
-            <h5>Select Breed</h5>
-            <div class="popup-list">
-                <div class="popup-item" onclick="selectBreed('Gir Cow')">Gir Cow</div>
-                <div class="popup-item" onclick="selectBreed('Sahiwal')">Sahiwal</div>
-                <div class="popup-item" onclick="selectBreed('Jersey')">Jersey</div>
-                <div class="popup-item" onclick="selectBreed('Holstein Friesian (HF)')">Holstein Friesian (HF)</div>
-                <div class="popup-item" onclick="selectBreed('Tharparkar')">Tharparkar</div>
-            </div>
-            <button onclick="closeBreedModal()" class="btn-dark" style="margin-top:8px;padding:4px;">Close</button>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        window.cows = []; window.milk = []; window.expenses = [];
+        window.cows = []; 
+        window.milk = []; 
+        window.expenses = [];
         window.userProfile = { name: "Owner Name", farmName: "My Farm Dairy", user: "admin", pass: "admin123" };
         window.isLogged = false;
-        window.eM = null; window.eC = null; window.eE = null;
+        window.eM = null; 
+        window.eC = null; 
+        window.eE = null;
         window.pendingSetting = null;
         window.currentShift = 'Morning';
+        window.editCallback = null;
+        window.calcTimeout = null;
+        window.updatePending = false;
         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         let modalConfirmCallback = null;
 
-        // ========== UNIVERSAL PDF DOWNLOADER FOR ANDROID WEBVIEW ==========
-        function downloadDirectPDF(base64Data, defaultFilename = "Dairy_Report.pdf") {
-            try {
-                let cleanBase64 = base64Data;
-                if (base64Data.includes(',')) {
-                    cleanBase64 = base64Data.split(',')[1];
-                }
-                
-                const byteCharacters = atob(cleanBase64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                
-                // CRITICAL: Using native 'File' object instead of 'Blob' so Android OS intercepts the filename metadata instantly
-                const pdfFile = new File([byteArray], defaultFilename, { type: 'application/pdf' });
-                const fileUrl = URL.createObjectURL(pdfFile);
-                
-                const appLink = document.createElement('a');
-                appLink.href = fileUrl;
-                appLink.download = defaultFilename;
-                appLink.setAttribute('download', defaultFilename);
-                
-                document.body.appendChild(appLink);
-                appLink.click();
-                
-                document.body.removeChild(appLink);
-                setTimeout(() => { URL.revokeObjectURL(fileUrl); }, 15000);
-            } catch (err) {
-                console.error("WebView Download Fallback Triggered:", err);
-                window.location.href = "data:application/pdf;base64," + base64Data;
-            }
+        window.editStates = { farmName: false, ownerName: false, username: false };
+
+        function ensureModalsHidden() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
         }
 
-        // Price input handler - save to localStorage
         function handlePriceInput(input) {
             let val = input.value.trim();
-            if (val === '') {
-                localStorage.removeItem('dairy_milkPrice');
-                calc();
-                return;
-            }
+            if (val === '') { localStorage.removeItem('dairy_milkPrice'); debounceCalc(); return; }
             let num = parseFloat(val);
-            if (isNaN(num) || num < 0) {
-                input.value = '';
-                localStorage.removeItem('dairy_milkPrice');
-                calc();
-                return;
-            }
+            if (isNaN(num) || num < 0) { input.value = ''; localStorage.removeItem('dairy_milkPrice'); debounceCalc(); return; }
             localStorage.setItem('dairy_milkPrice', num.toString());
-            calc();
+            debounceCalc();
         }
 
-        // Format fat/snf - auto add decimal after first digit
+        function debounceCalc() {
+            if (window.calcTimeout) clearTimeout(window.calcTimeout);
+            window.calcTimeout = setTimeout(() => calc(), 200);
+        }
+
         function formatFatSnf(input) {
             let val = input.value.replace(/[^0-9]/g, '');
-            if (val === '') {
-                input.value = '';
-                return;
-            }
-            if (val.length > 2) {
-                val = val.slice(0, 2);
-            }
-            if (val.length === 2) {
-                input.value = val[0] + '.' + val[1];
-            } else if (val.length === 1) {
-                input.value = val[0];
-            } else {
-                input.value = val;
-            }
+            if (val === '') { input.value = ''; return; }
+            if (val.length > 2) val = val.slice(0, 2);
+            if (val.length === 2) input.value = val[0] + '.' + val[1];
+            else if (val.length === 1) input.value = val[0];
+            else input.value = val;
             let num = parseFloat(input.value);
-            if (!isNaN(num) && num > 9.9) {
-                input.value = '9.9';
-            }
+            if (!isNaN(num) && num > 9.9) input.value = '9.9';
         }
 
         function validateNonNegative(input) {
@@ -652,136 +1045,19 @@
             }
         }
 
-        // Shift Popup
-        function openShiftPopup() {
-            document.getElementById('shiftModal').classList.remove('hidden');
-        }
-        function closeShiftPopup(e) {
-            if (!e || e.target === document.getElementById('shiftModal')) {
-                document.getElementById('shiftModal').classList.add('hidden');
-            }
-        }
-        function selectShift(shift) {
-            window.currentShift = shift;
-            document.getElementById('mShift').value = shift;
-            document.getElementById('mShiftDisplay').value = shift;
-            closeShiftPopup();
-        }
-
-        // Condition Popup
-        function openCondPopup() {
-            document.getElementById('condModal').classList.remove('hidden');
-        }
-        function closeCondPopup(e) {
-            if (!e || e.target === document.getElementById('condModal')) {
-                document.getElementById('condModal').classList.add('hidden');
-            }
-        }
-        function selectCond(cond) {
-            document.getElementById('cCond').value = cond;
-            document.getElementById('cCondDisplay').value = cond;
-            closeCondPopup();
-            let div = document.getElementById('pDateDiv');
-            if (div) {
-                div.classList.toggle('hidden', cond !== 'Pregnant');
-                if (cond === 'Pregnant') setPregDateConstraints();
-            }
-        }
-
-        // Category Popup
-        function openCatPopup() {
-            document.getElementById('catPopupModal').classList.remove('hidden');
-        }
-        function closeCatPopup(e) {
-            if (!e || e.target === document.getElementById('catPopupModal')) {
-                document.getElementById('catPopupModal').classList.add('hidden');
-            }
-        }
-        function selectCategory(cat) {
-            document.getElementById('exCat').value = cat;
-            document.getElementById('exCatDisplay').value = cat;
-            closeCatPopup();
-        }
-
-        // Settings Popup
-        function openSettingsPopup() {
-            document.getElementById('settingsPopupModal').classList.remove('hidden');
-        }
-        function closeSettingsPopup(e) {
-            if (!e || e.target === document.getElementById('settingsPopupModal')) {
-                document.getElementById('settingsPopupModal').classList.add('hidden');
-            }
-        }
-        function selectSettingUpdate(type) {
-            window.pendingSetting = type;
-            closeSettingsPopup();
-            if (type === 'password') {
-                document.getElementById('setCurrentPass').focus();
-                return;
-            }
-            if (type === 'farmName') {
-                document.getElementById('setFarmName').readOnly = false;
-                document.getElementById('setFarmName').focus();
-                document.getElementById('setFarmName').style.background = 'rgba(255,255,255,0.7)';
-            } else if (type === 'ownerName') {
-                document.getElementById('setOwnerName').readOnly = false;
-                document.getElementById('setOwnerName').focus();
-                document.getElementById('setOwnerName').style.background = 'rgba(255,255,255,0.7)';
-            } else if (type === 'username') {
-                document.getElementById('setNewUser').readOnly = false;
-                document.getElementById('setNewUser').focus();
-                document.getElementById('setNewUser').style.background = 'rgba(255,255,255,0.7)';
-            }
-        }
-
-        // Breed Modal
-        function openBreedModal() {
-            document.getElementById('breedModal').classList.remove('hidden');
-        }
-        function closeBreedModal(e) {
-            if (!e || e.target === document.getElementById('breedModal')) {
-                document.getElementById('breedModal').classList.add('hidden');
-            }
-        }
-        function selectBreed(breed) {
-            document.getElementById('cBreed').value = breed;
-            document.getElementById('cBreedDisplay').value = breed;
-            closeBreedModal();
-        }
-
-        function loadDB() {
-            try {
-                window.cows = JSON.parse(localStorage.getItem('dairy_cows')) || [];
-                window.milk = JSON.parse(localStorage.getItem('dairy_milk')) || [];
-                window.expenses = JSON.parse(localStorage.getItem('dairy_expenses')) || [];
-                if(localStorage.getItem('dairy_profile')) {
-                    window.userProfile = JSON.parse(localStorage.getItem('dairy_profile'));
-                }
-                window.isLogged = localStorage.getItem('dairy_logged') === 'true';
-            } catch(err) { console.error("Memory Storage Recovery Engine Failure Hook.", err); }
-        }
-        function syncDB() {
-            try {
-                localStorage.setItem('dairy_cows', JSON.stringify(window.cows));
-                localStorage.setItem('dairy_milk', JSON.stringify(window.milk));
-                localStorage.setItem('dairy_expenses', JSON.stringify(window.expenses));
-                localStorage.setItem('dairy_profile', JSON.stringify(window.userProfile));
-            } catch(err) { console.error("Database Save Execution Error Hook.", err); }
-        }
-
         function handleOutsideClick(event) {
-            let modalElement = document.getElementById('appModal');
-            if (event.target === modalElement) closeModal();
+            if (event.target === document.getElementById('appModal')) closeModal();
         }
 
         function togglePassView(id) {
             let el = document.getElementById(id);
-            if(el) el.type = (el.type === "password") ? "text" : "password";
-        }
-
-        function toggleRegisterPassView() {
-            let p = document.getElementById('regPass'); let cp = document.getElementById('regConfirmPass');
-            if(p && cp) { p.type = (p.type === "password") ? "text" : "password"; cp.type = p.type; }
+            if(!el) return;
+            el.type = el.type === "password" ? "text" : "password";
+            const wrapper = el.closest('.pass-wrapper') || el.closest('.password-field-with-eye');
+            if (wrapper) {
+                const eye = wrapper.querySelector('.eye-toggle');
+                if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
+            }
         }
 
         function toggleAuthScreens(view) {
@@ -797,12 +1073,10 @@
             document.getElementById('appModal').classList.remove('hidden');
             modalConfirmCallback = onConfirm;
         }
-
         function closeModal() {
             document.getElementById('appModal').classList.add('hidden');
             modalConfirmCallback = null;
         }
-
         document.getElementById('modalCancelBtn').onclick = closeModal;
         document.getElementById('modalConfirmBtn').onclick = function() {
             if(modalConfirmCallback) modalConfirmCallback();
@@ -817,7 +1091,6 @@
                 else if (targetId === 'MILK_TRIGGER') addMilk();
                 else if (targetId === 'COW_TRIGGER') addCow();
                 else if (targetId === 'EXPENSE_TRIGGER') addExpense();
-                else if (targetId === 'SETTINGS_TRIGGER') updatePassword();
                 else {
                     let nextEl = document.getElementById(targetId);
                     if (nextEl) nextEl.focus();
@@ -825,6 +1098,19 @@
             }
         }
 
+        // ===== BREED =====
+        function openBreedModal() { document.getElementById('breedModal').classList.remove('hidden'); }
+        function closeBreedModal(e) { 
+            if (!e || e.target === document.getElementById('breedModal') || e.target === document.querySelector('#breedModal .btn-dark')) 
+                document.getElementById('breedModal').classList.add('hidden'); 
+        }
+        function selectBreed(breed) {
+            document.getElementById('cBreed').value = breed;
+            document.getElementById('cBreedDisplay').value = breed;
+            closeBreedModal();
+        }
+
+        // ===== AUTH =====
         function handleLogin() {
             let u = document.getElementById('loginUser').value.trim();
             let p = document.getElementById('loginPass').value;
@@ -835,6 +1121,7 @@
                 launchWorkspace();
             } else { openModal('Auth Error', 'Galat Username ya Password!', null); }
         }
+
         function handleRegister() {
             let n = document.getElementById('regName').value.trim();
             let f = document.getElementById('regFarm').value.trim();
@@ -848,6 +1135,26 @@
             openModal('Success', 'Account ban gaya! Sign In karein.', function() { toggleAuthScreens('login'); document.getElementById('loginUser').value = u; });
         }
 
+        // ===== DB =====
+        function loadDB() {
+            try {
+                window.cows = JSON.parse(localStorage.getItem('dairy_cows')) || [];
+                window.milk = JSON.parse(localStorage.getItem('dairy_milk')) || [];
+                window.expenses = JSON.parse(localStorage.getItem('dairy_expenses')) || [];
+                if(localStorage.getItem('dairy_profile')) window.userProfile = JSON.parse(localStorage.getItem('dairy_profile'));
+                window.isLogged = localStorage.getItem('dairy_logged') === 'true';
+            } catch(err) { console.error("DB load error", err); }
+        }
+        function syncDB() {
+            try {
+                localStorage.setItem('dairy_cows', JSON.stringify(window.cows));
+                localStorage.setItem('dairy_milk', JSON.stringify(window.milk));
+                localStorage.setItem('dairy_expenses', JSON.stringify(window.expenses));
+                localStorage.setItem('dairy_profile', JSON.stringify(window.userProfile));
+            } catch(err) { console.error("DB save error", err); }
+        }
+
+        // ===== LAUNCH =====
         function launchWorkspace() {
             document.getElementById('auth-login-view').classList.add('hidden');
             document.getElementById('auth-register-view').classList.add('hidden');
@@ -855,47 +1162,142 @@
             document.getElementById('lblDisplayFarmName').innerText = window.userProfile.farmName;
             document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
             setPregDateConstraints();
-            
             const priceInput = document.getElementById('milkPriceInput');
             const savedPrice = localStorage.getItem('dairy_milkPrice');
-            if (savedPrice !== null && parseFloat(savedPrice) >= 0) {
-                priceInput.value = savedPrice;
-            } else {
-                priceInput.value = '35';
-            }
-            
+            priceInput.value = (savedPrice !== null && parseFloat(savedPrice) >= 0) ? savedPrice : '35';
+            document.getElementById('mSelectDisplay').value = '🌟 All Cows (Total Herd)';
             document.getElementById('mShiftDisplay').value = 'Morning';
-            document.getElementById('exCatDisplay').value = 'Feed / Chara';
+            document.getElementById('exCatDisplay').value = 'Feed & Fodder';
             document.getElementById('cCondDisplay').value = 'Healthy';
-            rMilk(); rCat(); rExp(); calc();
+            document.getElementById('cBreedDisplay').value = '';
+            document.getElementById('cBreed').value = '';
+            ensureModalsHidden();
+            rMilk(); rCat(); rExp();
+            setTimeout(() => { calc(); updateChart(); updateQualityCircle(); }, 100);
         }
 
+        // ===== TABS =====
         function tab(t) {
-            ['dash', 'milk', 'cat', 'exp', 'set', 'export'].forEach(id => {
-                let btn = document.getElementById('t-' + id); let pg = document.getElementById('page-' + id);
+            ['dash','milk','cat','exp','set','export'].forEach(id => {
+                let btn = document.getElementById('t-'+id); let pg = document.getElementById('page-'+id);
                 if(btn) btn.classList.remove('active'); if(pg) pg.classList.add('hidden');
             });
-            let targetBtn = document.getElementById('t-' + t); let targetPg = document.getElementById('page-' + t);
+            let targetBtn = document.getElementById('t-'+t); let targetPg = document.getElementById('page-'+t);
             if(targetBtn) targetBtn.classList.add('active'); if(targetPg) targetPg.classList.remove('hidden');
             if(t === 'milk') rMilk(); if(t === 'cat') rCat(); if(t === 'exp') rExp();
             if(t === 'set') {
                 document.getElementById('setFarmName').value = window.userProfile.farmName || '';
                 document.getElementById('setFarmName').readOnly = true;
-                document.getElementById('setFarmName').style.background = 'rgba(255,255,255,0.4)';
+                document.getElementById('setFarmName').style.background = 'rgba(255,255,255,0.015)';
                 document.getElementById('setOwnerName').value = window.userProfile.name || '';
                 document.getElementById('setOwnerName').readOnly = true;
-                document.getElementById('setOwnerName').style.background = 'rgba(255,255,255,0.4)';
+                document.getElementById('setOwnerName').style.background = 'rgba(255,255,255,0.015)';
                 document.getElementById('setNewUser').value = window.userProfile.user || '';
                 document.getElementById('setNewUser').readOnly = true;
-                document.getElementById('setNewUser').style.background = 'rgba(255,255,255,0.4)';
+                document.getElementById('setNewUser').style.background = 'rgba(255,255,255,0.015)';
                 document.getElementById('setCurrentPass').value = '';
                 document.getElementById('setNewPass').value = '';
                 document.getElementById('setConfirmPass').value = '';
                 window.pendingSetting = null;
+                document.getElementById('btnFarmName').innerText = 'Edit';
+                document.getElementById('btnOwnerName').innerText = 'Edit';
+                document.getElementById('btnUsername').innerText = 'Edit';
+                window.editStates = { farmName: false, ownerName: false, username: false };
             }
+            if(t === 'dash') setTimeout(() => { updateChart(); updateQualityCircle(); }, 50);
         }
         function catTab() { tab('cat'); }
 
+        // ===== POPUPS =====
+        function openShiftPopup() { document.getElementById('shiftModal').classList.remove('hidden'); }
+        function closeShiftPopup(e) { if (!e || e.target === document.getElementById('shiftModal') || e.target === document.querySelector('#shiftModal .btn-dark')) document.getElementById('shiftModal').classList.add('hidden'); }
+        function selectShift(shift) { window.currentShift = shift; document.getElementById('mShift').value = shift; document.getElementById('mShiftDisplay').value = shift; closeShiftPopup(); }
+
+        function openCondPopup() { document.getElementById('condModal').classList.remove('hidden'); }
+        function closeCondPopup(e) { if (!e || e.target === document.getElementById('condModal') || e.target === document.querySelector('#condModal .btn-dark')) document.getElementById('condModal').classList.add('hidden'); }
+        function selectCond(cond) {
+            document.getElementById('cCond').value = cond;
+            document.getElementById('cCondDisplay').value = cond;
+            closeCondPopup();
+            let div = document.getElementById('pDateDiv');
+            if (div) { div.classList.toggle('hidden', cond !== 'Pregnant'); if (cond === 'Pregnant') setPregDateConstraints(); }
+        }
+
+        function openCatPopup() { document.getElementById('catPopupModal').classList.remove('hidden'); }
+        function closeCatPopup(e) { if (!e || e.target === document.getElementById('catPopupModal') || e.target === document.querySelector('#catPopupModal .btn-dark')) document.getElementById('catPopupModal').classList.add('hidden'); }
+        function selectCategory(cat) { document.getElementById('exCat').value = cat; document.getElementById('exCatDisplay').value = cat; closeCatPopup(); }
+
+        function openSettingsPopup() { document.getElementById('settingsPopupModal').classList.remove('hidden'); }
+        function closeSettingsPopup(e) { if (!e || e.target === document.getElementById('settingsPopupModal') || e.target === document.querySelector('#settingsPopupModal .btn-dark')) document.getElementById('settingsPopupModal').classList.add('hidden'); }
+        function selectSettingUpdate(type) {
+            window.pendingSetting = type;
+            closeSettingsPopup();
+            if (type === 'password') { document.getElementById('setCurrentPass').focus(); return; }
+            toggleEdit(type);
+        }
+
+        // ===== SETTINGS EDIT =====
+        function toggleEdit(field) {
+            let input, btn;
+            if (field === 'farmName') { input = document.getElementById('setFarmName'); btn = document.getElementById('btnFarmName'); }
+            else if (field === 'ownerName') { input = document.getElementById('setOwnerName'); btn = document.getElementById('btnOwnerName'); }
+            else if (field === 'username') { input = document.getElementById('setNewUser'); btn = document.getElementById('btnUsername'); }
+            else return;
+
+            if (!window.editStates[field]) {
+                input.readOnly = false;
+                input.style.background = 'rgba(255,255,255,0.04)';
+                input.focus();
+                btn.innerText = 'Update';
+                btn.className = 'btn-green btn-sm';
+                window.editStates[field] = true;
+            } else {
+                let val = input.value.trim();
+                if (!val) { openModal('Input Alert', 'Value khali nahi ho sakti!', null); return; }
+                if (field === 'farmName') window.userProfile.farmName = val;
+                else if (field === 'ownerName') window.userProfile.name = val;
+                else if (field === 'username') window.userProfile.user = val;
+                syncDB();
+                document.getElementById('lblDisplayFarmName').innerText = window.userProfile.farmName;
+                document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
+                input.readOnly = true;
+                input.style.background = 'rgba(255,255,255,0.015)';
+                btn.innerText = 'Edit';
+                btn.className = 'btn-purple btn-sm';
+                window.editStates[field] = false;
+                openModal('Success', field + ' successfully update ho gaya!', null);
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const activeTab = document.querySelector('nav a.active');
+                if (activeTab && activeTab.id === 't-set') {
+                    for (let field of ['farmName', 'ownerName', 'username']) {
+                        if (window.editStates[field]) { e.preventDefault(); toggleEdit(field); break; }
+                    }
+                }
+            }
+        });
+
+        // ===== EDIT MODAL =====
+        function openEditModal(msg, callback) {
+            document.getElementById('editModalMsg').textContent = msg || 'Kya aap is record ko edit karna chahte hain?';
+            document.getElementById('editModal').classList.remove('hidden');
+            window.editCallback = callback;
+        }
+        function closeEditModal(e) {
+            if (!e || e.target === document.getElementById('editModal') || e.target === document.querySelector('#editModal .btn-dark')) {
+                document.getElementById('editModal').classList.add('hidden');
+                window.editCallback = null;
+            }
+        }
+        document.getElementById('editConfirmBtn').onclick = function() {
+            if (window.editCallback) window.editCallback();
+            closeEditModal();
+        };
+
+        // ===== CALC =====
         function calcPreg(dStr) {
             if(!dStr) return { dStr: '-', rStr: '-' };
             let d = new Date(dStr); if(isNaN(d.getTime())) return { dStr: '-', rStr: '-' };
@@ -905,79 +1307,87 @@
             return { dStr: targetStr, rStr: diff <= 0 ? "Delivery Time! 🎉" : `${Math.floor(diff/30)}m ${diff%30}d left` };
         }
 
+        function calc() {
+            requestAnimationFrame(() => {
+                let priceInput = document.getElementById('milkPriceInput');
+                let ratePerLiter = 35;
+                if (priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) ratePerLiter = parseFloat(priceInput.value);
+                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
+                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                let totalIncome = tM * ratePerLiter;
+                let netBalance = totalIncome - tE;
+                document.getElementById('cCount').innerText = window.cows.length + " Cows";
+                document.getElementById('mCount').innerText = tM.toFixed(1) + " Liters";
+                document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                document.getElementById('eCountText').innerText = "₹" + tE.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                let netEl = document.getElementById('netBalanceText');
+                if(netEl) {
+                    netEl.innerText = (netBalance >= 0 ? "₹" : "-₹") + Math.abs(netBalance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    netEl.style.color = netBalance >= 0 ? "#30d158" : "#ff453a";
+                }
+                document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length).toFixed(1) : 0) + "L/cow";
+            });
+        }
+
+        // ===== RENDER =====
         function rMilk() {
             let html = '';
             window.milk.forEach((e, i) => {
                 let displayName = e.tag === 'ALL_COWS' ? '🌟 All Cows' : e.tag;
                 html += `<tr><td><b>${displayName}</b></td>
-                <td><span style="background: rgba(147, 51, 234, 0.12); color: #7c3aed; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;">${e.day}</span></td>
+                <td><span style="background:rgba(94,92,230,0.06);color:#5e5ce6;padding:2px 10px;border-radius:6px;font-size:11px;font-weight:600;">${e.day}</span></td>
                 <td>${e.shift}</td><td>${e.liters}L</td><td>F:${e.fat}%|S:${e.snf}%</td>
-                <td><span style="font-size:11px;color:#64748b;">${e.date}</span></td>
-                <td><div class="action-cell"><button class="act-btn act-edit" onclick="edM(${i})">✏️</button><button class="act-btn act-delete" onclick="delM(${i})">🗑️</button></div></td></tr>`;
+                <td><span style="font-size:12px;color:rgba(255,255,255,0.25);">${e.date}</span></td>
+                <td><div class="action-cell"><button class="act-btn act-edit" onclick="confirmEditMilk(${i})">✏️</button><button class="act-btn act-delete" onclick="confirmDeleteMilk(${i})">🗑️</button></div></td></tr>`;
             });
-            let container = document.getElementById('tb-milk'); if(container) container.innerHTML = html;
-            updHafteKaChart();
+            document.getElementById('tb-milk').innerHTML = html;
+            setTimeout(() => { updateChart(); updateQualityCircle(); }, 50);
         }
 
         function rCat() {
             let html = '';
             window.cows.forEach((e, i) => {
                 let p = e.cond === 'Pregnant' ? calcPreg(e.pDate) : null;
-                html += `<tr><td><b>${e.tag}</b></td><td>${e.breed}</td><td>${e.cond}</td><td>${p ? p.dStr+' ('+p.rStr+')' : '-'}</td>
-                <td><div class="action-cell"><button class="act-btn act-edit" onclick="edC(${i})">✏️</button><button class="act-btn act-delete" onclick="delC(${i})">🗑️</button></div></td></tr>`;
+                let breedDisplay = e.breed && e.breed.trim() !== '' ? e.breed : 'Unknown';
+                html += `<tr><td><b>${e.tag}</b></td><td>${breedDisplay}</td><td>${e.cond}</td><td>${p ? p.dStr+' ('+p.rStr+')' : '-'}</td>
+                <td><div class="action-cell"><button class="act-btn act-edit" onclick="confirmEditCow(${i})">✏️</button><button class="act-btn act-delete" onclick="confirmDeleteCow(${i})">🗑️</button></div></td></tr>`;
             });
-            let container = document.getElementById('tb-cat'); if(container) container.innerHTML = html;
-            updDropdown();
+            document.getElementById('tb-cat').innerHTML = html;
         }
+
         function rExp() {
             let html = '';
             window.expenses.forEach((e, i) => {
-                html += `<tr><td>${e.details}</td><td>${e.cat}</td><td style="color:#dc2626;font-weight:600;">₹${e.amount}</td>
-                <td><div class="action-cell"><button class="act-btn act-edit" onclick="edEx(${i})">✏️</button><button class="act-btn act-delete" onclick="delEx(${i})">🗑️</button></div></td></tr>`;
+                html += `<tr><td>${e.details}</td><td>${e.cat}</td><td style="color:#ff453a;font-weight:600;">₹${e.amount}</td>
+                <td><div class="action-cell"><button class="act-btn act-edit" onclick="confirmEditExpense(${i})">✏️</button><button class="act-btn act-delete" onclick="confirmDeleteExpense(${i})">🗑️</button></div></td></tr>`;
             });
-            let container = document.getElementById('tb-expenses'); if(container) container.innerHTML = html;
+            document.getElementById('tb-expenses').innerHTML = html;
         }
 
-        function updDropdown() {
-            let opt = '<option value="ALL_COWS" selected>🌟 All Cows (Total Herd)</option>';
-            window.cows.forEach(c => opt += `<option value="${c.tag}">${c.tag} (${c.breed})</option>`);
-            let el = document.getElementById('mSelect'); if(el) el.innerHTML = opt;
-        }
+        // ===== CONFIRM DELETE/EDIT =====
+        function confirmDeleteMilk(i) { openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() { window.milk.splice(i,1); syncDB(); calc(); rMilk(); }); }
+        function confirmEditMilk(i) { openEditModal('Kya aap is milk record ko edit karna chahte hain?', function() { edM(i); }); }
+        function confirmDeleteCow(i) { openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() { let t = window.cows[i].tag; window.cows.splice(i,1); window.milk = window.milk.filter(m=>m.tag!==t); syncDB(); calc(); rCat(); rMilk(); }); }
+        function confirmEditCow(i) { openEditModal('Kya aap is cow record ko edit karna chahte hain?', function() { edC(i); }); }
+        function confirmDeleteExpense(i) { openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() { window.expenses.splice(i,1); syncDB(); calc(); rExp(); }); }
+        function confirmEditExpense(i) { openEditModal('Kya aap is expense record ko edit karna chahte hain?', function() { edEx(i); }); }
 
-        function updHafteKaChart() {
-            let w = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
-            window.milk.forEach(e => {
-                if (w.hasOwnProperty(e.day)) {
-                    w[e.day] += parseFloat(e.liters) || 0;
-                }
-            });
-            let max = Math.max(...Object.values(w), 1);
-            for(let d in w) {
-                let pct = (w[d] / max) * 100;
-                let b = document.getElementById(`b-${d}`);
-                if(b) {
-                    b.style.height = w[d] > 0 ? `${Math.max(pct, 5)}%` : '0%';
-                }
-            }
-        }
-
+        // ===== ADD/EDIT =====
         function addCow() {
             let tag = document.getElementById('cTag').value.trim();
-            let breed = document.getElementById('cBreed').value;
+            let breed = document.getElementById('cBreed').value.trim();
             let cond = document.getElementById('cCond').value;
             let pDate = document.getElementById('cPregDate').value;
-
             if(!tag) return openModal('Input Alert', 'Kripya Cow Tag No. enter karein!', null);
+            if(!breed) return openModal('Input Alert', 'Kripya Breed select karein!', null);
             if(cond === 'Pregnant' && !pDate) return openModal('Input Alert', 'Kripya Insemination date dalein!', null);
-            if (cond === 'Pregnant' && pDate) {
+            if(cond === 'Pregnant' && pDate) {
                 const today = new Date().toISOString().split('T')[0];
-                const oneYearAgo = new Date();
-                oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+                const oneYearAgo = new Date(); oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);
                 const minStr = oneYearAgo.toISOString().split('T')[0];
-                if (pDate > today) return openModal('Date Error', 'Future date allowed nahi hai!', null);
-                if (pDate < minStr) return openModal('Date Error', 'Date 1 year se pehle ki nahi ho sakti!', null);
+                if(pDate > today) return openModal('Date Error', 'Future date allowed nahi hai!', null);
+                if(pDate < minStr) return openModal('Date Error', 'Date 1 year se pehle ki nahi ho sakti!', null);
             }
-
             if(window.eC !== null) {
                 window.cows[window.eC] = { tag, breed, cond, pDate };
                 window.eC = null; document.getElementById('cBtn').innerText = "Register Cow";
@@ -985,93 +1395,65 @@
                 if(window.cows.some(c => c.tag.toLowerCase() === tag.toLowerCase())) return openModal('Duplicate Alert', 'Tag pehle se add hai!', null);
                 window.cows.unshift({ tag, breed, cond, pDate });
             }
-            syncDB(); 
-            document.getElementById('cTag').value = ''; 
-            document.getElementById('cPregDate').value = ''; 
-            document.getElementById('cCond').value = 'Healthy';
-            document.getElementById('cCondDisplay').value = 'Healthy';
+            syncDB();
+            document.getElementById('cTag').value = ''; document.getElementById('cBreed').value = ''; document.getElementById('cBreedDisplay').value = '';
+            document.getElementById('cPregDate').value = ''; document.getElementById('cCond').value = 'Healthy'; document.getElementById('cCondDisplay').value = 'Healthy';
             document.getElementById('pDateDiv').classList.add('hidden');
             rCat(); calc();
         }
 
         function edC(i) {
-            let e = window.cows[i]; 
-            document.getElementById('cTag').value = e.tag; 
-            document.getElementById('cBreed').value = e.breed; 
-            document.getElementById('cBreedDisplay').value = e.breed; 
+            let e = window.cows[i];
+            document.getElementById('cTag').value = e.tag;
+            document.getElementById('cBreed').value = e.breed || '';
+            document.getElementById('cBreedDisplay').value = e.breed || '';
             document.getElementById('cCond').value = e.cond;
             document.getElementById('cCondDisplay').value = e.cond;
             document.getElementById('cPregDate').value = e.pDate || '';
-            if (e.cond === 'Pregnant') {
-                document.getElementById('pDateDiv').classList.remove('hidden');
-                setPregDateConstraints();
-            } else {
-                document.getElementById('pDateDiv').classList.add('hidden');
-            }
-            window.eC = i; 
-            document.getElementById('cBtn').innerText = "Update Cow"; 
-            tab('dash');
-        }
-
-        function delC(i) {
-            openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() {
-                let t = window.cows[i].tag; window.cows.splice(i, 1); window.milk = window.milk.filter(m=>m.tag!==t); syncDB(); calc(); rCat(); rMilk();
-            });
+            if (e.cond === 'Pregnant') { document.getElementById('pDateDiv').classList.remove('hidden'); setPregDateConstraints(); }
+            else { document.getElementById('pDateDiv').classList.add('hidden'); }
+            window.eC = i; document.getElementById('cBtn').innerText = "Update Cow"; tab('dash');
         }
 
         function addMilk() {
-            let tag = document.getElementById('mSelect').value; 
+            let tag = document.getElementById('mSelect').value;
             let liters = document.getElementById('mLiters').value.trim();
-            let shift = document.getElementById('mShift').value; 
-            let fat = document.getElementById('mFat').value.trim(); 
+            let shift = document.getElementById('mShift').value;
+            let fat = document.getElementById('mFat').value.trim();
             let snf = document.getElementById('mSnf').value.trim();
-            
             if (parseFloat(liters) < 0) liters = '0';
-            
             if(!liters || !fat || !snf) return openModal('Input Alert', 'Kripya saari milk details enter karein!', null);
             if (parseFloat(liters) === 0) return openModal('Input Alert', 'Liters 0 se zyada hona chahiye!', null);
-            
-            let fatNum = parseFloat(fat);
-            let snfNum = parseFloat(snf);
+            let fatNum = parseFloat(fat), snfNum = parseFloat(snf);
             if (isNaN(fatNum) || isNaN(snfNum)) return openModal('Input Alert', 'Fat aur SNF sahi se enter karein!', null);
-            
-            let d = new Date(); 
-            let dStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; 
-            let dayName = dayNames[d.getDay()];
+            let d = new Date(); let dStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; let dayName = dayNames[d.getDay()];
             let record = { tag, liters: parseFloat(liters), shift, fat: fatNum, snf: snfNum, date: dStr, day: dayName };
             if(window.eM !== null) { window.milk[window.eM] = record; window.eM = null; document.getElementById('mBtn').innerText = "Save Entry"; }
             else { window.milk.unshift(record); }
-            syncDB(); 
-            document.getElementById('mLiters').value = ''; 
-            document.getElementById('mFat').value = ''; 
-            document.getElementById('mSnf').value = '';
-            
+            syncDB();
+            document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
             window.currentShift = window.currentShift === 'Morning' ? 'Evening' : 'Morning';
             document.getElementById('mShift').value = window.currentShift;
             document.getElementById('mShiftDisplay').value = window.currentShift;
-            
             rMilk(); calc();
         }
-        
+
         function edM(i) {
-            let e = window.milk[i]; 
-            document.getElementById('mSelect').value = e.tag; 
-            document.getElementById('mLiters').value = e.liters; 
+            let e = window.milk[i];
+            document.getElementById('mSelect').value = e.tag;
+            document.getElementById('mSelectDisplay').value = e.tag === 'ALL_COWS' ? '🌟 All Cows (Total Herd)' : `🐄 ${e.tag}`;
+            document.getElementById('mLiters').value = e.liters;
             document.getElementById('mShift').value = e.shift;
             document.getElementById('mShiftDisplay').value = e.shift;
             window.currentShift = e.shift;
-            document.getElementById('mFat').value = e.fat; 
+            document.getElementById('mFat').value = e.fat;
             document.getElementById('mSnf').value = e.snf;
-            window.eM = i; 
-            document.getElementById('mBtn').innerText = "Update Entry"; 
-            tab('dash');
+            window.eM = i; document.getElementById('mBtn').innerText = "Update Entry"; tab('dash');
         }
 
-        function delM(i) { openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() { window.milk.splice(i, 1); syncDB(); calc(); rMilk(); }); }
-
         function addExpense() {
-            let details = document.getElementById('exDetails').value.trim(); 
-            let cat = document.getElementById('exCat').value; 
+            let details = document.getElementById('exDetails').value.trim();
+            let cat = document.getElementById('exCat').value;
             let amount = document.getElementById('exAmount').value.trim();
             if (parseFloat(amount) < 0) amount = '0';
             if(!details || !amount) return openModal('Input Alert', 'Kripya expense details aur amount fill karein!', null);
@@ -1079,47 +1461,21 @@
             let record = { details, cat, amount: parseFloat(amount) };
             if(window.eE !== null) { window.expenses[window.eE] = record; window.eE = null; document.getElementById('exBtn').innerText = "Add Log"; }
             else { window.expenses.unshift(record); }
-            syncDB(); document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
+            syncDB();
+            document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
             rExp(); calc();
         }
 
-        function edEx(i) { let e = window.expenses[i]; document.getElementById('exDetails').value = e.details; document.getElementById('exCat').value = e.cat; document.getElementById('exCatDisplay').value = e.cat; document.getElementById('exAmount').value = e.amount; window.eE = i; document.getElementById('exBtn').innerText = "Update Log"; tab('dash'); }
-        function delEx(i) { openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() { window.expenses.splice(i, 1); syncDB(); calc(); rExp(); }); }
-
-        function updateField(field) {
-            if (field === 'farmName') {
-                let val = document.getElementById('setFarmName').value.trim();
-                if (!val) return openModal('Input Alert', 'Farm Name khali nahi ho sakta!', null);
-                window.userProfile.farmName = val;
-                document.getElementById('setFarmName').readOnly = true;
-                document.getElementById('setFarmName').style.background = 'rgba(255,255,255,0.4)';
-            } else if (field === 'ownerName') {
-                let val = document.getElementById('setOwnerName').value.trim();
-                if (!val) return openModal('Input Alert', 'Owner Name khali nahi ho sakta!', null);
-                window.userProfile.name = val;
-                document.getElementById('setOwnerName').readOnly = true;
-                document.getElementById('setOwnerName').style.background = 'rgba(255,255,255,0.4)';
-            } else if (field === 'username') {
-                let val = document.getElementById('setNewUser').value.trim();
-                if (!val) return openModal('Input Alert', 'Username khali nahi ho sakta!', null);
-                window.userProfile.user = val;
-                document.getElementById('setNewUser').readOnly = true;
-                document.getElementById('setNewUser').style.background = 'rgba(255,255,255,0.4)';
-            }
-            syncDB();
-            document.getElementById('lblDisplayFarmName').innerText = window.userProfile.farmName;
-            document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
-            openModal('Success', field + ' successfully update ho gaya!', null);
-            window.pendingSetting = null;
+        function edEx(i) {
+            let e = window.expenses[i];
+            document.getElementById('exDetails').value = e.details;
+            document.getElementById('exCat').value = e.cat;
+            document.getElementById('exCatDisplay').value = e.cat;
+            document.getElementById('exAmount').value = e.amount;
+            window.eE = i; document.getElementById('exBtn').innerText = "Update Log"; tab('dash');
         }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && window.pendingSetting) {
-                e.preventDefault();
-                updateField(window.pendingSetting);
-            }
-        });
-
+        // ===== PASSWORD =====
         function updatePassword() {
             let currPass = document.getElementById('setCurrentPass').value;
             let newPass = document.getElementById('setNewPass').value;
@@ -1129,354 +1485,163 @@
             if (newPass !== confirmPass) return openModal('Password Alert', 'New Password match nahi ho rahe!', null);
             window.userProfile.pass = newPass;
             syncDB();
-            document.getElementById('setCurrentPass').value = '';
-            document.getElementById('setNewPass').value = '';
-            document.getElementById('setConfirmPass').value = '';
+            document.getElementById('setCurrentPass').value = ''; document.getElementById('setNewPass').value = ''; document.getElementById('setConfirmPass').value = '';
             openModal('Success', 'Password successfully change ho gaya!', null);
         }
 
         function handleLogout() {
             openModal('Secure Log Out', 'क्या आप सच में App से Log Out करना चाहते हैं?', function() {
                 localStorage.setItem('dairy_logged', 'false'); window.isLogged = false;
-                document.getElementById('app-workspace-view').classList.add('hidden'); document.getElementById('auth-login-view').classList.remove('hidden');
-                document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = ''; tab('dash');
+                document.getElementById('app-workspace-view').classList.add('hidden');
+                document.getElementById('auth-login-view').classList.remove('hidden');
+                document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
+                ensureModalsHidden(); tab('dash');
             });
         }
 
-        function calc() {
-            let priceInput = document.getElementById('milkPriceInput');
-            let ratePerLiter = 35;
-            if (priceInput.value !== '' && parseFloat(priceInput.value) >= 0) {
-                ratePerLiter = parseFloat(priceInput.value);
-            }
-            
-            let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-            let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
-            let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
-            let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
-            let totalIncome = tM * ratePerLiter; let netBalance = totalIncome - tE;
-
-            document.getElementById('cCount').innerText = window.cows.length + " Cows";
-            document.getElementById('mCount').innerText = tM.toFixed(1) + " Liters";
-            document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2});
-            document.getElementById('eCountText').innerText = "₹" + tE.toLocaleString('en-IN');
-
-            let balElement = document.getElementById('netBalanceText');
-            if(balElement) {
-                balElement.innerText = (netBalance >= 0 ? "₹" : "-₹") + Math.abs(netBalance).toLocaleString('en-IN', {maximumFractionDigits: 2});
-                balElement.style.color = netBalance >= 0 ? "#16a34a" : "#dc2626";
-            }
-
-            document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length).toFixed(1) : 0) + "L/cow";
-            document.getElementById('g-fat').innerText = (window.milk.length > 0 ? (tF / window.milk.length).toFixed(1) : 0.0) + "%";
-            document.getElementById('g-snf').innerText = (window.milk.length > 0 ? (tS / window.milk.length).toFixed(1) : 0.0) + "%";
+        // ===== CHART & QUALITY =====
+        function updateChart() {
+            if (window.updatePending) return;
+            window.updatePending = true;
+            requestAnimationFrame(() => {
+                const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+                const dayTotals = { Mon:0, Tue:0, Wed:0, Thu:0, Fri:0, Sat:0, Sun:0 };
+                window.milk.forEach(e => { if(dayTotals.hasOwnProperty(e.day)) dayTotals[e.day] += parseFloat(e.liters)||0; });
+                let maxVal = Math.max(...Object.values(dayTotals), 1);
+                days.forEach(day => {
+                    const val = dayTotals[day];
+                    const bar = document.getElementById(`b-${day}`);
+                    const valDisplay = document.getElementById(`v-${day}`);
+                    if(bar) { const pct = (val/maxVal)*100; bar.style.height = val>0 ? `${Math.max(pct,4)}%` : '0%'; }
+                    if(valDisplay) valDisplay.textContent = val.toFixed(1);
+                });
+                const total = Object.values(dayTotals).reduce((a,b)=>a+b,0);
+                const avg = total/7;
+                document.getElementById('weekTotal').textContent = `📊 Total: ${total.toFixed(1)} L`;
+                document.getElementById('weekAvg').textContent = `📈 Avg: ${avg.toFixed(1)} L`;
+                window.updatePending = false;
+            });
         }
 
-        // ==================== SHARE VIA WHATSAPP ====================
+        function updateQualityCircle() {
+            requestAnimationFrame(() => {
+                const circumference = 2 * Math.PI * 55;
+                let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+                let tF = window.milk.reduce((s,e) => s + (parseFloat(e.fat)||0), 0);
+                let tS = window.milk.reduce((s,e) => s + (parseFloat(e.snf)||0), 0);
+                let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
+                let priceInput = document.getElementById('milkPriceInput');
+                let rate = 35;
+                if(priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(priceInput.value);
+                let totalIncome = tM * rate;
+                const fatAvg = window.milk.length > 0 ? tF/window.milk.length : 0;
+                const snfAvg = window.milk.length > 0 ? tS/window.milk.length : 0;
+                const maxFat = 9.9, maxSnf = 9.9, maxIncome = Math.max(totalIncome,1), maxExpenses = Math.max(tE,1);
+                const fatPercent = Math.min((fatAvg/maxFat)*100,100);
+                const snfPercent = Math.min((snfAvg/maxSnf)*100,100);
+                const incomePercent = Math.min((totalIncome/maxIncome)*100,100);
+                const expensesPercent = Math.min((tE/maxExpenses)*100,100);
+                const fatOffset = circumference - (fatPercent/100)*circumference;
+                const snfOffset = circumference - (snfPercent/100)*circumference;
+                const incomeOffset = circumference - (incomePercent/100)*circumference;
+                const expensesOffset = circumference - (expensesPercent/100)*circumference;
+                document.getElementById('circle-fat').setAttribute('stroke-dasharray', `${circumference - fatOffset}, ${circumference}`);
+                document.getElementById('circle-snf').setAttribute('stroke-dasharray', `${circumference - snfOffset}, ${circumference}`);
+                document.getElementById('circle-income').setAttribute('stroke-dasharray', `${circumference - incomeOffset}, ${circumference}`);
+                document.getElementById('circle-expenses').setAttribute('stroke-dasharray', `${circumference - expensesOffset}, ${circumference}`);
+                document.getElementById('legendFat').textContent = fatAvg.toFixed(1) + '%';
+                document.getElementById('legendSnf').textContent = snfAvg.toFixed(1) + '%';
+                document.getElementById('legendIncome').textContent = '₹' + totalIncome.toFixed(0);
+                document.getElementById('legendExpenses').textContent = '₹' + tE.toFixed(0);
+                const overallQuality = Math.round((fatPercent + snfPercent + (totalIncome>0?100:0) + (tE>0?100:0)) / 4);
+                document.getElementById('qualityMainValue').textContent = overallQuality + '%';
+            });
+        }
+
+        // ===== SHARE =====
         function shareWhatsApp(type) {
             const farmName = window.userProfile.farmName || "My Farm Dairy";
             const ownerName = window.userProfile.name || "Owner";
-            const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            
-            let message = `🏠 *${farmName}* | 👤 ${ownerName}\n📅 ${dateStr}\n`;
-            message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-
+            const dateStr = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+            let message = `🏠 *${farmName}* | 👤 ${ownerName}\n📅 ${dateStr}\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
             if (type === 'cattle' || type === 'all') {
-                message += `\n🐄 *CATTLE INVENTORY* (${window.cows.length})\n`;
-                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-                if (window.cows.length === 0) {
-                    message += `No cattle records found.\n`;
-                } else {
-                    window.cows.forEach(c => {
-                        let p = c.cond === 'Pregnant' ? calcPreg(c.pDate) : null;
-                        let status = p ? `${p.dStr} (${p.rStr})` : '-';
-                        message += `▸ Tag: ${c.tag} | ${c.breed} | ${c.cond} | ${status}\n`;
-                    });
-                }
+                message += `\n🐄 *CATTLE INVENTORY* (${window.cows.length})\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.cows.length === 0) message += `No cattle records found.\n`;
+                else window.cows.forEach(c => {
+                    let p = c.cond === 'Pregnant' ? calcPreg(c.pDate) : null;
+                    let status = p ? `${p.dStr} (${p.rStr})` : '-';
+                    let breedDisplay = c.breed && c.breed.trim() !== '' ? c.breed : 'Unknown';
+                    message += `▸ Tag: ${c.tag} | ${breedDisplay} | ${c.cond} | ${status}\n`;
+                });
             }
-
             if (type === 'milk' || type === 'all') {
-                message += `\n🥛 *MILK PRODUCTION LOGS* (${window.milk.length})\n`;
-                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-                if (window.milk.length === 0) {
-                    message += `No milk records found.\n`;
-                } else {
-                    window.milk.forEach(m => {
-                        let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
-                        message += `▸ ${id} | ${m.day} | ${m.shift} | ${m.liters}L | F:${m.fat}% S:${m.snf}% | ${m.date}\n`;
-                    });
-                }
-                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-                let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
-                let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
-                message += `\n📊 *Summary:* Total ${tM.toFixed(1)}L | Avg Fat ${window.milk.length > 0 ? (tF/window.milk.length).toFixed(1) : 0}% | Avg SNF ${window.milk.length > 0 ? (tS/window.milk.length).toFixed(1) : 0}%\n`;
+                message += `\n🥛 *MILK PRODUCTION LOGS* (${window.milk.length})\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.milk.length === 0) message += `No milk records found.\n`;
+                else window.milk.forEach(m => {
+                    let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
+                    message += `▸ ${id} | ${m.day} | ${m.shift} | ${m.liters}L | F:${m.fat}% S:${m.snf}% | ${m.date}\n`;
+                });
+                let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+                let tF = window.milk.reduce((s,e) => s + (parseFloat(e.fat)||0), 0);
+                let tS = window.milk.reduce((s,e) => s + (parseFloat(e.snf)||0), 0);
+                message += `\n📊 *Summary:* Total ${tM.toFixed(1)}L | Avg Fat ${window.milk.length>0 ? (tF/window.milk.length).toFixed(1) : 0}% | Avg SNF ${window.milk.length>0 ? (tS/window.milk.length).toFixed(1) : 0}%\n`;
             }
-
             if (type === 'expenses' || type === 'all') {
-                message += `\n💸 *EXPENSE LEDGER* (${window.expenses.length})\n`;
-                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-                if (window.expenses.length === 0) {
-                    message += `No expense records found.\n`;
-                } else {
-                    window.expenses.forEach(e => {
-                        message += `▸ ${e.details} | ${e.cat} | ₹${e.amount}\n`;
-                    });
-                }
-                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                message += `\n💸 *EXPENSE LEDGER* (${window.expenses.length})\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.expenses.length === 0) message += `No expense records found.\n`;
+                else window.expenses.forEach(e => { message += `▸ ${e.details} | ${e.cat} | ₹${e.amount}\n`; });
+                let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
                 message += `\n📊 *Total Expenses:* ₹${tE.toLocaleString('en-IN')}\n`;
             }
-
             if (type === 'all') {
-                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+                let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
                 let priceInput = document.getElementById('milkPriceInput');
                 let rate = 35;
-                if (priceInput.value !== '' && parseFloat(priceInput.value) >= 0) {
-                    rate = parseFloat(priceInput.value);
-                }
+                if(priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(priceInput.value);
                 let totalIncome = tM * rate;
                 let netBalance = totalIncome - tE;
-                message += `\n📈 *FARM SUMMARY*\n`;
-                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-                message += `🐄 Total Cattle: ${window.cows.length}\n`;
-                message += `🥛 Total Milk: ${tM.toFixed(1)}L\n`;
-                message += `💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}\n`;
-                message += `💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n`;
-                message += `💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}\n`;
+                message += `\n📈 *FARM SUMMARY*\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                message += `🐄 Total Cattle: ${window.cows.length}\n🥛 Total Milk: ${tM.toFixed(1)}L\n💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits:2})}\n💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits:2})}\n`;
             }
-
-            message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-            message += `📱 *Dairy Dashboard Premium*`;
-
-            const encoded = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/?text=${encoded}`;
-            window.open(whatsappUrl, '_blank');
+            message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n📱 *Dairy Dashboard Premium*`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // ==================== REFACTORED PDF EXPORT ====================
-        function exportPDF(type) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 30;
-            let y = 30;
-            const farmName = window.userProfile.farmName || "Dairy Farm Report";
-            const ownerName = window.userProfile.name || "";
+        // ===== EVENTS =====
+        document.addEventListener('focusin', function(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') ensureModalsHidden();
+        });
+        document.addEventListener('touchstart', function(e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        let lastTapTime = 0;
+        document.addEventListener('touchend', function(e) {
+            let now = (new Date()).getTime();
+            if (now - lastTapTime <= 300) e.preventDefault();
+            lastTapTime = now;
+        }, false);
+        document.addEventListener('wheel', function(e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) e.preventDefault();
+        });
 
-            function addHeader() {
-                doc.setFontSize(18);
-                doc.setTextColor(40);
-                doc.setFont('helvetica', 'bold');
-                doc.text(farmName, pageWidth/2, y, { align: 'center' });
-                y += 14;
-                doc.setFontSize(11);
-                doc.setFont('helvetica', 'normal');
-                doc.setTextColor(80);
-                const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                let headerText = `Report: ${type.toUpperCase()}  |  Date: ${dateStr}`;
-                if (ownerName) headerText += `  |  Owner: ${ownerName}`;
-                doc.text(headerText, pageWidth/2, y, { align: 'center' });
-                y += 16;
-                doc.setDrawColor(147, 51, 234);
-                doc.setLineWidth(1);
-                doc.line(margin, y, pageWidth - margin, y);
-                y += 14;
-            }
-
-            function addTable(headers, rows, colWidths) {
-                if (!rows || rows.length === 0) {
-                    doc.setFontSize(11);
-                    doc.setTextColor(150);
-                    doc.text("No data available.", margin, y);
-                    y += 16;
-                    return;
-                }
-                const rowHeight = 20;
-                const headerHeight = 22;
-                const tableWidth = pageWidth - 2 * margin;
-                let widths = colWidths || new Array(headers.length).fill(tableWidth / headers.length);
-                const totalWidth = widths.reduce((a,b) => a+b, 0);
-                if (Math.abs(totalWidth - tableWidth) > 1) {
-                    widths = widths.map(w => w * (tableWidth / totalWidth));
-                }
-
-                doc.setFillColor(147, 51, 234);
-                doc.setTextColor(255);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                let x = margin;
-                for (let i = 0; i < headers.length; i++) {
-                    doc.rect(x, y, widths[i], headerHeight, 'F');
-                    doc.text(headers[i], x + 6, y + 14);
-                    x += widths[i];
-                }
-                y += headerHeight;
-
-                doc.setTextColor(40);
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                for (let row of rows) {
-                    x = margin;
-                    for (let i = 0; i < row.length; i++) {
-                        doc.text(String(row[i] || ''), x + 6, y + 12);
-                        x += widths[i];
-                    }
-                    y += rowHeight;
-                    if (y > doc.internal.pageSize.getHeight() - 30) {
-                        doc.addPage();
-                        y = 30;
-                        addHeader();
-                        doc.setFillColor(147, 51, 234);
-                        doc.setTextColor(255);
-                        doc.setFontSize(10);
-                        doc.setFont('helvetica', 'bold');
-                        x = margin;
-                        for (let i = 0; i < headers.length; i++) {
-                            doc.rect(x, y, widths[i], headerHeight, 'F');
-                            doc.text(headers[i], x + 6, y + 14);
-                            x += widths[i];
-                        }
-                        y += headerHeight;
-                        doc.setTextColor(40);
-                        doc.setFontSize(9);
-                        doc.setFont('helvetica', 'normal');
-                    }
-                }
-                y += 8;
-            }
-
-            addHeader();
-
-            if (type === 'cattle' || type === 'all') {
-                doc.setFontSize(13);
-                doc.setTextColor(40);
-                doc.setFont('helvetica', 'bold');
-                doc.text("🐄 Cattle Inventory", margin, y);
-                y += 14;
-                doc.setFont('helvetica', 'normal');
-                const headers = ['Tag', 'Breed', 'Condition', 'Pregnancy Status'];
-                const rows = window.cows.map(c => {
-                    let p = c.cond === 'Pregnant' ? calcPreg(c.pDate) : null;
-                    return [c.tag, c.breed, c.cond, p ? `${p.dStr} (${p.rStr})` : '-'];
-                });
-                addTable(headers, rows, [90, 110, 80, 150]);
-                if (type === 'all') y += 10;
-            }
-
-            if (type === 'milk' || type === 'all') {
-                if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = 30; addHeader(); }
-                doc.setFontSize(13);
-                doc.setTextColor(40);
-                doc.setFont('helvetica', 'bold');
-                doc.text("🥛 Milk Production Logs", margin, y);
-                y += 14;
-                doc.setFont('helvetica', 'normal');
-                const headers = ['Cow ID', 'Day', 'Shift', 'Liters', 'Fat%', 'SNF%', 'Date'];
-                const rows = window.milk.map(m => {
-                    let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
-                    return [id, m.day, m.shift, m.liters, m.fat, m.snf, m.date];
-                });
-                addTable(headers, rows, [100, 50, 60, 55, 50, 50, 80]);
-                if (type === 'all') y += 10;
-            }
-
-            if (type === 'expenses' || type === 'all') {
-                if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = 30; addHeader(); }
-                doc.setFontSize(13);
-                doc.setTextColor(40);
-                doc.setFont('helvetica', 'bold');
-                doc.text("💸 Expense Ledger", margin, y);
-                y += 14;
-                doc.setFont('helvetica', 'normal');
-                const headers = ['Details', 'Category', 'Amount (₹)'];
-                const rows = window.expenses.map(e => [e.details, e.cat, e.amount]);
-                addTable(headers, rows, [200, 130, 100]);
-                if (type === 'all') y += 10;
-            }
-
-            if (type === 'all') {
-                if (y > doc.internal.pageSize.getHeight() - 60) { doc.addPage(); y = 30; addHeader(); }
-                doc.setFontSize(13);
-                doc.setTextColor(40);
-                doc.setFont('helvetica', 'bold');
-                doc.text("📈 Farm Summary", margin, y);
-                y += 14;
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(11);
-                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
-                let priceInput = document.getElementById('milkPriceInput');
-                let rate = 35;
-                if (priceInput.value !== '' && parseFloat(priceInput.value) >= 0) {
-                    rate = parseFloat(priceInput.value);
-                }
-                let totalIncome = tM * rate;
-                let netBalance = totalIncome - tE;
-                doc.text(`Total Cattle: ${window.cows.length}`, margin, y); y += 16;
-                doc.text(`Total Milk Produced: ${tM.toFixed(1)} Liters`, margin, y); y += 16;
-                doc.text(`Milk Income (₹${rate}/L): ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, margin, y); y += 16;
-                doc.text(`Total Expenses: ₹${tE.toLocaleString('en-IN')}`, margin, y); y += 16;
-                doc.setFont('helvetica', 'bold');
-                doc.text(`Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, margin, y); y += 16;
-                doc.setFont('helvetica', 'normal');
-            }
-
-            // Footer
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.text(`Generated by Dairy Dashboard Premium • ${new Date().toLocaleString()}`, margin, doc.internal.pageSize.getHeight() - 20);
-
-            // Get base64 data URI and route to downloadDirectPDF
-            const base64Data = doc.output('datauristring');
-            
-            let filename = "Dairy_Report.pdf";
-            if (type === 'cattle') filename = "Cattle_Report.pdf";
-            else if (type === 'milk') filename = "Milk_Logs_Report.pdf";
-            else if (type === 'expenses') filename = "Expenses_Report.pdf";
-            else if (type === 'all') filename = "Complete_Dairy_Summary.pdf";
-            
-            downloadDirectPDF(base64Data, filename);
-        }
-
+        // ===== ONLOAD =====
         window.onload = function() {
             loadDB();
             if (window.isLogged) launchWorkspace();
             else toggleAuthScreens('login');
             setPregDateConstraints();
-            
+            ensureModalsHidden();
             const priceInput = document.getElementById('milkPriceInput');
             const savedPrice = localStorage.getItem('dairy_milkPrice');
-            if (savedPrice !== null && parseFloat(savedPrice) >= 0) {
-                priceInput.value = savedPrice;
-            } else {
-                priceInput.value = '35';
-            }
-            
+            priceInput.value = (savedPrice !== null && parseFloat(savedPrice) >= 0) ? savedPrice : '35';
+            document.getElementById('mSelectDisplay').value = '🌟 All Cows (Total Herd)';
             document.getElementById('mShiftDisplay').value = 'Morning';
-            document.getElementById('exCatDisplay').value = 'Feed / Chara';
+            document.getElementById('exCatDisplay').value = 'Feed & Fodder';
             document.getElementById('cCondDisplay').value = 'Healthy';
+            document.getElementById('cBreedDisplay').value = '';
+            document.getElementById('cBreed').value = '';
+            setTimeout(() => { updateChart(); updateQualityCircle(); }, 150);
         };
-
-        document.addEventListener('touchstart', function (e) {
-            if (e.touches.length > 1) e.preventDefault();
-        }, { passive: false });
-
-        let lastTapTime = 0;
-        document.addEventListener('touchend', function (e) {
-            let now = (new Date()).getTime();
-            if (now - lastTapTime <= 300) e.preventDefault();
-            lastTapTime = now;
-        }, false);
-
-        document.addEventListener('wheel', function (e) {
-            if (e.ctrlKey) e.preventDefault();
-        }, { passive: false });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
-                e.preventDefault();
-            }
-        });
     </script>
 </body>
 </html>
