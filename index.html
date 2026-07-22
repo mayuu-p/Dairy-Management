@@ -46,7 +46,7 @@
         }
         .app-header {
             flex-shrink: 0;
-            padding: 8px 12px 4px 12px;
+            padding: 10px 14px 6px 14px;
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
@@ -56,17 +56,17 @@
             flex: 1 1 auto;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 8px 12px 12px 12px;
+            padding: 10px 14px 14px 14px;
         }
         .auth-container {
             background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 24px;
+            padding: 30px;
             border-radius: 24px;
-            width: calc(100% - 24px);
-            max-width: 400px;
+            width: calc(100% - 30px);
+            max-width: 420px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             text-align: center;
             position: absolute;
@@ -74,8 +74,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .auth-container h2 { margin: 0 0 8px 0; color: #1e293b; font-size: 22px; }
-        .auth-container p { margin: 0 0 16px 0; color: #475569; font-size: 13px; }
+        .auth-container h2 { margin: 0 0 10px 0; color: #1e293b; font-size: 24px; }
+        .auth-container p { margin: 0 0 16px 0; color: #475569; font-size: 14px; }
         .auth-link { color: #9333ea; cursor: pointer; font-weight: 600; text-decoration: underline; }
         .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
         .pass-wrapper input { padding-right: 40px !important; }
@@ -85,57 +85,58 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 6px;
         }
         .header-title-area { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-        .header-title-area h1 { margin: 0; font-size: 15px; color: #1e293b; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-        .header-title-area p { margin: 0; font-size: 8px; color: #475569; width: 100%; }
+        .header-title-area h1 { margin: 0; font-size: 18px; color: #1e293b; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .header-title-area p { margin: 0; font-size: 10px; color: #475569; width: 100%; }
         .header-rate-box {
             background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(147, 51, 234, 0.3);
-            border-radius: 12px; padding: 2px 8px; display: flex; align-items: center; gap: 3px;
+            border-radius: 12px; padding: 4px 12px; display: flex; align-items: center; gap: 4px;
         }
         .header-rate-box input {
-            width: 50px !important; padding: 2px 4px !important; border: none !important;
-            background: transparent !important; font-weight: bold; font-size: 13px; color: #9333ea;
+            width: 60px !important; padding: 4px 6px !important; border: none !important;
+            background: transparent !important; font-weight: bold; font-size: 16px; color: #9333ea;
             text-align: center; outline: none;
         }
-        .header-rate-box span { font-size: 10px; font-weight: 600; color: #475569; }
+        .header-rate-box span { font-size: 12px; font-weight: 600; color: #475569; }
         nav {
-            display: flex; gap: 2px; background: rgba(255,255,255,0.3); padding: 3px; border-radius: 30px; flex-wrap: wrap;
-            margin-top: 3px;
+            display: flex; gap: 4px; background: rgba(255,255,255,0.3); padding: 4px; border-radius: 30px; flex-wrap: wrap;
+            margin-top: 4px;
         }
         nav a {
-            text-decoration: none; color: #334155; padding: 4px 8px; border-radius: 20px;
-            font-size: 10px; font-weight: 500; cursor: pointer;
+            text-decoration: none; color: #334155; padding: 6px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 500; cursor: pointer;
             white-space: nowrap;
         }
         nav a.active { background: #ffffff; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; width: 100%; }
+        .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; width: 100%; }
         @media (max-width: 992px) { .main-grid { grid-template-columns: 1fr; } }
-        .space-y { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; width: 100%; }
+        .space-y { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; width: 100%; }
         .glass-card {
             background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 12px;
-            padding: 8px 10px; box-sizing: border-box; width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 14px;
+            padding: 12px 14px; box-sizing: border-box; width: 100%;
         }
-        .stats-card span { font-size: 7px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
-        .stats-card h3 { margin: 2px 0; font-size: 13px; color: #0f172a; word-break: break-all; }
-        .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+        .stats-card span { font-size: 9px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stats-card h3 { margin: 4px 0; font-size: 17px; color: #0f172a; word-break: break-all; }
+        .stats-card p { font-size: 11px; margin: 2px 0; color: #475569; }
+        .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
         @media (max-width: 650px) { .forms-row { grid-template-columns: 1fr; } }
-        .glass-card h4 { margin: 0 0 4px 0; font-size: 11px; color: #1e293b; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-flex { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .glass-card h4 { margin: 0 0 8px 0; font-size: 14px; color: #1e293b; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         input, select {
-            width: 100%; padding: 5px 7px; border-radius: 8px;
+            width: 100%; padding: 8px 12px; border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.7); font-size: 12px; outline: none;
+            background: rgba(255,255,255,0.7); font-size: 14px; outline: none;
             box-sizing: border-box;
-            min-height: 30px;
+            min-height: 38px;
         }
         input:focus, select:focus { border-color: #9333ea; box-shadow: 0 0 0 2px rgba(147,51,234,0.2); }
-        .form-flex input, .form-flex select { flex: 1; min-width: 40px; }
-        button { width: 100%; padding: 6px; border: none; border-radius: 8px; font-size: 11px; font-weight: 500; cursor: pointer; }
+        .form-flex input, .form-flex select { flex: 1; min-width: 50px; }
+        button { width: 100%; padding: 10px; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; min-height: 42px; }
         .btn-purple { background: #9333ea; color: white; }
         .btn-purple:hover { background: #7e22ce; }
         .btn-dark { background: #1e293b; color: white; }
@@ -144,55 +145,72 @@
         .btn-red:hover { background: #b91c1c; }
         .btn-green { background: #16a34a; color: white; }
         .btn-green:hover { background: #15803d; }
-        .btn-sm { padding: 4px 8px; width: auto; font-size: 10px; }
-        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 4px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 10px; min-width: 400px; }
-        th, td { padding: 4px 3px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #334155; }
-        .act-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 3px; display: inline-flex; align-items: center; }
-        .act-edit { color: #2563eb; margin-right: 8px; }
+        .btn-sm { padding: 6px 12px; width: auto; font-size: 12px; min-height: 34px; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-whatsapp:hover { background: #1da851; }
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; min-width: 500px; }
+        th, td { padding: 8px 6px; border-bottom: 1px solid rgba(255,255,255,0.2); color: #334155; }
+        th { font-weight: 600; background: rgba(147,51,234,0.08); }
+        .act-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 0 4px; display: inline-flex; align-items: center; }
+        .act-edit { color: #2563eb; margin-right: 12px; }
         .act-delete { color: #dc2626; }
-        .chart-placeholder { height: 80px; display: flex; align-items: flex-end; gap: 2px; padding-top: 4px; justify-content: space-between; }
-        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-        .bar { width: 100%; background: rgba(147, 51, 234, 0.6); border-radius: 2px; height: 0%; min-height: 2px; transition: height 0.3s ease; }
-        .bar-label { font-size: 6px; color: #64748b; }
-        .circle-gauge { width: 55px; height: 55px; border-radius: 50%; border: 4px dashed #9333ea; display: flex; align-items: center; justify-content: center; margin: 4px auto; font-size: 12px; font-weight: 800; }
-        .flex-split { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 8px; }
+        .chart-placeholder { height: 100px; display: flex; align-items: flex-end; gap: 4px; padding-top: 6px; justify-content: space-between; }
+        .bar-container { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+        .bar { width: 100%; background: rgba(147, 51, 234, 0.6); border-radius: 3px; height: 0%; min-height: 3px; transition: height 0.3s ease; }
+        .bar-label { font-size: 8px; color: #64748b; font-weight: 500; }
+        .circle-gauge { width: 70px; height: 70px; border-radius: 50%; border: 5px dashed #9333ea; display: flex; align-items: center; justify-content: center; margin: 6px auto; font-size: 15px; font-weight: 800; }
+        .flex-split { display: grid; grid-template-columns: 1fr 1fr; text-align: center; font-size: 10px; }
+        .flex-split p { font-size: 14px; font-weight: 700; margin: 4px 0 0 0; }
         .hidden { display: none !important; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .modal-box { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 16px 20px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .modal-box h5 { margin: 0 0 6px 0; font-size: 16px; color: #1e293b; }
-        .modal-box p { margin: 0 0 12px 0; font-size: 12px; color: #475569; }
-        .modal-flex { display: flex; gap: 8px; justify-content: center; }
-        .modal-flex button { width: auto; padding: 5px 16px; font-size: 11px; }
+        .modal-box { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 20px 24px; border-radius: 18px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .modal-box h5 { margin: 0 0 8px 0; font-size: 18px; color: #1e293b; }
+        .modal-box p { margin: 0 0 14px 0; font-size: 13px; color: #475569; }
+        .modal-flex { display: flex; gap: 10px; justify-content: center; }
+        .modal-flex button { width: auto; padding: 8px 20px; font-size: 13px; min-height: 36px; }
         .flex-wrap { flex-wrap: wrap; }
-        .gap-1 { gap: 3px; }
+        .gap-1 { gap: 4px; }
         .items-center { align-items: center; }
-        .text-sm { font-size: 10px; }
-        .text-xs { font-size: 8px; }
+        .text-sm { font-size: 12px; }
+        .text-xs { font-size: 10px; }
         .font-bold { font-weight: 600; }
-        .mt-1 { margin-top: 2px; }
-        .mb-1 { margin-bottom: 2px; }
+        .mt-1 { margin-top: 4px; }
+        .mb-1 { margin-bottom: 4px; }
         .w-auto { width: auto; }
         .flex-1 { flex: 1; }
         .flex-2 { flex: 2; }
-        .border-t { border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 4px; margin-top: 3px; }
-        .export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 4px; }
-        .export-grid button { padding: 4px 5px; font-size: 9px; }
-        .action-cell { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+        .border-t { border-top: 1px dashed rgba(0,0,0,0.08); padding-top: 8px; margin-top: 6px; }
+        .export-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; }
+        .export-grid button { padding: 8px 6px; font-size: 11px; min-height: 38px; }
+        .action-cell { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
         .popup-list { display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto; }
-        .popup-item { padding: 6px 10px; border-radius: 8px; cursor: pointer; }
+        .popup-item { padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; }
         .popup-item:hover { background: rgba(147,51,234,0.15); }
-        .setting-group { display: flex; flex-direction: column; gap: 4px; }
-        .setting-row { display: flex; gap: 6px; align-items: center; }
+        .setting-group { display: flex; flex-direction: column; gap: 6px; }
+        .setting-row { display: flex; gap: 8px; align-items: center; }
         .setting-row input { flex: 1; }
-        .setting-row button { width: auto; padding: 4px 12px; font-size: 10px; }
+        .setting-row button { width: auto; padding: 6px 14px; font-size: 12px; min-height: 34px; }
+        .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+        .share-grid button { padding: 10px; font-size: 13px; min-height: 44px; }
         @media (max-width: 480px) {
-            .app-header { padding: 4px 8px; }
-            .app-body { padding: 4px 8px 8px 8px; }
-            .glass-card { padding: 6px 8px; }
-            .stats-card h3 { font-size: 11px; }
-            nav a { font-size: 9px; padding: 3px 6px; }
-            .header-title-area h1 { font-size: 13px; }
+            .app-header { padding: 6px 10px; }
+            .app-body { padding: 6px 10px 10px 10px; }
+            .glass-card { padding: 10px 10px; }
+            .stats-card h3 { font-size: 14px; }
+            nav a { font-size: 10px; padding: 4px 10px; }
+            .header-title-area h1 { font-size: 15px; }
+            .header-rate-box input { width: 50px !important; font-size: 14px; }
+            .glass-card h4 { font-size: 12px; }
+            input, select { font-size: 13px; min-height: 34px; padding: 6px 10px; }
+            button { font-size: 12px; min-height: 36px; padding: 8px; }
+            .share-grid { grid-template-columns: 1fr; }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .glass-card h4 { font-size: 13px; }
+            input, select { font-size: 13px; min-height: 36px; }
+            button { font-size: 13px; min-height: 38px; }
         }
     </style>
 </head>
@@ -275,7 +293,7 @@
                 <span class="eye-toggle" onclick="togglePassView('loginPass')">👁️</span>
             </div>
             <button onclick="handleLogin()" class="btn-purple">Sign In</button>
-            <p style="font-size:11px; margin-top:8px;">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
+            <p style="font-size:12px; margin-top:10px;">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
         </div>
     </div>
     <div id="auth-register-view" class="auth-container hidden">
@@ -293,7 +311,7 @@
                 <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
             </div>
             <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
-            <p style="font-size:11px; margin-top:8px;">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
+            <p style="font-size:12px; margin-top:10px;">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
         </div>
     </div>
 
@@ -306,9 +324,9 @@
                     <h1>
                         <span id="lblDisplayFarmName">My Farm Dairy</span>
                         <span style="color: rgba(30, 41, 59, 0.3); font-weight: 300;">|</span>
-                        <span id="lblDisplayOwnerName" style="color: #9333ea; font-size: 13px;">Owner</span>
+                        <span id="lblDisplayOwnerName" style="color: #9333ea; font-size: 16px;">Owner</span>
                     </h1>
-                    <p style="margin:0; font-size:8px; color:#475569; width:100%;">Live tracking active.</p>
+                    <p style="margin:0; font-size:10px; color:#475569; width:100%;">Live tracking active.</p>
                 </div>
                 <div class="header-rate-box">
                     <span>₹</span>
@@ -322,7 +340,7 @@
                 <a id="t-cat" onclick="catTab()">Cattle</a>
                 <a id="t-exp" onclick="tab('exp')">Expenses</a>
                 <a id="t-set" onclick="tab('set')">Settings</a>
-                <a id="t-export" onclick="tab('export')">📤</a>
+                <a id="t-export" onclick="tab('export')">📤 Export</a>
             </nav>
         </div>
 
@@ -333,12 +351,12 @@
                     <!-- Stats -->
                     <div class="stats-row">
                         <div class="glass-card stats-card"><span>Total Cattle</span><h3 id="cCount">0 Cows</h3></div>
-                        <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color: #16a34a;">₹0</h3><p id="mCount" style="margin:0;font-size:8px;color:#475569;">0.0 L</p></div>
+                        <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color: #16a34a;">₹0</h3><p id="mCount">0.0 Liters</p></div>
                         <div class="glass-card stats-card"><span>Expenses</span><h3 id="eCountText" style="color: #dc2626;">₹0</h3></div>
                         <div class="glass-card stats-card" style="background: rgba(147, 51, 234, 0.12); border: 1px solid rgba(147, 51, 234, 0.3);">
                             <span style="color:#7c3aed;">Net Balance</span>
                             <h3 id="netBalanceText" style="color: #7c3aed; font-weight: 700;">₹0</h3>
-                            <p id="mAvg" style="margin:0;font-size:8px;color:#6d28d9;">Avg: 0L/cow</p>
+                            <p id="mAvg">Avg: 0L/cow</p>
                         </div>
                     </div>
 
@@ -377,7 +395,7 @@
                                         <input type="hidden" id="cCond" value="Healthy">
                                     </div>
                                     <div id="pDateDiv" class="hidden">
-                                        <label style="font-size:8px; font-weight:600; color:#475569;">Insemination Date:</label>
+                                        <label style="font-size:10px; font-weight:600; color:#475569;">Insemination Date:</label>
                                         <input type="date" id="cPregDate" onkeydown="handleEnterNav(event, 'COW_TRIGGER')">
                                     </div>
                                     <button id="cBtn" onclick="addCow()" class="btn-dark">Register Cow</button>
@@ -394,7 +412,7 @@
                                         <input type="text" id="exCatDisplay" placeholder="Category" readonly onclick="openCatPopup()" style="cursor:pointer;background:rgba(255,255,255,0.5);flex:1;min-width:80px;">
                                         <input type="hidden" id="exCat" value="Feed / Chara">
                                         <input type="number" id="exAmount" placeholder="Amount (₹)" min="0" oninput="validateNonNegative(this)" onkeydown="handleEnterNav(event, 'EXPENSE_TRIGGER')" style="flex:1;">
-                                        <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto; padding:5px 12px; flex:0 0 auto;">Add</button>
+                                        <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto; padding:8px 16px; flex:0 0 auto; min-height:38px;">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -451,27 +469,36 @@
                                 <button onclick="openSettingsPopup()" class="btn-purple btn-sm">Update</button>
                             </div>
                             <div class="border-t">
-                                <h5 style="margin: 0 0 4px 0; font-size: 10px; color: #1e293b;">🔒 Change Password</h5>
+                                <h5 style="margin: 0 0 6px 0; font-size: 13px; color: #1e293b;">🔒 Change Password</h5>
                             </div>
                             <div>
-                                <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:3px;">
-                                <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:3px;">
-                                <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:3px;">
-                                <button onclick="updatePassword()" class="btn-purple" style="padding:4px;">Update Password</button>
+                                <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:4px;">
+                                <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:4px;">
+                                <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:4px;">
+                                <button onclick="updatePassword()" class="btn-purple" style="padding:6px;">Update Password</button>
                             </div>
-                            <button onclick="handleLogout()" class="btn-red" style="margin-top:4px;padding:4px;">Log Out</button>
+                            <button onclick="handleLogout()" class="btn-red" style="margin-top:6px;padding:6px;">Log Out</button>
                         </div>
                     </div>
 
                     <!-- Export Page -->
                     <div id="page-export" class="glass-card hidden">
-                        <h4>📤 Export Reports (PDF)</h4>
-                        <p style="font-size:10px; color:#475569; margin-bottom:4px;">Select report type to download as PDF.</p>
+                        <h4>📤 Export Reports</h4>
+                        <p style="font-size:12px; color:#475569; margin-bottom:6px;">Download PDF or Share via WhatsApp</p>
                         <div class="export-grid">
                             <button onclick="exportPDF('cattle')" class="btn-purple btn-sm">🐄 Cattle</button>
                             <button onclick="exportPDF('milk')" class="btn-purple btn-sm">🥛 Milk</button>
                             <button onclick="exportPDF('expenses')" class="btn-purple btn-sm">💸 Expenses</button>
-                            <button onclick="exportPDF('all')" class="btn-green btn-sm">📄 All</button>
+                            <button onclick="exportPDF('all')" class="btn-green btn-sm">📄 All Reports</button>
+                        </div>
+                        <div class="border-t" style="margin-top:10px;">
+                            <h5 style="margin: 0 0 8px 0; font-size: 13px; color: #1e293b;">📱 Share via WhatsApp</h5>
+                            <div class="share-grid">
+                                <button onclick="shareWhatsApp('cattle')" class="btn-whatsapp">🐄 Cattle</button>
+                                <button onclick="shareWhatsApp('milk')" class="btn-whatsapp">🥛 Milk</button>
+                                <button onclick="shareWhatsApp('expenses')" class="btn-whatsapp">💸 Expenses</button>
+                                <button onclick="shareWhatsApp('all')" class="btn-whatsapp">📄 All Reports</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -479,7 +506,7 @@
                 <!-- Right Sidebar -->
                 <div class="space-y">
                     <div class="glass-card">
-                        <h4 style="font-size:9px;color:#64748b;text-transform:uppercase;margin:0 0 3px 0;">Weekly Production</h4>
+                        <h4 style="font-size:11px;color:#64748b;text-transform:uppercase;margin:0 0 4px 0;">Weekly Production</h4>
                         <div class="chart-placeholder" id="chartContainer">
                             <div class="bar-container"><div class="bar" id="b-Mon"></div><span class="bar-label">Mon</span></div>
                             <div class="bar-container"><div class="bar" id="b-Tue"></div><span class="bar-label">Tue</span></div>
@@ -492,11 +519,11 @@
                     </div>
 
                     <div class="glass-card">
-                        <h4 style="font-size:9px;color:#64748b;text-transform:uppercase;margin:0 0 3px 0;">Quality Analytics</h4>
+                        <h4 style="font-size:11px;color:#64748b;text-transform:uppercase;margin:0 0 4px 0;">Quality Analytics</h4>
                         <div class="circle-gauge"><span id="g-fat">0.0%</span></div>
                         <div class="flex-split">
-                            <div>Avg SNF<p id="g-snf" style="margin:2px 0 0 0;font-weight:bold;font-size:11px;">0.0%</p></div>
-                            <div>Target<p style="margin:2px 0 0 0;font-weight:bold;font-size:11px;color:#9333ea;">9.0%</p></div>
+                            <div>Avg SNF<p id="g-snf">0.0%</p></div>
+                            <div>Target<p style="color:#9333ea;">9.0%</p></div>
                         </div>
                     </div>
                 </div>
@@ -534,7 +561,6 @@
         function handlePriceInput(input) {
             let val = input.value.trim();
             if (val === '') {
-                // If blank, remove from storage and use default
                 localStorage.removeItem('dairy_milkPrice');
                 calc();
                 return;
@@ -546,7 +572,6 @@
                 calc();
                 return;
             }
-            // Save to localStorage
             localStorage.setItem('dairy_milkPrice', num.toString());
             calc();
         }
@@ -558,11 +583,9 @@
                 input.value = '';
                 return;
             }
-            // If more than 2 digits, take first 2
             if (val.length > 2) {
                 val = val.slice(0, 2);
             }
-            // If 2 digits, insert decimal after first digit
             if (val.length === 2) {
                 input.value = val[0] + '.' + val[1];
             } else if (val.length === 1) {
@@ -570,7 +593,6 @@
             } else {
                 input.value = val;
             }
-            // Ensure value is within 0-9.9 range
             let num = parseFloat(input.value);
             if (!isNaN(num) && num > 9.9) {
                 input.value = '9.9';
@@ -624,7 +646,6 @@
             document.getElementById('cCond').value = cond;
             document.getElementById('cCondDisplay').value = cond;
             closeCondPopup();
-            // Show/hide pregnancy date
             let div = document.getElementById('pDateDiv');
             if (div) {
                 div.classList.toggle('hidden', cond !== 'Pregnant');
@@ -800,7 +821,6 @@
             document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
             setPregDateConstraints();
             
-            // Load saved milk price from localStorage
             const priceInput = document.getElementById('milkPriceInput');
             const savedPrice = localStorage.getItem('dairy_milkPrice');
             if (savedPrice !== null && parseFloat(savedPrice) >= 0) {
@@ -855,9 +875,9 @@
             window.milk.forEach((e, i) => {
                 let displayName = e.tag === 'ALL_COWS' ? '🌟 All Cows' : e.tag;
                 html += `<tr><td><b>${displayName}</b></td>
-                <td><span style="background: rgba(147, 51, 234, 0.12); color: #7c3aed; padding: 2px 5px; border-radius: 4px; font-size: 8px; font-weight: 600;">${e.day}</span></td>
+                <td><span style="background: rgba(147, 51, 234, 0.12); color: #7c3aed; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600;">${e.day}</span></td>
                 <td>${e.shift}</td><td>${e.liters}L</td><td>F:${e.fat}%|S:${e.snf}%</td>
-                <td><span style="font-size:9px;color:#64748b;">${e.date}</span></td>
+                <td><span style="font-size:11px;color:#64748b;">${e.date}</span></td>
                 <td><div class="action-cell"><button class="act-btn act-edit" onclick="edM(${i})">✏️</button><button class="act-btn act-delete" onclick="delM(${i})">🗑️</button></div></td></tr>`;
             });
             let container = document.getElementById('tb-milk'); if(container) container.innerHTML = html;
@@ -976,7 +996,6 @@
             if(!liters || !fat || !snf) return openModal('Input Alert', 'Kripya saari milk details enter karein!', null);
             if (parseFloat(liters) === 0) return openModal('Input Alert', 'Liters 0 se zyada hona chahiye!', null);
             
-            // Parse fat and snf with proper decimal
             let fatNum = parseFloat(fat);
             let snfNum = parseFloat(snf);
             if (isNaN(fatNum) || isNaN(snfNum)) return openModal('Input Alert', 'Fat aur SNF sahi se enter karein!', null);
@@ -992,7 +1011,6 @@
             document.getElementById('mFat').value = ''; 
             document.getElementById('mSnf').value = '';
             
-            // Auto-switch shift
             window.currentShift = window.currentShift === 'Morning' ? 'Evening' : 'Morning';
             document.getElementById('mShift').value = window.currentShift;
             document.getElementById('mShiftDisplay').value = window.currentShift;
@@ -1104,7 +1122,7 @@
             let totalIncome = tM * ratePerLiter; let netBalance = totalIncome - tE;
 
             document.getElementById('cCount').innerText = window.cows.length + " Cows";
-            document.getElementById('mCount').innerText = tM.toFixed(1) + " L";
+            document.getElementById('mCount').innerText = tM.toFixed(1) + " Liters";
             document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2});
             document.getElementById('eCountText').innerText = "₹" + tE.toLocaleString('en-IN');
 
@@ -1119,40 +1137,129 @@
             document.getElementById('g-snf').innerText = (window.milk.length > 0 ? (tS / window.milk.length).toFixed(1) : 0.0) + "%";
         }
 
-        // Export PDF
+        // ==================== SHARE VIA WHATSAPP ====================
+        function shareWhatsApp(type) {
+            const farmName = window.userProfile.farmName || "My Farm Dairy";
+            const ownerName = window.userProfile.name || "Owner";
+            const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            
+            let message = `🏠 *${farmName}* | 👤 ${ownerName}\n📅 ${dateStr}\n`;
+            message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+
+            if (type === 'cattle' || type === 'all') {
+                message += `\n🐄 *CATTLE INVENTORY* (${window.cows.length})\n`;
+                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.cows.length === 0) {
+                    message += `No cattle records found.\n`;
+                } else {
+                    window.cows.forEach(c => {
+                        let p = c.cond === 'Pregnant' ? calcPreg(c.pDate) : null;
+                        let status = p ? `${p.dStr} (${p.rStr})` : '-';
+                        message += `▸ Tag: ${c.tag} | ${c.breed} | ${c.cond} | ${status}\n`;
+                    });
+                }
+            }
+
+            if (type === 'milk' || type === 'all') {
+                message += `\n🥛 *MILK PRODUCTION LOGS* (${window.milk.length})\n`;
+                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.milk.length === 0) {
+                    message += `No milk records found.\n`;
+                } else {
+                    window.milk.forEach(m => {
+                        let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
+                        message += `▸ ${id} | ${m.day} | ${m.shift} | ${m.liters}L | F:${m.fat}% S:${m.snf}% | ${m.date}\n`;
+                    });
+                }
+                // Summary
+                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
+                let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
+                let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
+                message += `\n📊 *Summary:* Total ${tM.toFixed(1)}L | Avg Fat ${window.milk.length > 0 ? (tF/window.milk.length).toFixed(1) : 0}% | Avg SNF ${window.milk.length > 0 ? (tS/window.milk.length).toFixed(1) : 0}%\n`;
+            }
+
+            if (type === 'expenses' || type === 'all') {
+                message += `\n💸 *EXPENSE LEDGER* (${window.expenses.length})\n`;
+                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                if (window.expenses.length === 0) {
+                    message += `No expense records found.\n`;
+                } else {
+                    window.expenses.forEach(e => {
+                        message += `▸ ${e.details} | ${e.cat} | ₹${e.amount}\n`;
+                    });
+                }
+                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                message += `\n📊 *Total Expenses:* ₹${tE.toLocaleString('en-IN')}\n`;
+            }
+
+            if (type === 'all') {
+                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
+                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                let priceInput = document.getElementById('milkPriceInput');
+                let rate = 35;
+                if (priceInput.value !== '' && parseFloat(priceInput.value) >= 0) {
+                    rate = parseFloat(priceInput.value);
+                }
+                let totalIncome = tM * rate;
+                let netBalance = totalIncome - tE;
+                message += `\n📈 *FARM SUMMARY*\n`;
+                message += `━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+                message += `🐄 Total Cattle: ${window.cows.length}\n`;
+                message += `🥛 Total Milk: ${tM.toFixed(1)}L\n`;
+                message += `💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}\n`;
+                message += `💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n`;
+                message += `💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}\n`;
+            }
+
+            message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+            message += `📱 *Dairy Dashboard Premium*`;
+
+            // Encode for WhatsApp
+            const encoded = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/?text=${encoded}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // ==================== EXPORT PDF ====================
         function exportPDF(type) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'pt', 'a4');
             const pageWidth = doc.internal.pageSize.getWidth();
             const margin = 30;
             let y = 30;
-            const title = window.userProfile.farmName || "Dairy Farm Report";
+            const farmName = window.userProfile.farmName || "Dairy Farm Report";
+            const ownerName = window.userProfile.name || "";
 
             function addHeader() {
-                doc.setFontSize(16);
+                doc.setFontSize(18);
                 doc.setTextColor(40);
-                doc.text(title, pageWidth/2, y, { align: 'center' });
-                y += 12;
-                doc.setFontSize(10);
-                doc.setTextColor(100);
-                const dateStr = new Date().toLocaleDateString('en-IN');
-                doc.text(`Report: ${type.toUpperCase()}  |  Date: ${dateStr}`, pageWidth/2, y, { align: 'center' });
-                y += 18;
-                doc.setDrawColor(200);
+                doc.setFont('helvetica', 'bold');
+                doc.text(farmName, pageWidth/2, y, { align: 'center' });
+                y += 14;
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(80);
+                const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                let headerText = `Report: ${type.toUpperCase()}  |  Date: ${dateStr}`;
+                if (ownerName) headerText += `  |  Owner: ${ownerName}`;
+                doc.text(headerText, pageWidth/2, y, { align: 'center' });
+                y += 16;
+                doc.setDrawColor(147, 51, 234);
+                doc.setLineWidth(1);
                 doc.line(margin, y, pageWidth - margin, y);
-                y += 12;
+                y += 14;
             }
 
             function addTable(headers, rows, colWidths) {
                 if (!rows || rows.length === 0) {
-                    doc.setFontSize(10);
+                    doc.setFontSize(11);
                     doc.setTextColor(150);
                     doc.text("No data available.", margin, y);
                     y += 16;
                     return;
                 }
-                const rowHeight = 18;
-                const headerHeight = 20;
+                const rowHeight = 20;
+                const headerHeight = 22;
                 const tableWidth = pageWidth - 2 * margin;
                 let widths = colWidths || new Array(headers.length).fill(tableWidth / headers.length);
                 const totalWidth = widths.reduce((a,b) => a+b, 0);
@@ -1160,23 +1267,27 @@
                     widths = widths.map(w => w * (tableWidth / totalWidth));
                 }
 
+                // Header
                 doc.setFillColor(147, 51, 234);
                 doc.setTextColor(255);
                 doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
                 let x = margin;
                 for (let i = 0; i < headers.length; i++) {
                     doc.rect(x, y, widths[i], headerHeight, 'F');
-                    doc.text(headers[i], x + 4, y + 12);
+                    doc.text(headers[i], x + 6, y + 14);
                     x += widths[i];
                 }
                 y += headerHeight;
 
+                // Rows
                 doc.setTextColor(40);
                 doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
                 for (let row of rows) {
                     x = margin;
                     for (let i = 0; i < row.length; i++) {
-                        doc.text(String(row[i] || ''), x + 4, y + 10);
+                        doc.text(String(row[i] || ''), x + 6, y + 12);
                         x += widths[i];
                     }
                     y += rowHeight;
@@ -1186,15 +1297,18 @@
                         addHeader();
                         doc.setFillColor(147, 51, 234);
                         doc.setTextColor(255);
+                        doc.setFontSize(10);
+                        doc.setFont('helvetica', 'bold');
                         x = margin;
                         for (let i = 0; i < headers.length; i++) {
                             doc.rect(x, y, widths[i], headerHeight, 'F');
-                            doc.text(headers[i], x + 4, y + 12);
+                            doc.text(headers[i], x + 6, y + 14);
                             x += widths[i];
                         }
                         y += headerHeight;
                         doc.setTextColor(40);
                         doc.setFontSize(9);
+                        doc.setFont('helvetica', 'normal');
                     }
                 }
                 y += 8;
@@ -1203,50 +1317,85 @@
             addHeader();
 
             if (type === 'cattle' || type === 'all') {
-                doc.setFontSize(12);
+                doc.setFontSize(13);
                 doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
                 doc.text("🐄 Cattle Inventory", margin, y);
                 y += 14;
+                doc.setFont('helvetica', 'normal');
                 const headers = ['Tag', 'Breed', 'Condition', 'Pregnancy Status'];
                 const rows = window.cows.map(c => {
                     let p = c.cond === 'Pregnant' ? calcPreg(c.pDate) : null;
                     return [c.tag, c.breed, c.cond, p ? `${p.dStr} (${p.rStr})` : '-'];
                 });
-                addTable(headers, rows, [80, 100, 80, 140]);
+                addTable(headers, rows, [90, 110, 80, 150]);
                 if (type === 'all') y += 10;
             }
 
             if (type === 'milk' || type === 'all') {
                 if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = 30; addHeader(); }
-                doc.setFontSize(12);
+                doc.setFontSize(13);
                 doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
                 doc.text("🥛 Milk Production Logs", margin, y);
                 y += 14;
+                doc.setFont('helvetica', 'normal');
                 const headers = ['Cow ID', 'Day', 'Shift', 'Liters', 'Fat%', 'SNF%', 'Date'];
                 const rows = window.milk.map(m => {
                     let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
                     return [id, m.day, m.shift, m.liters, m.fat, m.snf, m.date];
                 });
-                addTable(headers, rows, [90, 50, 60, 50, 50, 50, 80]);
+                addTable(headers, rows, [100, 50, 60, 55, 50, 50, 80]);
                 if (type === 'all') y += 10;
             }
 
             if (type === 'expenses' || type === 'all') {
                 if (y > doc.internal.pageSize.getHeight() - 50) { doc.addPage(); y = 30; addHeader(); }
-                doc.setFontSize(12);
+                doc.setFontSize(13);
                 doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
                 doc.text("💸 Expense Ledger", margin, y);
                 y += 14;
+                doc.setFont('helvetica', 'normal');
                 const headers = ['Details', 'Category', 'Amount (₹)'];
                 const rows = window.expenses.map(e => [e.details, e.cat, e.amount]);
-                addTable(headers, rows, [180, 120, 90]);
+                addTable(headers, rows, [200, 130, 100]);
+                if (type === 'all') y += 10;
             }
 
+            if (type === 'all') {
+                if (y > doc.internal.pageSize.getHeight() - 60) { doc.addPage(); y = 30; addHeader(); }
+                doc.setFontSize(13);
+                doc.setTextColor(40);
+                doc.setFont('helvetica', 'bold');
+                doc.text("📈 Farm Summary", margin, y);
+                y += 14;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
+                let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                let priceInput = document.getElementById('milkPriceInput');
+                let rate = 35;
+                if (priceInput.value !== '' && parseFloat(priceInput.value) >= 0) {
+                    rate = parseFloat(priceInput.value);
+                }
+                let totalIncome = tM * rate;
+                let netBalance = totalIncome - tE;
+                doc.text(`Total Cattle: ${window.cows.length}`, margin, y); y += 16;
+                doc.text(`Total Milk Produced: ${tM.toFixed(1)} Liters`, margin, y); y += 16;
+                doc.text(`Milk Income (₹${rate}/L): ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, margin, y); y += 16;
+                doc.text(`Total Expenses: ₹${tE.toLocaleString('en-IN')}`, margin, y); y += 16;
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits: 2})}`, margin, y); y += 16;
+                doc.setFont('helvetica', 'normal');
+            }
+
+            // Footer
             doc.setFontSize(8);
             doc.setTextColor(150);
             doc.text(`Generated by Dairy Dashboard Premium • ${new Date().toLocaleString()}`, margin, doc.internal.pageSize.getHeight() - 20);
 
-            const filename = `${title}_${type}_report.pdf`;
+            const filename = `${farmName}_${type}_report.pdf`;
             doc.save(filename);
         }
 
@@ -1256,7 +1405,6 @@
             else toggleAuthScreens('login');
             setPregDateConstraints();
             
-            // Load saved milk price from localStorage
             const priceInput = document.getElementById('milkPriceInput');
             const savedPrice = localStorage.getItem('dairy_milkPrice');
             if (savedPrice !== null && parseFloat(savedPrice) >= 0) {
