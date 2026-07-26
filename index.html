@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* ... SAME CSS AS BEFORE ... */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -726,7 +725,6 @@
         </div>
     </div>
 
-    <!-- REGISTRATION FORM - FIXED: Confirm Password has NO toggle -->
     <div id="auth-register-view" class="auth-container hidden">
         <h2>Create Account</h2>
         <p>Apni farm aur profile details register karein</p>
@@ -744,7 +742,7 @@
             <!-- Confirm Password - NO EYE TOGGLE (controlled by new password toggle) -->
             <div class="pass-wrapper">
                 <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
-                <!-- NO EYE TOGGLE HERE - as requested -->
+                <!-- NO EYE TOGGLE HERE -->
             </div>
             
             <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
@@ -1498,7 +1496,14 @@
             window.eC = i; document.getElementById('cBtn').innerText = "Update Cow"; tab('dash');
         }
 
+        // ===== ADD MILK - WITH VALIDATION =====
         function addMilk() {
+            // CHECK: Kya koi cow registered hai?
+            if (window.cows.length === 0) {
+                openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Milk entry tabhi possible hai jab cattle inventory mein koi cow ho.', null);
+                return;
+            }
+            
             let tag = document.getElementById('mSelect').value;
             let liters = document.getElementById('mLiters').value.trim();
             let shift = document.getElementById('mShift').value;
@@ -1534,7 +1539,14 @@
             window.eM = i; document.getElementById('mBtn').innerText = "Update Entry"; tab('dash');
         }
 
+        // ===== ADD EXPENSE - WITH VALIDATION =====
         function addExpense() {
+            // CHECK: Kya koi cow registered hai?
+            if (window.cows.length === 0) {
+                openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Expense tabhi add kar sakte hain jab cattle inventory mein koi cow ho.', null);
+                return;
+            }
+            
             let details = document.getElementById('exDetails').value.trim();
             let cat = document.getElementById('exCat').value;
             let amount = document.getElementById('exAmount').value.trim();
@@ -1699,7 +1711,7 @@
                 message += `\n📈 *FARM SUMMARY*\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
                 message += `🐄 Total Cattle: ${window.cows.length}\n🥛 Total Milk: ${tM.toFixed(1)}L\n💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits:2})}\n💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits:2})}\n`;
             }
-            message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n📱 *Dairy Dashboard Premium*`;
+            message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n📱 *🐄 Dairy Mangement*`;
             window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
         }
 
@@ -1729,7 +1741,7 @@
             const priceInput = document.getElementById('milkPriceInput');
             const savedPrice = localStorage.getItem('dairy_milkPrice');
             priceInput.value = (savedPrice !== null && parseFloat(savedPrice) >= 0) ? savedPrice : '35';
-            document.getElementById('mSelectDisplay').value = '🌟 All Cows (Total Herd)';
+            document.getElementById('mSelectDisplay').value = '🌟 All Cows';
             document.getElementById('mShiftDisplay').value = 'Morning';
             document.getElementById('exCatDisplay').value = 'Feed & Fodder';
             document.getElementById('cCondDisplay').value = 'Healthy';
