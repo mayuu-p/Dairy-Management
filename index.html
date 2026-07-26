@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* --- reset & base --- */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -437,7 +436,6 @@
         .quality-legend .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .quality-legend .legend-value { color: #fff; font-weight: 600; margin-left: auto; }
 
-        /* --- modals --- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -510,7 +508,6 @@
         .modal-flex { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; flex-shrink: 0; }
         .modal-flex button { width: auto; padding: 10px 24px; font-size: 14px; min-height: 40px; }
 
-        /* breed list — compact, no scroll, all visible */
         .popup-list {
             display: flex;
             flex-direction: column;
@@ -582,6 +579,24 @@
         .password-field-with-eye .eye-toggle:hover { color: rgba(255,255,255,0.6); }
         .password-field-with-eye .eye-toggle:active { color: #5e5ce6; }
 
+        /* No eye toggle for confirm password fields */
+        .no-eye-toggle {
+            position: relative;
+            width: 100%;
+        }
+        .no-eye-toggle input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            box-sizing: border-box;
+            min-height: 44px;
+        }
+
         @media (max-width: 480px) {
             .app-header { padding: 10px 14px; }
             .app-body { padding: 10px 14px 14px 14px; }
@@ -636,7 +651,7 @@
         </div>
     </div>
 
-    <!-- Breed Selection Popup - FIXED: compact, all visible, like reference image -->
+    <!-- Breed Selection Popup -->
     <div id="breedModal" class="modal-overlay hidden" onclick="closeBreedModal(event)">
         <div class="modal-box" onclick="event.stopPropagation()">
             <h5>🐄 Select Breed</h5>
@@ -727,6 +742,7 @@
             <p style="font-size:13px; margin-top:14px; color:rgba(255,255,255,0.35);">Account nahi hai? <span class="auth-link" onclick="toggleAuthScreens('register')">Naya Account Banayein</span></p>
         </div>
     </div>
+
     <div id="auth-register-view" class="auth-container hidden">
         <h2>Create Account</h2>
         <p>Apni farm aur profile details register karein</p>
@@ -734,13 +750,18 @@
             <input type="text" id="regName" placeholder="Owner Full Name" onkeydown="handleEnterNav(event, 'regFarm')">
             <input type="text" id="regFarm" placeholder="Farm Name" onkeydown="handleEnterNav(event, 'regUser')">
             <input type="text" id="regUser" placeholder="Choose Username" onkeydown="handleEnterNav(event, 'regPass')">
+            
+            <!-- ONLY THIS FIELD HAS EYE TOGGLE -->
             <div class="pass-wrapper">
                 <input type="password" id="regPass" placeholder="Choose Password" onkeydown="handleEnterNav(event, 'regConfirmPass')">
-                <span class="eye-toggle" onclick="togglePassView('regPass')">👁️</span>
+                <span class="eye-toggle" onclick="toggleBothPasswords('regPass', 'regConfirmPass')">👁️</span>
             </div>
-            <div class="pass-wrapper">
+            
+            <!-- CONFIRM PASSWORD - NO EYE TOGGLE -->
+            <div class="no-eye-toggle">
                 <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
             </div>
+            
             <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
             <p style="font-size:13px; margin-top:14px; color:rgba(255,255,255,0.35);">Pehle se account hai? <span class="auth-link" onclick="toggleAuthScreens('login')">Login Karein</span></p>
         </div>
@@ -899,20 +920,24 @@
                             <div class="border-t">
                                 <h5 style="margin: 0 0 8px 0; font-size: 14px; color: #fff;">🔒 Change Password</h5>
                             </div>
-                            <div>
-                                <div class="password-field-with-eye">
-                                    <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:6px;">
-                                    <span class="eye-toggle" onclick="togglePassView('setCurrentPass')">👁️</span>
-                                </div>
-                                <div class="password-field-with-eye">
-                                    <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:6px;">
-                                    <span class="eye-toggle" onclick="togglePassView('setNewPass')">👁️</span>
-                                </div>
-                                <div class="password-field-with-eye">
-                                    <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:6px;">
-                                </div>
-                                <button onclick="updatePassword()" class="btn-purple" style="padding:8px;">Update Password</button>
+                            
+                            <!-- Current Password - NO EYE TOGGLE -->
+                            <div class="no-eye-toggle">
+                                <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:6px;">
                             </div>
+                            
+                            <!-- New Password - WITH EYE TOGGLE (controls both) -->
+                            <div class="pass-wrapper">
+                                <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:6px;">
+                                <span class="eye-toggle" onclick="toggleBothPasswords('setNewPass', 'setConfirmPass')">👁️</span>
+                            </div>
+                            
+                            <!-- Confirm Password - NO EYE TOGGLE -->
+                            <div class="no-eye-toggle">
+                                <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:6px;">
+                            </div>
+                            
+                            <button onclick="updatePassword()" class="btn-purple" style="padding:8px;">Update Password</button>
                             <button onclick="handleLogout()" class="btn-red" style="margin-top:8px;padding:8px;">Log Out</button>
                         </div>
                     </div>
@@ -1049,6 +1074,7 @@
             if (event.target === document.getElementById('appModal')) closeModal();
         }
 
+        // Toggle single password field
         function togglePassView(id) {
             let el = document.getElementById(id);
             if(!el) return;
@@ -1057,6 +1083,29 @@
             if (wrapper) {
                 const eye = wrapper.querySelector('.eye-toggle');
                 if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
+            }
+        }
+
+        // Toggle BOTH password fields (New + Confirm)
+        function toggleBothPasswords(newId, confirmId) {
+            let newPass = document.getElementById(newId);
+            let confirmPass = document.getElementById(confirmId);
+            
+            if (!newPass || !confirmPass) return;
+            
+            // Find the eye icon in the wrapper of new password
+            const wrapper = newPass.closest('.pass-wrapper');
+            if (!wrapper) return;
+            const eye = wrapper.querySelector('.eye-toggle');
+            
+            if (newPass.type === "password") {
+                newPass.type = "text";
+                confirmPass.type = "text";
+                if (eye) eye.textContent = "👁️‍🗨️";
+            } else {
+                newPass.type = "password";
+                confirmPass.type = "password";
+                if (eye) eye.textContent = "👁️";
             }
         }
 
@@ -1198,6 +1247,12 @@
                 document.getElementById('setCurrentPass').value = '';
                 document.getElementById('setNewPass').value = '';
                 document.getElementById('setConfirmPass').value = '';
+                // Reset eye icon for new password
+                const wrapper = document.getElementById('setNewPass').closest('.pass-wrapper');
+                if (wrapper) {
+                    const eye = wrapper.querySelector('.eye-toggle');
+                    if (eye) eye.textContent = "👁️";
+                }
                 window.pendingSetting = null;
                 document.getElementById('btnFarmName').innerText = 'Edit';
                 document.getElementById('btnOwnerName').innerText = 'Edit';
@@ -1486,6 +1541,12 @@
             window.userProfile.pass = newPass;
             syncDB();
             document.getElementById('setCurrentPass').value = ''; document.getElementById('setNewPass').value = ''; document.getElementById('setConfirmPass').value = '';
+            // Reset eye icon
+            const wrapper = document.getElementById('setNewPass').closest('.pass-wrapper');
+            if (wrapper) {
+                const eye = wrapper.querySelector('.eye-toggle');
+                if (eye) eye.textContent = "👁️";
+            }
             openModal('Success', 'Password successfully change ho gaya!', null);
         }
 
