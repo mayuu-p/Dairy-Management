@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
+        /* ... SAME CSS AS BEFORE ... */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -579,24 +580,6 @@
         .password-field-with-eye .eye-toggle:hover { color: rgba(255,255,255,0.6); }
         .password-field-with-eye .eye-toggle:active { color: #5e5ce6; }
 
-        /* No eye toggle for confirm password fields */
-        .no-eye-toggle {
-            position: relative;
-            width: 100%;
-        }
-        .no-eye-toggle input {
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.02);
-            font-size: 14px;
-            color: #fff;
-            outline: none;
-            box-sizing: border-box;
-            min-height: 44px;
-        }
-
         @media (max-width: 480px) {
             .app-header { padding: 10px 14px; }
             .app-body { padding: 10px 14px 14px 14px; }
@@ -743,6 +726,7 @@
         </div>
     </div>
 
+    <!-- REGISTRATION FORM - FIXED: Confirm Password has NO toggle -->
     <div id="auth-register-view" class="auth-container hidden">
         <h2>Create Account</h2>
         <p>Apni farm aur profile details register karein</p>
@@ -751,15 +735,16 @@
             <input type="text" id="regFarm" placeholder="Farm Name" onkeydown="handleEnterNav(event, 'regUser')">
             <input type="text" id="regUser" placeholder="Choose Username" onkeydown="handleEnterNav(event, 'regPass')">
             
-            <!-- ONLY THIS FIELD HAS EYE TOGGLE -->
+            <!-- New Password - WITH EYE TOGGLE -->
             <div class="pass-wrapper">
                 <input type="password" id="regPass" placeholder="Choose Password" onkeydown="handleEnterNav(event, 'regConfirmPass')">
-                <span class="eye-toggle" onclick="toggleBothPasswords('regPass', 'regConfirmPass')">👁️</span>
+                <span class="eye-toggle" onclick="toggleRegPasswords()">👁️</span>
             </div>
             
-            <!-- CONFIRM PASSWORD - NO EYE TOGGLE -->
-            <div class="no-eye-toggle">
+            <!-- Confirm Password - NO EYE TOGGLE (controlled by new password toggle) -->
+            <div class="pass-wrapper">
                 <input type="password" id="regConfirmPass" placeholder="Confirm Password" onkeydown="handleEnterNav(event, 'REG_TRIGGER')">
+                <!-- NO EYE TOGGLE HERE - as requested -->
             </div>
             
             <button id="btnRegisterAction" onclick="handleRegister()" class="btn-dark">Register Account</button>
@@ -921,19 +906,20 @@
                                 <h5 style="margin: 0 0 8px 0; font-size: 14px; color: #fff;">🔒 Change Password</h5>
                             </div>
                             
-                            <!-- Current Password - NO EYE TOGGLE -->
-                            <div class="no-eye-toggle">
+                            <!-- Current Password - WITH EYE TOGGLE -->
+                            <div class="pass-wrapper">
                                 <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:6px;">
+                                <span class="eye-toggle" onclick="toggleCurrentPassword()">👁️</span>
                             </div>
                             
-                            <!-- New Password - WITH EYE TOGGLE (controls both) -->
+                            <!-- New Password - WITH EYE TOGGLE (controls new + confirm) -->
                             <div class="pass-wrapper">
                                 <input type="password" id="setNewPass" placeholder="New password" style="margin-bottom:6px;">
-                                <span class="eye-toggle" onclick="toggleBothPasswords('setNewPass', 'setConfirmPass')">👁️</span>
+                                <span class="eye-toggle" onclick="toggleNewAndConfirm()">👁️</span>
                             </div>
                             
-                            <!-- Confirm Password - NO EYE TOGGLE -->
-                            <div class="no-eye-toggle">
+                            <!-- Confirm Password - NO TOGGLE (controlled by new password toggle) -->
+                            <div class="pass-wrapper">
                                 <input type="password" id="setConfirmPass" placeholder="Confirm password" style="margin-bottom:6px;">
                             </div>
                             
@@ -1079,24 +1065,53 @@
             let el = document.getElementById(id);
             if(!el) return;
             el.type = el.type === "password" ? "text" : "password";
-            const wrapper = el.closest('.pass-wrapper') || el.closest('.password-field-with-eye');
+            const wrapper = el.closest('.pass-wrapper');
             if (wrapper) {
                 const eye = wrapper.querySelector('.eye-toggle');
                 if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
             }
         }
 
-        // Toggle BOTH password fields (New + Confirm)
-        function toggleBothPasswords(newId, confirmId) {
-            let newPass = document.getElementById(newId);
-            let confirmPass = document.getElementById(confirmId);
-            
+        // Toggle ONLY Current Password (Settings)
+        function toggleCurrentPassword() {
+            let el = document.getElementById('setCurrentPass');
+            if(!el) return;
+            el.type = el.type === "password" ? "text" : "password";
+            const wrapper = el.closest('.pass-wrapper');
+            if (wrapper) {
+                const eye = wrapper.querySelector('.eye-toggle');
+                if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
+            }
+        }
+
+        // Toggle New Password + Confirm Password together (Settings)
+        function toggleNewAndConfirm() {
+            let newPass = document.getElementById('setNewPass');
+            let confirmPass = document.getElementById('setConfirmPass');
             if (!newPass || !confirmPass) return;
             
-            // Find the eye icon in the wrapper of new password
-            const wrapper = newPass.closest('.pass-wrapper');
-            if (!wrapper) return;
-            const eye = wrapper.querySelector('.eye-toggle');
+            let wrapper = newPass.closest('.pass-wrapper');
+            let eye = wrapper ? wrapper.querySelector('.eye-toggle') : null;
+            
+            if (newPass.type === "password") {
+                newPass.type = "text";
+                confirmPass.type = "text";
+                if (eye) eye.textContent = "👁️‍🗨️";
+            } else {
+                newPass.type = "password";
+                confirmPass.type = "password";
+                if (eye) eye.textContent = "👁️";
+            }
+        }
+
+        // Toggle New Password + Confirm Password together (Registration)
+        function toggleRegPasswords() {
+            let newPass = document.getElementById('regPass');
+            let confirmPass = document.getElementById('regConfirmPass');
+            if (!newPass || !confirmPass) return;
+            
+            let wrapper = newPass.closest('.pass-wrapper');
+            let eye = wrapper ? wrapper.querySelector('.eye-toggle') : null;
             
             if (newPass.type === "password") {
                 newPass.type = "text";
@@ -1247,12 +1262,25 @@
                 document.getElementById('setCurrentPass').value = '';
                 document.getElementById('setNewPass').value = '';
                 document.getElementById('setConfirmPass').value = '';
-                // Reset eye icon for new password
-                const wrapper = document.getElementById('setNewPass').closest('.pass-wrapper');
-                if (wrapper) {
-                    const eye = wrapper.querySelector('.eye-toggle');
+                
+                // Reset password field types to password
+                document.getElementById('setCurrentPass').type = 'password';
+                document.getElementById('setNewPass').type = 'password';
+                document.getElementById('setConfirmPass').type = 'password';
+                
+                // Reset all eye icons
+                const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
+                wrappers.forEach(w => {
+                    const eye = w.querySelector('.eye-toggle');
                     if (eye) eye.textContent = "👁️";
-                }
+                });
+                
+                // Reset registration form eye icon
+                const regWrapper = document.querySelector('#auth-register-view .pass-wrapper .eye-toggle');
+                if (regWrapper) regWrapper.textContent = "👁️";
+                document.getElementById('regPass').type = 'password';
+                document.getElementById('regConfirmPass').type = 'password';
+                
                 window.pendingSetting = null;
                 document.getElementById('btnFarmName').innerText = 'Edit';
                 document.getElementById('btnOwnerName').innerText = 'Edit';
@@ -1541,12 +1569,18 @@
             window.userProfile.pass = newPass;
             syncDB();
             document.getElementById('setCurrentPass').value = ''; document.getElementById('setNewPass').value = ''; document.getElementById('setConfirmPass').value = '';
-            // Reset eye icon
-            const wrapper = document.getElementById('setNewPass').closest('.pass-wrapper');
-            if (wrapper) {
-                const eye = wrapper.querySelector('.eye-toggle');
+            
+            // Reset password field types
+            document.getElementById('setCurrentPass').type = 'password';
+            document.getElementById('setNewPass').type = 'password';
+            document.getElementById('setConfirmPass').type = 'password';
+            
+            // Reset all eye icons
+            const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
+            wrappers.forEach(w => {
+                const eye = w.querySelector('.eye-toggle');
                 if (eye) eye.textContent = "👁️";
-            }
+            });
             openModal('Success', 'Password successfully change ho gaya!', null);
         }
 
