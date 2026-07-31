@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-  <title>Dairy Dashboard Premium</title>
-  <!-- Supabase JS from CDN -->
+  <title>Dairy Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * {
@@ -12,7 +11,6 @@
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      -webkit-touch-callout: none;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent !important;
       outline: none !important;
@@ -72,16 +70,6 @@
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
-    .glass-panel::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 30% 40%, rgba(88, 86, 214, 0.02) 0%, transparent 60%);
-      pointer-events: none;
-    }
     .app-header {
       flex-shrink: 0;
       padding: 14px 20px 8px 20px;
@@ -90,18 +78,7 @@
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255,255,255,0.04);
       position: relative;
-      overflow: hidden;
       z-index: 10;
-    }
-    .app-header::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 30% 40%, rgba(88, 86, 214, 0.03) 0%, transparent 60%);
-      pointer-events: none;
     }
     .app-body {
       flex: 1 1 auto;
@@ -111,19 +88,9 @@
       scroll-behavior: smooth;
       z-index: 1;
     }
-    .app-body::-webkit-scrollbar {
-      width: 3px;
-    }
-    .app-body::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .app-body::-webkit-scrollbar-thumb {
-      background: rgba(94, 92, 230, 0.15);
-      border-radius: 4px;
-    }
-    .app-body::-webkit-scrollbar-thumb:hover {
-      background: rgba(94, 92, 230, 0.25);
-    }
+    .app-body::-webkit-scrollbar { width: 3px; }
+    .app-body::-webkit-scrollbar-track { background: transparent; }
+    .app-body::-webkit-scrollbar-thumb { background: rgba(94, 92, 230, 0.15); border-radius: 4px; }
     .auth-container {
       background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(35px);
@@ -142,23 +109,12 @@
       overflow: hidden;
       z-index: 100;
     }
-    .auth-container::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 60% 40%, rgba(88, 86, 214, 0.05) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .auth-container h2 { margin: 0 0 10px 0; color: #fff; font-size: 28px; font-weight: 700; position: relative; z-index: 1; letter-spacing: -0.5px; }
-    .auth-container p { margin: 0 0 18px 0; color: rgba(255,255,255,0.4); font-size: 15px; position: relative; z-index: 1; }
-    .auth-link { color: #5e5ce6; cursor: pointer; font-weight: 600; text-decoration: none; position: relative; z-index: 1; border-bottom: 1px solid rgba(94, 92, 230, 0.2); }
+    .auth-container h2 { margin: 0 0 10px 0; color: #fff; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .auth-container p { margin: 0 0 18px 0; color: rgba(255,255,255,0.4); font-size: 15px; }
+    .auth-link { color: #5e5ce6; cursor: pointer; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(94, 92, 230, 0.2); }
     .pass-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
     .pass-wrapper input { padding-right: 44px !important; }
-    .eye-toggle { position: absolute; right: 12px; cursor: pointer; color: rgba(255,255,255,0.3); font-size: 16px; user-select: none; z-index: 5; transition: color 0.3s ease; padding: 4px; border-radius: 50%; }
-    .eye-toggle:hover { color: rgba(255,255,255,0.6); }
+    .eye-toggle { position: absolute; right: 12px; cursor: pointer; color: rgba(255,255,255,0.3); font-size: 16px; user-select: none; z-index: 5; padding: 4px; border-radius: 50%; }
     .eye-toggle:active { color: #5e5ce6; }
     .app-header-inner {
       display: flex;
@@ -183,16 +139,6 @@
       position: relative;
       overflow: hidden;
     }
-    .header-rate-box::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(88, 86, 214, 0.05) 0%, transparent 70%);
-      pointer-events: none;
-    }
     .header-rate-box input {
       width: 65px !important;
       padding: 4px 8px !important;
@@ -215,8 +161,6 @@
       border-radius: 30px;
       flex-wrap: wrap;
       margin-top: 6px;
-      position: relative;
-      overflow: visible;
       border: 1px solid rgba(255,255,255,0.03);
     }
     nav a {
@@ -233,20 +177,6 @@
       transition: all 0.3s ease;
       background: transparent;
       -webkit-tap-highlight-color: transparent;
-    }
-    nav a::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 24px;
-      background: radial-gradient(circle at center, rgba(88, 86, 214, 0.15) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: -1;
     }
     nav a.active {
       background: rgba(88, 86, 214, 0.2);
@@ -274,24 +204,14 @@
       -webkit-transform: translateZ(0);
       transform: translateZ(0);
     }
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 60% 40%, rgba(88, 86, 214, 0.02) 0%, transparent 60%);
-      pointer-events: none;
-    }
     .glass-card:hover { transform: translateY(-2px); box-shadow: 0 8px 45px rgba(88, 86, 214, 0.06); border-color: rgba(255,255,255,0.07); }
-    .stats-card span { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; position: relative; z-index: 1; }
-    .stats-card h3 { margin: 6px 0; font-size: 22px; color: #fff; word-break: break-all; position: relative; z-index: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.1); font-weight: 700; letter-spacing: -0.5px; }
-    .stats-card p { font-size: 12px; margin: 2px 0; color: rgba(255,255,255,0.3); position: relative; z-index: 1; }
+    .stats-card span { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.8px; }
+    .stats-card h3 { margin: 6px 0; font-size: 22px; color: #fff; word-break: break-all; font-weight: 700; letter-spacing: -0.5px; }
+    .stats-card p { font-size: 12px; margin: 2px 0; color: rgba(255,255,255,0.3); }
     .forms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
     @media (max-width: 650px) { .forms-row { grid-template-columns: 1fr; } }
-    .glass-card h4 { margin: 0 0 10px 0; font-size: 15px; color: #fff; font-weight: 600; position: relative; z-index: 1; letter-spacing: -0.2px; }
-    .form-group { display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+    .glass-card h4 { margin: 0 0 10px 0; font-size: 15px; color: #fff; font-weight: 600; letter-spacing: -0.2px; }
+    .form-group { display: flex; flex-direction: column; gap: 10px; }
     .form-flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     input, select {
       width: 100%;
@@ -305,8 +225,6 @@
       box-sizing: border-box;
       min-height: 44px;
       transition: border 0.3s ease;
-      position: relative;
-      z-index: 1;
       -webkit-tap-highlight-color: transparent;
       transform: translateZ(0);
       -webkit-transform: translateZ(0);
@@ -316,7 +234,6 @@
     input::placeholder, select { color: rgba(255,255,255,0.2); }
     input:focus, select:focus { border-color: rgba(88, 86, 214, 0.25); background: rgba(255,255,255,0.04); }
     .form-flex input, .form-flex select { flex: 1; min-width: 60px; }
-
     button {
       width: 100%;
       padding: 12px 20px;
@@ -335,60 +252,26 @@
       box-shadow: 0 4px 25px rgba(0,0,0,0.15);
       -webkit-tap-highlight-color: transparent;
     }
-    button::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 200%;
-      height: 300%;
-      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    button::after {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: -100%;
-      width: 300%;
-      height: 300%;
-      background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.02) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-    button > * { position: relative; z-index: 1; }
     button:active { transform: scale(0.96); }
-
     .btn-purple { background: linear-gradient(135deg, #5e5ce6, #4f46e5, #6d28d9); color: white; box-shadow: 0 4px 30px rgba(94, 92, 230, 0.2); }
-    .btn-purple:hover { box-shadow: 0 6px 40px rgba(94, 92, 230, 0.35); }
     .btn-dark { background: linear-gradient(135deg, #2c2c3e, #1a1a2e, #0f0f1a); color: white; box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
-    .btn-dark:hover { box-shadow: 0 6px 40px rgba(0,0,0,0.4); }
     .btn-red { background: linear-gradient(135deg, #ff453a, #e3352b, #cc2b22); color: white; box-shadow: 0 4px 30px rgba(255, 69, 58, 0.15); }
-    .btn-red:hover { box-shadow: 0 6px 40px rgba(255, 69, 58, 0.25); }
     .btn-green { background: linear-gradient(135deg, #30d158, #28b846, #1f9a3a); color: white; box-shadow: 0 4px 30px rgba(48, 209, 88, 0.15); }
-    .btn-green:hover { box-shadow: 0 6px 40px rgba(48, 209, 88, 0.25); }
-    .btn-share-cattle { background: linear-gradient(135deg, #f59e0b, #d97706, #b45309); color: white; box-shadow: 0 4px 30px rgba(245, 158, 11, 0.2); }
-    .btn-share-cattle:hover { box-shadow: 0 6px 40px rgba(245, 158, 11, 0.35); }
-    .btn-share-milk { background: linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8); color: white; box-shadow: 0 4px 30px rgba(59, 130, 246, 0.2); }
-    .btn-share-milk:hover { box-shadow: 0 6px 40px rgba(59, 130, 246, 0.35); }
-    .btn-share-expenses { background: linear-gradient(135deg, #ec4899, #db2777, #be185d); color: white; box-shadow: 0 4px 30px rgba(236, 72, 153, 0.2); }
-    .btn-share-expenses:hover { box-shadow: 0 6px 40px rgba(236, 72, 153, 0.35); }
-    .btn-share-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9); color: white; box-shadow: 0 4px 30px rgba(139, 92, 246, 0.2); }
-    .btn-share-all:hover { box-shadow: 0 6px 40px rgba(139, 92, 246, 0.35); }
     .btn-sm { padding: 8px 16px; width: auto; font-size: 13px; min-height: 38px; }
-
-    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; position: relative; z-index: 1; }
+    .btn-share-cattle { background: linear-gradient(135deg, #f59e0b, #d97706, #b45309); color: white; box-shadow: 0 4px 30px rgba(245, 158, 11, 0.2); }
+    .btn-share-milk { background: linear-gradient(135deg, #3b82f6, #2563eb, #1d4ed8); color: white; box-shadow: 0 4px 30px rgba(59, 130, 246, 0.2); }
+    .btn-share-expenses { background: linear-gradient(135deg, #ec4899, #db2777, #be185d); color: white; box-shadow: 0 4px 30px rgba(236, 72, 153, 0.2); }
+    .btn-share-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9); color: white; box-shadow: 0 4px 30px rgba(139, 92, 246, 0.2); }
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 500px; }
     th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); color: rgba(255,255,255,0.65); }
     th { font-weight: 600; color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.015); }
-    .act-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 6px; display: inline-flex; align-items: center; position: relative; z-index: 1; transition: transform 0.2s ease; -webkit-tap-highlight-color: transparent; }
+    .act-btn { background: none; border: none; cursor: pointer; font-size: 16px; padding: 0 6px; display: inline-flex; align-items: center; transition: transform 0.2s ease; -webkit-tap-highlight-color: transparent; }
     .act-btn:active { transform: scale(0.8); }
     .act-edit { color: #5e5ce6; margin-right: 14px; }
     .act-delete { color: #ff453a; }
     .action-cell { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-
-    .chart-placeholder { height: 120px; display: flex; align-items: flex-end; gap: 6px; padding-top: 8px; justify-content: space-between; position: relative; z-index: 1; }
+    .chart-placeholder { height: 120px; display: flex; align-items: flex-end; gap: 6px; padding-top: 8px; justify-content: space-between; }
     .bar-container { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; height: 100%; justify-content: flex-end; }
     .bar {
       width: 100%;
@@ -400,16 +283,6 @@
       overflow: hidden;
       box-shadow: 0 0 30px rgba(94, 92, 230, 0.04);
     }
-    .bar::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.06) 0%, transparent 60%);
-      pointer-events: none;
-    }
     #b-Mon { background: linear-gradient(180deg, rgba(94, 92, 230, 0.7), rgba(79, 70, 229, 0.3)); }
     #b-Tue { background: linear-gradient(180deg, rgba(139, 92, 246, 0.7), rgba(124, 58, 237, 0.3)); }
     #b-Wed { background: linear-gradient(180deg, rgba(59, 130, 246, 0.7), rgba(37, 99, 235, 0.3)); }
@@ -419,9 +292,8 @@
     #b-Sun { background: linear-gradient(180deg, rgba(236, 72, 153, 0.7), rgba(219, 39, 119, 0.3)); }
     .bar-label { font-size: 9px; color: rgba(255,255,255,0.3); font-weight: 500; margin-top: 2px; }
     .bar-value { font-size: 8px; color: rgba(255,255,255,0.2); margin-bottom: 1px; }
-    .chart-stats { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: rgba(255,255,255,0.2); position: relative; z-index: 1; }
+    .chart-stats { display: flex; justify-content: space-between; margin-top: 6px; font-size: 10px; color: rgba(255,255,255,0.2); }
     .chart-stats span { background: rgba(255,255,255,0.03); padding: 2px 10px; border-radius: 10px; }
-
     .quality-circle-container { position: relative; width: 140px; height: 140px; margin: 6px auto; }
     .quality-circle { width: 140px; height: 140px; border-radius: 50%; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(94, 92, 230, 0.05); border: 2px solid rgba(255,255,255,0.05); }
     .quality-circle svg { transform: rotate(-90deg); width: 140px; height: 140px; }
@@ -433,11 +305,10 @@
     .quality-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; z-index: 2; }
     .quality-center .main-value { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
     .quality-center .main-label { font-size: 9px; color: rgba(255,255,255,0.3); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
-    .quality-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 8px; font-size: 9px; color: rgba(255,255,255,0.5); position: relative; z-index: 1; }
+    .quality-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 8px; font-size: 9px; color: rgba(255,255,255,0.5); }
     .quality-legend .legend-item { display: flex; align-items: center; gap: 4px; }
     .quality-legend .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .quality-legend .legend-value { color: #fff; font-weight: 600; margin-left: auto; }
-
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -495,27 +366,14 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    .modal-box::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 40% 60%, rgba(94, 92, 230, 0.03) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .modal-box h5 { margin: 0 0 6px 0; font-size: 18px; color: #fff; position: relative; z-index: 1; flex-shrink: 0; }
-    .modal-box p { margin: 0 0 12px 0; font-size: 14px; color: rgba(255,255,255,0.4); position: relative; z-index: 1; flex-shrink: 0; }
-    .modal-flex { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; flex-shrink: 0; }
+    .modal-box h5 { margin: 0 0 6px 0; font-size: 18px; color: #fff; flex-shrink: 0; }
+    .modal-box p { margin: 0 0 12px 0; font-size: 14px; color: rgba(255,255,255,0.4); flex-shrink: 0; }
+    .modal-flex { display: flex; gap: 12px; justify-content: center; flex-shrink: 0; }
     .modal-flex button { width: auto; padding: 10px 24px; font-size: 14px; min-height: 40px; }
-
     .popup-list {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      position: relative;
-      z-index: 1;
       padding: 4px 0;
       max-height: 50vh;
       overflow-y: auto;
@@ -523,15 +381,12 @@
     .popup-list::-webkit-scrollbar { width: 2px; }
     .popup-list::-webkit-scrollbar-track { background: transparent; }
     .popup-list::-webkit-scrollbar-thumb { background: rgba(94, 92, 230, 0.3); border-radius: 4px; }
-
     .popup-item {
       padding: 8px 12px;
       border-radius: 10px;
       cursor: pointer;
       font-size: 14px;
       color: #fff;
-      position: relative;
-      overflow: hidden;
       transition: all 0.15s ease;
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.04);
@@ -540,48 +395,19 @@
       font-weight: 500;
       letter-spacing: 0.2px;
     }
-    .popup-item:hover { background: rgba(94, 92, 230, 0.08); border-color: rgba(94, 92, 230, 0.12); transform: scale(1.01); }
     .popup-item:active { transform: scale(0.96); }
-
     .hidden { display: none !important; }
     .flex-wrap { flex-wrap: wrap; }
     .gap-1 { gap: 6px; }
     .items-center { align-items: center; }
     .text-sm { font-size: 13px; }
-    .text-xs { font-size: 11px; }
-    .font-bold { font-weight: 600; }
-    .mt-1 { margin-top: 6px; }
-    .mb-1 { margin-bottom: 6px; }
-    .w-auto { width: auto; }
-    .flex-1 { flex: 1; }
-    .flex-2 { flex: 2; }
     .border-t { border-top: 1px solid rgba(255,255,255,0.03); padding-top: 10px; margin-top: 8px; }
     .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
     .share-grid button { padding: 12px; font-size: 14px; min-height: 48px; }
-    .setting-group { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
+    .setting-group { display: flex; flex-direction: column; gap: 8px; }
     .setting-row { display: flex; gap: 10px; align-items: center; }
     .setting-row input { flex: 1; }
     .setting-row button { width: auto; padding: 8px 18px; font-size: 13px; min-height: 38px; }
-    .password-field-with-eye { position: relative; width: 100%; }
-    .password-field-with-eye input { padding-right: 44px !important; }
-    .password-field-with-eye .eye-toggle {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: rgba(255,255,255,0.3);
-      font-size: 16px;
-      user-select: none;
-      z-index: 5;
-      transition: color 0.3s ease;
-      padding: 4px;
-      border-radius: 50%;
-    }
-    .password-field-with-eye .eye-toggle:hover { color: rgba(255,255,255,0.6); }
-    .password-field-with-eye .eye-toggle:active { color: #5e5ce6; }
-
-    /* --- error alert style (visible on tablet) --- */
     .db-error-alert {
       background: rgba(255, 60, 60, 0.25);
       backdrop-filter: blur(4px);
@@ -597,12 +423,7 @@
       word-break: break-word;
       white-space: pre-wrap;
     }
-    .db-error-alert strong {
-      color: #ff6b6b;
-      display: block;
-      margin-bottom: 6px;
-      font-size: 15px;
-    }
+    .db-error-alert strong { color: #ff6b6b; display: block; margin-bottom: 6px; font-size: 15px; }
     .db-error-alert .error-detail {
       font-family: monospace;
       font-size: 13px;
@@ -615,7 +436,6 @@
       max-height: 200px;
       overflow: auto;
     }
-
     .error-toast {
       position: fixed;
       bottom: 30px;
@@ -637,12 +457,7 @@
       font-size: 14px;
       line-height: 1.5;
     }
-    .error-toast strong {
-      color: #ff6b6b;
-      display: block;
-      margin-bottom: 6px;
-      font-size: 16px;
-    }
+    .error-toast strong { color: #ff6b6b; display: block; margin-bottom: 6px; font-size: 16px; }
     .error-toast .error-detail {
       font-family: monospace;
       background: rgba(0, 0, 0, 0.4);
@@ -672,15 +487,11 @@
       -webkit-backdrop-filter: blur(4px);
       transition: background 0.2s;
     }
-    .error-toast .close-toast:active {
-      background: rgba(255, 255, 255, 0.12);
-      transform: scale(0.96);
-    }
+    .error-toast .close-toast:active { background: rgba(255, 255, 255, 0.12); transform: scale(0.96); }
     @keyframes slideUpToast {
       from { transform: translateY(30px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
     @media (max-width: 480px) {
       .app-header { padding: 10px 14px; }
       .app-body { padding: 10px 14px 14px 14px; }
@@ -852,12 +663,8 @@
     <div class="app-header">
       <div class="app-header-inner">
         <div class="header-title-area">
-          <h1>
-            <span id="lblDisplayFarmName">My Farm Dairy</span>
-            <span style="color: rgba(255,255,255,0.12); font-weight: 300;">|</span>
-            <span id="lblDisplayOwnerName" style="color: #5e5ce6; font-size: 17px;">Owner</span>
-          </h1>
-          <p style="margin:0; font-size:11px; color:rgba(255,255,255,0.25); width:100%;">Live tracking active</p>
+          <h1><span id="lblDisplayFarmName">My Farm Dairy</span> <span style="color:rgba(255,255,255,0.12);font-weight:300;">|</span> <span id="lblDisplayOwnerName" style="color:#5e5ce6;font-size:17px;">Owner</span></h1>
+          <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.25);width:100%;">Live tracking active</p>
         </div>
         <div class="header-rate-box">
           <span>₹</span>
@@ -876,21 +683,19 @@
     </div>
 
     <div class="app-body" id="appBody">
-      <!-- error container for db alerts -->
-      <div id="dbErrorContainer" style="margin-bottom: 12px;"></div>
-
+      <div id="dbErrorContainer" style="margin-bottom:12px;"></div>
       <div class="main-grid">
         <div class="space-y">
           <!-- Stats -->
           <div class="stats-row">
             <div class="glass-card stats-card"><span>Total Cattle</span><h3 id="cCount">0 Cows</h3></div>
-            <div class="glass-card stats-card" style="background: rgba(94, 92, 230, 0.03); border: 1px solid rgba(94, 92, 230, 0.06);">
-              <span style="color: #5e5ce6;">Net Balance</span>
-              <h3 id="netBalanceText" style="color: #5e5ce6; font-weight: 700;">₹0</h3>
+            <div class="glass-card stats-card" style="background:rgba(94,92,230,0.03);border:1px solid rgba(94,92,230,0.06);">
+              <span style="color:#5e5ce6;">Net Balance</span>
+              <h3 id="netBalanceText" style="color:#5e5ce6;font-weight:700;">₹0</h3>
               <p id="mAvg">Avg: 0L/cow</p>
             </div>
-            <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color: #30d158;">₹0</h3><p id="mCount">0.0 Liters</p></div>
-            <div class="glass-card stats-card"><span>Expenses</span><h3 id="eCountText" style="color: #ff453a;">₹0</h3></div>
+            <div class="glass-card stats-card"><span>Milk Income</span><h3 id="mIncomeText" style="color:#30d158;">₹0</h3><p id="mCount">0.0 Liters</p></div>
+            <div class="glass-card stats-card"><span>Expenses</span><h3 id="eCountText" style="color:#ff453a;">₹0</h3></div>
           </div>
 
           <!-- Dashboard Pages -->
@@ -927,7 +732,7 @@
                     <input type="hidden" id="cCond" value="Healthy">
                   </div>
                   <div id="pDateDiv" class="hidden">
-                    <label style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.3);">Insemination Date:</label>
+                    <label style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);">Insemination Date:</label>
                     <input type="date" id="cPregDate" onkeydown="handleEnterNav(event, 'COW_TRIGGER')">
                   </div>
                   <button id="cBtn" onclick="addCow()" class="btn-dark">Register Cow</button>
@@ -944,7 +749,7 @@
                     <input type="text" id="exCatDisplay" placeholder="Category" readonly onclick="openCatPopup()" style="cursor:pointer;background:rgba(255,255,255,0.02);flex:1;min-width:80px;">
                     <input type="hidden" id="exCat" value="Feed & Fodder">
                     <input type="number" id="exAmount" placeholder="Amount (₹)" min="0" oninput="validateNonNegative(this)" onkeydown="handleEnterNav(event, 'EXPENSE_TRIGGER')" style="flex:1;">
-                    <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto; padding:10px 20px; flex:0 0 auto; min-height:42px;">Add</button>
+                    <button id="exBtn" onclick="addExpense()" class="btn-purple" style="width:auto;padding:10px 20px;flex:0 0 auto;min-height:42px;">Add</button>
                   </div>
                 </div>
               </div>
@@ -955,10 +760,7 @@
           <div id="page-milk" class="glass-card hidden">
             <h4>🥛 Complete Milk Production History</h4>
             <div class="table-responsive">
-              <table>
-                <thead><tr><th>Cow ID</th><th>Day</th><th>Shift</th><th>Qty</th><th>Quality</th><th>Date</th><th>Actions</th></tr></thead>
-                <tbody id="tb-milk"></tbody>
-              </table>
+              <table><thead><tr><th>Cow ID</th><th>Day</th><th>Shift</th><th>Qty</th><th>Quality</th><th>Date</th><th>Actions</th></tr></thead><tbody id="tb-milk"></tbody></table>
             </div>
           </div>
 
@@ -966,10 +768,7 @@
           <div id="page-cat" class="glass-card hidden">
             <h4>🐄 Complete Registered Cattle Inventory</h4>
             <div class="table-responsive">
-              <table>
-                <thead><tr><th>Tag</th><th>Breed</th><th>Condition</th><th>Pregnancy Status</th><th>Actions</th></tr></thead>
-                <tbody id="tb-cat"></tbody>
-              </table>
+              <table><thead><tr><th>Tag</th><th>Breed</th><th>Condition</th><th>Pregnancy Status</th><th>Actions</th></tr></thead><tbody id="tb-cat"></tbody></table>
             </div>
           </div>
 
@@ -977,10 +776,7 @@
           <div id="page-exp" class="glass-card hidden">
             <h4>💸 Complete Farm Expense Ledger</h4>
             <div class="table-responsive">
-              <table>
-                <thead><tr><th>Details</th><th>Category</th><th>Amount</th><th>Actions</th></tr></thead>
-                <tbody id="tb-expenses"></tbody>
-              </table>
+              <table><thead><tr><th>Details</th><th>Category</th><th>Amount</th><th>Actions</th></tr></thead><tbody id="tb-expenses"></tbody></table>
             </div>
           </div>
 
@@ -1001,7 +797,7 @@
                 <button id="btnUsername" onclick="toggleEdit('username')" class="btn-purple btn-sm">Edit</button>
               </div>
               <div class="border-t">
-                <h5 style="margin: 0 0 8px 0; font-size: 14px; color: #fff;">🔒 Change Password</h5>
+                <h5 style="margin:0 0 8px 0;font-size:14px;color:#fff;">🔒 Change Password</h5>
               </div>
               <div class="pass-wrapper">
                 <input type="password" id="setCurrentPass" placeholder="Current password" style="margin-bottom:6px;">
@@ -1022,14 +818,14 @@
           <!-- Share/Export Page -->
           <div id="page-export" class="glass-card hidden">
             <h4>📱 Share Reports via WhatsApp</h4>
-            <p style="font-size:13px; color:rgba(255,255,255,0.3); margin-bottom:10px;">Select report type to share instantly on WhatsApp</p>
+            <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Select report type to share instantly on WhatsApp</p>
             <div class="share-grid">
               <button onclick="shareWhatsApp('cattle')" class="btn-share-cattle">🐄 Cattle</button>
               <button onclick="shareWhatsApp('milk')" class="btn-share-milk">🥛 Milk</button>
               <button onclick="shareWhatsApp('expenses')" class="btn-share-expenses">💸 Expenses</button>
               <button onclick="shareWhatsApp('all')" class="btn-share-all">📄 All Reports</button>
             </div>
-            <p style="font-size:12px; color:rgba(255,255,255,0.2); margin-top:12px;">Click any button to open WhatsApp with the report data pre-filled.</p>
+            <p style="font-size:12px;color:rgba(255,255,255,0.2);margin-top:12px;">Click any button to open WhatsApp with the report data pre-filled.</p>
           </div>
         </div>
 
@@ -1046,10 +842,7 @@
               <div class="bar-container"><div class="bar" id="b-Sat"></div><span class="bar-value" id="v-Sat">0</span><span class="bar-label">Sat</span></div>
               <div class="bar-container"><div class="bar" id="b-Sun"></div><span class="bar-value" id="v-Sun">0</span><span class="bar-label">Sun</span></div>
             </div>
-            <div class="chart-stats">
-              <span id="weekTotal">📊 Total: 0 L</span>
-              <span id="weekAvg">📈 Avg: 0 L</span>
-            </div>
+            <div class="chart-stats"><span id="weekTotal">📊 Total: 0 L</span><span id="weekAvg">📈 Avg: 0 L</span></div>
           </div>
 
           <div class="glass-card">
@@ -1063,10 +856,7 @@
                   <circle class="progress-income" id="circle-income" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
                   <circle class="progress-expenses" id="circle-expenses" cx="70" cy="70" r="55" stroke-dasharray="0, 345" />
                 </svg>
-                <div class="quality-center">
-                  <div class="main-value" id="qualityMainValue">0%</div>
-                  <div class="main-label">Quality</div>
-                </div>
+                <div class="quality-center"><div class="main-value" id="qualityMainValue">0%</div><div class="main-label">Quality</div></div>
               </div>
               <div class="quality-legend">
                 <div class="legend-item"><span class="legend-dot" style="background:#5e5ce6;"></span> Fat <span class="legend-value" id="legendFat">0%</span></div>
@@ -1082,84 +872,47 @@
   </div>
 
   <script>
-    // --- SUPABASE SETUP (with your credentials) ---
+    // --- SUPABASE SETUP ---
     const SUPABASE_URL = 'https://supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_-xAxP3b_ZpK-TGGRIHV-hg_W7CV7HXG';
-
-    // Initialize Supabase client
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('Supabase client initialized (tablet mode)');
+    console.log('Supabase client initialized');
 
-    // --- ERROR DISPLAY HELPER (visible on tablet) ---
+    // --- ERROR DISPLAY ---
     function showDbError(error, context = '') {
       const container = document.getElementById('dbErrorContainer');
       if (!container) return;
-
       let errorMsg = '';
-      if (typeof error === 'string') {
-        errorMsg = error;
-      } else if (error && error.message) {
-        errorMsg = error.message;
-      } else if (error && error.error_description) {
-        errorMsg = error.error_description;
-      } else if (error && error.details) {
-        errorMsg = error.details;
-      } else {
-        try {
-          errorMsg = JSON.stringify(error, null, 2);
-        } catch (_) {
-          errorMsg = String(error);
-        }
-      }
-
-      // Build a visible alert on the tablet screen
+      if (typeof error === 'string') errorMsg = error;
+      else if (error && error.message) errorMsg = error.message;
+      else if (error && error.error_description) errorMsg = error.error_description;
+      else if (error && error.details) errorMsg = error.details;
+      else { try { errorMsg = JSON.stringify(error, null, 2); } catch (_) { errorMsg = String(error); } }
       const html = `
-        <div class="db-error-alert" style="border-left-color: #ff3b30;">
+        <div class="db-error-alert" style="border-left-color:#ff3b30;">
           <strong>⛔ DATABASE ERROR ${context ? '– ' + context : ''}</strong>
-          <div style="margin-top: 4px; font-size: 14px; color: #ffb3b3;">
-            ${errorMsg.length > 300 ? errorMsg.substring(0, 300) + '…' : errorMsg}
-          </div>
-          <div class="error-detail">
-            ${typeof error === 'object' ? JSON.stringify(error, null, 2) : errorMsg}
-          </div>
-          <div style="margin-top: 10px; font-size: 12px; color: rgba(255,255,255,0.4);">
-            🔄 Check your Supabase URL / API Key / Table permissions
-          </div>
+          <div style="margin-top:4px;font-size:14px;color:#ffb3b3;">${errorMsg.length > 300 ? errorMsg.substring(0,300) + '…' : errorMsg}</div>
+          <div class="error-detail">${typeof error === 'object' ? JSON.stringify(error,null,2) : errorMsg}</div>
+          <div style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.4);">🔄 Check your Supabase URL / API Key / Table permissions</div>
         </div>
       `;
       container.innerHTML = html;
-
-      // Also show a toast-like popup
-      showErrorToast(errorMsg, context);
-    }
-
-    function showErrorToast(errorMsg, context) {
-      // Remove any existing toast
+      // Toast
       const existing = document.querySelector('.error-toast');
       if (existing) existing.remove();
-
       const toast = document.createElement('div');
       toast.className = 'error-toast';
       toast.innerHTML = `
         <strong>⛔ DB Error ${context ? '– ' + context : ''}</strong>
-        <div style="margin-bottom: 6px; color: #ffb3b3; font-size: 14px;">
-          ${errorMsg.length > 200 ? errorMsg.substring(0, 200) + '…' : errorMsg}
-        </div>
-        <div class="error-detail">
-          ${errorMsg.length > 200 ? errorMsg : ''}
-        </div>
+        <div style="margin-bottom:6px;color:#ffb3b3;font-size:14px;">${errorMsg.length > 200 ? errorMsg.substring(0,200) + '…' : errorMsg}</div>
+        <div class="error-detail">${errorMsg.length > 200 ? errorMsg : ''}</div>
         <div class="close-toast" onclick="this.closest('.error-toast').remove()">✕ Dismiss</div>
       `;
       document.body.appendChild(toast);
-
-      // Auto dismiss after 15 seconds
-      setTimeout(() => {
-        if (toast.parentNode) toast.remove();
-      }, 15000);
+      setTimeout(() => { if (toast.parentNode) toast.remove(); }, 15000);
     }
 
-    // --- Existing App Code (with Supabase inserts wrapped in try/catch) ---
-
+    // --- APP STATE ---
     window.cows = [];
     window.milk = [];
     window.expenses = [];
@@ -1168,36 +921,26 @@
     window.eM = null;
     window.eC = null;
     window.eE = null;
-    window.pendingSetting = null;
     window.currentShift = 'Morning';
     window.editCallback = null;
     window.calcTimeout = null;
     window.updatePending = false;
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let modalConfirmCallback = null;
-
     window.editStates = { farmName: false, ownerName: false, username: false };
 
-    function ensureModalsHidden() {
-      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
-    }
+    function ensureModalsHidden() { document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden')); }
 
     function handlePriceInput(input) {
       let val = input.value.trim();
-      if (val === '') { localStorage.removeItem('dairy_milkPrice');
-        debounceCalc(); return; }
+      if (val === '') { localStorage.removeItem('dairy_milkPrice'); debounceCalc(); return; }
       let num = parseFloat(val);
-      if (isNaN(num) || num < 0) { input.value = '';
-        localStorage.removeItem('dairy_milkPrice');
-        debounceCalc(); return; }
+      if (isNaN(num) || num < 0) { input.value = ''; localStorage.removeItem('dairy_milkPrice'); debounceCalc(); return; }
       localStorage.setItem('dairy_milkPrice', num.toString());
       debounceCalc();
     }
 
-    function debounceCalc() {
-      if (window.calcTimeout) clearTimeout(window.calcTimeout);
-      window.calcTimeout = setTimeout(() => calc(), 200);
-    }
+    function debounceCalc() { if (window.calcTimeout) clearTimeout(window.calcTimeout); window.calcTimeout = setTimeout(() => calc(), 200); }
 
     function formatFatSnf(input) {
       let val = input.value.replace(/[^0-9]/g, '');
@@ -1228,19 +971,14 @@
       }
     }
 
-    function handleOutsideClick(event) {
-      if (event.target === document.getElementById('appModal')) closeModal();
-    }
+    function handleOutsideClick(event) { if (event.target === document.getElementById('appModal')) closeModal(); }
 
     function togglePassView(id) {
       let el = document.getElementById(id);
       if (!el) return;
       el.type = el.type === "password" ? "text" : "password";
       const wrapper = el.closest('.pass-wrapper');
-      if (wrapper) {
-        const eye = wrapper.querySelector('.eye-toggle');
-        if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
-      }
+      if (wrapper) { const eye = wrapper.querySelector('.eye-toggle'); if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️"; }
     }
 
     function toggleCurrentPassword() {
@@ -1248,10 +986,7 @@
       if (!el) return;
       el.type = el.type === "password" ? "text" : "password";
       const wrapper = el.closest('.pass-wrapper');
-      if (wrapper) {
-        const eye = wrapper.querySelector('.eye-toggle');
-        if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️";
-      }
+      if (wrapper) { const eye = wrapper.querySelector('.eye-toggle'); if (eye) eye.textContent = el.type === "password" ? "👁️" : "👁️‍🗨️"; }
     }
 
     function toggleNewAndConfirm() {
@@ -1260,15 +995,8 @@
       if (!newPass || !confirmPass) return;
       let wrapper = newPass.closest('.pass-wrapper');
       let eye = wrapper ? wrapper.querySelector('.eye-toggle') : null;
-      if (newPass.type === "password") {
-        newPass.type = "text";
-        confirmPass.type = "text";
-        if (eye) eye.textContent = "👁️‍🗨️";
-      } else {
-        newPass.type = "password";
-        confirmPass.type = "password";
-        if (eye) eye.textContent = "👁️";
-      }
+      if (newPass.type === "password") { newPass.type = "text"; confirmPass.type = "text"; if (eye) eye.textContent = "👁️‍🗨️"; } 
+      else { newPass.type = "password"; confirmPass.type = "password"; if (eye) eye.textContent = "👁️"; }
     }
 
     function toggleRegPasswords() {
@@ -1277,15 +1005,8 @@
       if (!newPass || !confirmPass) return;
       let wrapper = newPass.closest('.pass-wrapper');
       let eye = wrapper ? wrapper.querySelector('.eye-toggle') : null;
-      if (newPass.type === "password") {
-        newPass.type = "text";
-        confirmPass.type = "text";
-        if (eye) eye.textContent = "👁️‍🗨️";
-      } else {
-        newPass.type = "password";
-        confirmPass.type = "password";
-        if (eye) eye.textContent = "👁️";
-      }
+      if (newPass.type === "password") { newPass.type = "text"; confirmPass.type = "text"; if (eye) eye.textContent = "👁️‍🗨️"; } 
+      else { newPass.type = "password"; confirmPass.type = "password"; if (eye) eye.textContent = "👁️"; }
     }
 
     function toggleAuthScreens(view) {
@@ -1301,16 +1022,9 @@
       document.getElementById('appModal').classList.remove('hidden');
       modalConfirmCallback = onConfirm;
     }
-
-    function closeModal() {
-      document.getElementById('appModal').classList.add('hidden');
-      modalConfirmCallback = null;
-    }
+    function closeModal() { document.getElementById('appModal').classList.add('hidden'); modalConfirmCallback = null; }
     document.getElementById('modalCancelBtn').onclick = closeModal;
-    document.getElementById('modalConfirmBtn').onclick = function() {
-      if (modalConfirmCallback) modalConfirmCallback();
-      closeModal();
-    };
+    document.getElementById('modalConfirmBtn').onclick = function() { if (modalConfirmCallback) modalConfirmCallback(); closeModal(); };
 
     function handleEnterNav(event, targetId) {
       if (event.key === 'Enter') {
@@ -1320,38 +1034,48 @@
         else if (targetId === 'MILK_TRIGGER') addMilk();
         else if (targetId === 'COW_TRIGGER') addCow();
         else if (targetId === 'EXPENSE_TRIGGER') addExpense();
-        else {
-          let nextEl = document.getElementById(targetId);
-          if (nextEl) nextEl.focus();
-        }
+        else { let nextEl = document.getElementById(targetId); if (nextEl) nextEl.focus(); }
       }
     }
 
     function openBreedModal() { document.getElementById('breedModal').classList.remove('hidden'); }
+    function closeBreedModal(e) { if (!e || e.target === document.getElementById('breedModal') || e.target === document.querySelector('#breedModal .btn-dark')) document.getElementById('breedModal').classList.add('hidden'); }
+    function selectBreed(breed) { document.getElementById('cBreed').value = breed; document.getElementById('cBreedDisplay').value = breed; closeBreedModal(); }
 
-    function closeBreedModal(e) {
-      if (!e || e.target === document.getElementById('breedModal') || e.target === document.querySelector('#breedModal .btn-dark'))
-        document.getElementById('breedModal').classList.add('hidden');
-    }
-
-    function selectBreed(breed) {
-      document.getElementById('cBreed').value = breed;
-      document.getElementById('cBreedDisplay').value = breed;
-      closeBreedModal();
-    }
-
-    function handleLogin() {
+    // --- AUTH ---
+    async function handleLogin() {
       let u = document.getElementById('loginUser').value.trim();
       let p = document.getElementById('loginPass').value;
       if (!u || !p) return openModal('Auth Alert', 'Kripya Username aur Password enter karein!', null);
-      if (u === window.userProfile.user && p === window.userProfile.pass) {
-        localStorage.setItem('dairy_logged', 'true');
-        window.isLogged = true;
-        launchWorkspace();
-      } else { openModal('Auth Error', 'Galat Username ya Password!', null); }
+      try {
+        // Check in local storage first (offline support)
+        if (u === window.userProfile.user && p === window.userProfile.pass) {
+          localStorage.setItem('dairy_logged', 'true');
+          window.isLogged = true;
+          launchWorkspace();
+          return;
+        }
+        // Then try Supabase
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', u)
+          .eq('password', p)
+          .single();
+        if (error) { showDbError(error, 'Login'); return openModal('Auth Error', 'Login failed! Check error details.', null); }
+        if (data) {
+          window.userProfile = { name: data.full_name || 'Owner', farmName: data.farm_name || 'My Farm', user: data.username, pass: data.password };
+          localStorage.setItem('dairy_logged', 'true');
+          localStorage.setItem('dairy_profile', JSON.stringify(window.userProfile));
+          window.isLogged = true;
+          launchWorkspace();
+        } else {
+          openModal('Auth Error', 'User not found! Please register first.', null);
+        }
+      } catch (err) { showDbError(err, 'Login Exception'); }
     }
 
-    function handleRegister() {
+    async function handleRegister() {
       let n = document.getElementById('regName').value.trim();
       let f = document.getElementById('regFarm').value.trim();
       let u = document.getElementById('regUser').value.trim();
@@ -1359,23 +1083,41 @@
       let cp = document.getElementById('regConfirmPass').value;
       if (!n || !f || !u || !p || !cp) return openModal('Input Alert', 'Kripya saari details fill karein!', null);
       if (p !== cp) return openModal('Password Alert', 'Passwords match nahi ho rahe hain!', null);
-      window.userProfile = { name: n, farmName: f, user: u, pass: p };
-      syncDB();
-      openModal('Success', 'Account ban gaya! Sign In karein.', function() { toggleAuthScreens('login');
-        document.getElementById('loginUser').value = u; });
+      try {
+        // Check if user exists in Supabase
+        const { data: existing, error: checkErr } = await supabase
+          .from('users')
+          .select('username')
+          .eq('username', u)
+          .single();
+        if (checkErr && checkErr.code !== 'PGRST116') { showDbError(checkErr, 'Register Check'); return; }
+        if (existing) { return openModal('Duplicate Alert', 'Username already taken!', null); }
+        // Insert new user
+        const { data, error } = await supabase
+          .from('users')
+          .insert([{ username: u, password: p, full_name: n, farm_name: f }])
+          .select()
+          .single();
+        if (error) { showDbError(error, 'Register Insert'); return openModal('Registration Error', 'Failed to create account. Check error details.', null); }
+        window.userProfile = { name: n, farmName: f, user: u, pass: p };
+        localStorage.setItem('dairy_profile', JSON.stringify(window.userProfile));
+        localStorage.setItem('dairy_logged', 'true');
+        window.isLogged = true;
+        launchWorkspace();
+        openModal('Success', 'Account created! Welcome ' + n, null);
+      } catch (err) { showDbError(err, 'Register Exception'); }
     }
 
+    // --- DB HELPERS ---
     function loadDB() {
       try {
         window.cows = JSON.parse(localStorage.getItem('dairy_cows')) || [];
         window.milk = JSON.parse(localStorage.getItem('dairy_milk')) || [];
         window.expenses = JSON.parse(localStorage.getItem('dairy_expenses')) || [];
-        if (localStorage.getItem('dairy_profile')) window.userProfile = JSON.parse(localStorage.getItem(
-          'dairy_profile'));
+        if (localStorage.getItem('dairy_profile')) window.userProfile = JSON.parse(localStorage.getItem('dairy_profile'));
         window.isLogged = localStorage.getItem('dairy_logged') === 'true';
       } catch (err) { console.error("DB load error", err); }
     }
-
     function syncDB() {
       try {
         localStorage.setItem('dairy_cows', JSON.stringify(window.cows));
@@ -1385,6 +1127,36 @@
       } catch (err) { console.error("DB save error", err); }
     }
 
+    // --- SUPABASE INSERTS ---
+    async function insertCowToSupabase(cow) {
+      try {
+        const { data, error } = await supabase.from('cattle').insert([{
+          tag: cow.tag, breed: cow.breed, condition: cow.cond, preg_date: cow.pDate || null
+        }]);
+        if (error) { showDbError(error, 'Cow Insert'); return false; }
+        return true;
+      } catch (err) { showDbError(err, 'Cow Insert Exception'); return false; }
+    }
+    async function insertMilkToSupabase(record) {
+      try {
+        const { data, error } = await supabase.from('milk').insert([{
+          cow_id: record.tag, liters: record.liters, shift: record.shift, fat: record.fat, snf: record.snf, date: record.date, day: record.day
+        }]);
+        if (error) { showDbError(error, 'Milk Insert'); return false; }
+        return true;
+      } catch (err) { showDbError(err, 'Milk Insert Exception'); return false; }
+    }
+    async function insertExpenseToSupabase(exp) {
+      try {
+        const { data, error } = await supabase.from('expenses').insert([{
+          details: exp.details, category: exp.cat, amount: exp.amount
+        }]);
+        if (error) { showDbError(error, 'Expense Insert'); return false; }
+        return true;
+      } catch (err) { showDbError(err, 'Expense Insert Exception'); return false; }
+    }
+
+    // --- LAUNCH ---
     function launchWorkspace() {
       document.getElementById('auth-login-view').classList.add('hidden');
       document.getElementById('auth-register-view').classList.add('hidden');
@@ -1402,29 +1174,20 @@
       document.getElementById('cBreedDisplay').value = '';
       document.getElementById('cBreed').value = '';
       ensureModalsHidden();
-      rMilk();
-      rCat();
-      rExp();
-      setTimeout(() => { calc();
-        updateChart();
-        updateQualityCircle(); }, 100);
+      rMilk(); rCat(); rExp();
+      setTimeout(() => { calc(); updateChart(); updateQualityCircle(); }, 100);
     }
 
+    // --- TABS ---
     function tab(t) {
-      ['dash', 'milk', 'cat', 'exp', 'set', 'export'].forEach(id => {
-        let btn = document.getElementById('t-' + id);
-        let pg = document.getElementById('page-' + id);
-        if (btn) btn.classList.remove('active');
-        if (pg) pg.classList.add('hidden');
+      ['dash','milk','cat','exp','set','export'].forEach(id => {
+        let btn = document.getElementById('t-'+id); let pg = document.getElementById('page-'+id);
+        if(btn) btn.classList.remove('active'); if(pg) pg.classList.add('hidden');
       });
-      let targetBtn = document.getElementById('t-' + t);
-      let targetPg = document.getElementById('page-' + t);
-      if (targetBtn) targetBtn.classList.add('active');
-      if (targetPg) targetPg.classList.remove('hidden');
-      if (t === 'milk') rMilk();
-      if (t === 'cat') rCat();
-      if (t === 'exp') rExp();
-      if (t === 'set') {
+      let targetBtn = document.getElementById('t-'+t); let targetPg = document.getElementById('page-'+t);
+      if(targetBtn) targetBtn.classList.add('active'); if(targetPg) targetPg.classList.remove('hidden');
+      if(t === 'milk') rMilk(); if(t === 'cat') rCat(); if(t === 'exp') rExp();
+      if(t === 'set') {
         document.getElementById('setFarmName').value = window.userProfile.farmName || '';
         document.getElementById('setFarmName').readOnly = true;
         document.getElementById('setFarmName').style.background = 'rgba(255,255,255,0.015)';
@@ -1440,99 +1203,51 @@
         document.getElementById('setCurrentPass').type = 'password';
         document.getElementById('setNewPass').type = 'password';
         document.getElementById('setConfirmPass').type = 'password';
-        const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
-        wrappers.forEach(w => {
-          const eye = w.querySelector('.eye-toggle');
-          if (eye) eye.textContent = "👁️";
-        });
-        const regWrapper = document.querySelector('#auth-register-view .pass-wrapper .eye-toggle');
-        if (regWrapper) regWrapper.textContent = "👁️";
+        document.querySelectorAll('#page-set .pass-wrapper .eye-toggle').forEach(e => e.textContent = "👁️");
+        document.querySelector('#auth-register-view .pass-wrapper .eye-toggle').textContent = "👁️";
         document.getElementById('regPass').type = 'password';
         document.getElementById('regConfirmPass').type = 'password';
-        window.pendingSetting = null;
         document.getElementById('btnFarmName').innerText = 'Edit';
         document.getElementById('btnOwnerName').innerText = 'Edit';
         document.getElementById('btnUsername').innerText = 'Edit';
         window.editStates = { farmName: false, ownerName: false, username: false };
       }
-      if (t === 'dash') setTimeout(() => { updateChart();
-        updateQualityCircle(); }, 50);
+      if(t === 'dash') setTimeout(() => { updateChart(); updateQualityCircle(); }, 50);
     }
-
     function catTab() { tab('cat'); }
 
+    // --- POPUPS ---
     function openShiftPopup() { document.getElementById('shiftModal').classList.remove('hidden'); }
-
-    function closeShiftPopup(e) {
-      if (!e || e.target === document.getElementById('shiftModal') || e.target === document.querySelector('#shiftModal .btn-dark'))
-        document.getElementById('shiftModal').classList.add('hidden');
-    }
-
-    function selectShift(shift) {
-      window.currentShift = shift;
-      document.getElementById('mShift').value = shift;
-      document.getElementById('mShiftDisplay').value = shift;
-      closeShiftPopup();
-    }
+    function closeShiftPopup(e) { if (!e || e.target === document.getElementById('shiftModal') || e.target === document.querySelector('#shiftModal .btn-dark')) document.getElementById('shiftModal').classList.add('hidden'); }
+    function selectShift(shift) { window.currentShift = shift; document.getElementById('mShift').value = shift; document.getElementById('mShiftDisplay').value = shift; closeShiftPopup(); }
 
     function openCondPopup() { document.getElementById('condModal').classList.remove('hidden'); }
-
-    function closeCondPopup(e) {
-      if (!e || e.target === document.getElementById('condModal') || e.target === document.querySelector('#condModal .btn-dark'))
-        document.getElementById('condModal').classList.add('hidden');
-    }
-
+    function closeCondPopup(e) { if (!e || e.target === document.getElementById('condModal') || e.target === document.querySelector('#condModal .btn-dark')) document.getElementById('condModal').classList.add('hidden'); }
     function selectCond(cond) {
       document.getElementById('cCond').value = cond;
       document.getElementById('cCondDisplay').value = cond;
       closeCondPopup();
       let div = document.getElementById('pDateDiv');
-      if (div) { div.classList.toggle('hidden', cond !== 'Pregnant'); if (cond === 'Pregnant')
-          setPregDateConstraints(); }
+      if (div) { div.classList.toggle('hidden', cond !== 'Pregnant'); if (cond === 'Pregnant') setPregDateConstraints(); }
     }
 
     function openCatPopup() { document.getElementById('catPopupModal').classList.remove('hidden'); }
-
-    function closeCatPopup(e) {
-      if (!e || e.target === document.getElementById('catPopupModal') || e.target === document.querySelector('#catPopupModal .btn-dark'))
-        document.getElementById('catPopupModal').classList.add('hidden');
-    }
-
-    function selectCategory(cat) {
-      document.getElementById('exCat').value = cat;
-      document.getElementById('exCatDisplay').value = cat;
-      closeCatPopup();
-    }
+    function closeCatPopup(e) { if (!e || e.target === document.getElementById('catPopupModal') || e.target === document.querySelector('#catPopupModal .btn-dark')) document.getElementById('catPopupModal').classList.add('hidden'); }
+    function selectCategory(cat) { document.getElementById('exCat').value = cat; document.getElementById('exCatDisplay').value = cat; closeCatPopup(); }
 
     function openSettingsPopup() { document.getElementById('settingsPopupModal').classList.remove('hidden'); }
-
-    function closeSettingsPopup(e) {
-      if (!e || e.target === document.getElementById('settingsPopupModal') || e.target === document.querySelector('#settingsPopupModal .btn-dark'))
-        document.getElementById('settingsPopupModal').classList.add('hidden');
-    }
-
-    function selectSettingUpdate(type) {
-      window.pendingSetting = type;
-      closeSettingsPopup();
-      if (type === 'password') { document.getElementById('setCurrentPass').focus(); return; }
-      toggleEdit(type);
-    }
+    function closeSettingsPopup(e) { if (!e || e.target === document.getElementById('settingsPopupModal') || e.target === document.querySelector('#settingsPopupModal .btn-dark')) document.getElementById('settingsPopupModal').classList.add('hidden'); }
+    function selectSettingUpdate(type) { closeSettingsPopup(); if (type === 'password') { document.getElementById('setCurrentPass').focus(); return; } toggleEdit(type); }
 
     function toggleEdit(field) {
       let input, btn;
-      if (field === 'farmName') { input = document.getElementById('setFarmName');
-        btn = document.getElementById('btnFarmName'); } else if (field === 'ownerName') { input = document
-          .getElementById('setOwnerName');
-        btn = document.getElementById('btnOwnerName'); } else if (field === 'username') { input = document
-          .getElementById('setNewUser');
-        btn = document.getElementById('btnUsername'); } else return;
+      if (field === 'farmName') { input = document.getElementById('setFarmName'); btn = document.getElementById('btnFarmName'); }
+      else if (field === 'ownerName') { input = document.getElementById('setOwnerName'); btn = document.getElementById('btnOwnerName'); }
+      else if (field === 'username') { input = document.getElementById('setNewUser'); btn = document.getElementById('btnUsername'); }
+      else return;
       if (!window.editStates[field]) {
-        input.readOnly = false;
-        input.style.background = 'rgba(255,255,255,0.04)';
-        input.focus();
-        btn.innerText = 'Update';
-        btn.className = 'btn-green btn-sm';
-        window.editStates[field] = true;
+        input.readOnly = false; input.style.background = 'rgba(255,255,255,0.04)'; input.focus();
+        btn.innerText = 'Update'; btn.className = 'btn-green btn-sm'; window.editStates[field] = true;
       } else {
         let val = input.value.trim();
         if (!val) { openModal('Input Alert', 'Value khali nahi ho sakti!', null); return; }
@@ -1542,10 +1257,8 @@
         syncDB();
         document.getElementById('lblDisplayFarmName').innerText = window.userProfile.farmName;
         document.getElementById('lblDisplayOwnerName').innerText = window.userProfile.name;
-        input.readOnly = true;
-        input.style.background = 'rgba(255,255,255,0.015)';
-        btn.innerText = 'Edit';
-        btn.className = 'btn-purple btn-sm';
+        input.readOnly = true; input.style.background = 'rgba(255,255,255,0.015)';
+        btn.innerText = 'Edit'; btn.className = 'btn-purple btn-sm';
         window.editStates[field] = false;
         openModal('Success', field + ' successfully update ho gaya!', null);
       }
@@ -1556,8 +1269,7 @@
         const activeTab = document.querySelector('nav a.active');
         if (activeTab && activeTab.id === 't-set') {
           for (let field of ['farmName', 'ownerName', 'username']) {
-            if (window.editStates[field]) { e.preventDefault();
-              toggleEdit(field); break; }
+            if (window.editStates[field]) { e.preventDefault(); toggleEdit(field); break; }
           }
         }
       }
@@ -1568,26 +1280,20 @@
       document.getElementById('editModal').classList.remove('hidden');
       window.editCallback = callback;
     }
-
     function closeEditModal(e) {
       if (!e || e.target === document.getElementById('editModal') || e.target === document.querySelector('#editModal .btn-dark')) {
         document.getElementById('editModal').classList.add('hidden');
         window.editCallback = null;
       }
     }
-    document.getElementById('editConfirmBtn').onclick = function() {
-      if (window.editCallback) window.editCallback();
-      closeEditModal();
-    };
+    document.getElementById('editConfirmBtn').onclick = function() { if (window.editCallback) window.editCallback(); closeEditModal(); };
 
     function calcPreg(dStr) {
       if (!dStr) return { dStr: '-', rStr: '-' };
-      let d = new Date(dStr);
-      if (isNaN(d.getTime())) return { dStr: '-', rStr: '-' };
-      d.setMonth(d.getMonth() + 9);
-      d.setDate(d.getDate() + 9);
+      let d = new Date(dStr); if (isNaN(d.getTime())) return { dStr: '-', rStr: '-' };
+      d.setMonth(d.getMonth() + 9); d.setDate(d.getDate() + 9);
       let targetStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
-      let diff = Math.ceil((d.getTime() - new Date().setHours(0, 0, 0, 0)) / 86400000);
+      let diff = Math.ceil((d.getTime() - new Date().setHours(0,0,0,0)) / 86400000);
       return { dStr: targetStr, rStr: diff <= 0 ? "Delivery Time! 🎉" : `${Math.floor(diff/30)}m ${diff%30}d left` };
     }
 
@@ -1595,28 +1301,25 @@
       requestAnimationFrame(() => {
         let priceInput = document.getElementById('milkPriceInput');
         let ratePerLiter = 35;
-        if (priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) ratePerLiter = parseFloat(
-          priceInput.value);
+        if (priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) ratePerLiter = parseFloat(priceInput.value);
         let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
         let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
         let totalIncome = tM * ratePerLiter;
         let netBalance = totalIncome - tE;
         document.getElementById('cCount').innerText = window.cows.length + " Cows";
         document.getElementById('mCount').innerText = tM.toFixed(1) + " Liters";
-        document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,
-          ",");
+        document.getElementById('mIncomeText').innerText = "₹" + totalIncome.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         document.getElementById('eCountText').innerText = "₹" + tE.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         let netEl = document.getElementById('netBalanceText');
         if (netEl) {
-          netEl.innerText = (netBalance >= 0 ? "₹" : "-₹") + Math.abs(netBalance).toFixed(2).replace(
-            /\B(?=(\d{3})+(?!\d))/g, ",");
+          netEl.innerText = (netBalance >= 0 ? "₹" : "-₹") + Math.abs(netBalance).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           netEl.style.color = netBalance >= 0 ? "#30d158" : "#ff453a";
         }
-        document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length)
-          .toFixed(1) : 0) + "L/cow";
+        document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length).toFixed(1) : 0) + "L/cow";
       });
     }
 
+    // --- RENDER ---
     function rMilk() {
       let html = '';
       window.milk.forEach((e, i) => {
@@ -1628,8 +1331,7 @@
         <td><div class="action-cell"><button class="act-btn act-edit" onclick="confirmEditMilk(${i})">✏️</button><button class="act-btn act-delete" onclick="confirmDeleteMilk(${i})">🗑️</button></div></td></tr>`;
       });
       document.getElementById('tb-milk').innerHTML = html;
-      setTimeout(() => { updateChart();
-        updateQualityCircle(); }, 50);
+      setTimeout(() => { updateChart(); updateQualityCircle(); }, 50);
     }
 
     function rCat() {
@@ -1652,119 +1354,15 @@
       document.getElementById('tb-expenses').innerHTML = html;
     }
 
-    function confirmDeleteMilk(i) {
-      openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() {
-        window.milk.splice(i, 1);
-        syncDB();
-        calc();
-        rMilk();
-      });
-    }
+    // --- CONFIRM DELETE/EDIT ---
+    function confirmDeleteMilk(i) { openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() { window.milk.splice(i,1); syncDB(); calc(); rMilk(); }); }
+    function confirmEditMilk(i) { openEditModal('Kya aap is milk record ko edit karna chahte hain?', function() { edM(i); }); }
+    function confirmDeleteCow(i) { openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() { let t = window.cows[i].tag; window.cows.splice(i,1); window.milk = window.milk.filter(m=>m.tag!==t); syncDB(); calc(); rCat(); rMilk(); }); }
+    function confirmEditCow(i) { openEditModal('Kya aap is cow record ko edit karna chahte hain?', function() { edC(i); }); }
+    function confirmDeleteExpense(i) { openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() { window.expenses.splice(i,1); syncDB(); calc(); rExp(); }); }
+    function confirmEditExpense(i) { openEditModal('Kya aap is expense record ko edit karna chahte hain?', function() { edEx(i); }); }
 
-    function confirmEditMilk(i) {
-      openEditModal('Kya aap is milk record ko edit karna chahte hain?', function() { edM(i); });
-    }
-
-    function confirmDeleteCow(i) {
-      openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() {
-        let t = window.cows[i].tag;
-        window.cows.splice(i, 1);
-        window.milk = window.milk.filter(m => m.tag !== t);
-        syncDB();
-        calc();
-        rCat();
-        rMilk();
-      });
-    }
-
-    function confirmEditCow(i) {
-      openEditModal('Kya aap is cow record ko edit karna chahte hain?', function() { edC(i); });
-    }
-
-    function confirmDeleteExpense(i) {
-      openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() {
-        window.expenses.splice(i, 1);
-        syncDB();
-        calc();
-        rExp();
-      });
-    }
-
-    function confirmEditExpense(i) {
-      openEditModal('Kya aap is expense record ko edit karna chahte hain?', function() { edEx(i); });
-    }
-
-    // --- SUPABASE INSERT HELPERS with try/catch and visual error ---
-    async function insertCowToSupabase(cow) {
-      try {
-        const { data, error } = await supabase
-          .from('cattle')
-          .insert([{
-            tag: cow.tag,
-            breed: cow.breed,
-            condition: cow.cond,
-            preg_date: cow.pDate || null
-          }]);
-        if (error) {
-          showDbError(error, 'Cow Insert');
-          return false;
-        }
-        console.log('Cow inserted to Supabase:', data);
-        return true;
-      } catch (err) {
-        showDbError(err, 'Cow Insert Exception');
-        return false;
-      }
-    }
-
-    async function insertMilkToSupabase(record) {
-      try {
-        const { data, error } = await supabase
-          .from('milk')
-          .insert([{
-            cow_id: record.tag,
-            liters: record.liters,
-            shift: record.shift,
-            fat: record.fat,
-            snf: record.snf,
-            date: record.date,
-            day: record.day
-          }]);
-        if (error) {
-          showDbError(error, 'Milk Insert');
-          return false;
-        }
-        console.log('Milk inserted to Supabase:', data);
-        return true;
-      } catch (err) {
-        showDbError(err, 'Milk Insert Exception');
-        return false;
-      }
-    }
-
-    async function insertExpenseToSupabase(exp) {
-      try {
-        const { data, error } = await supabase
-          .from('expenses')
-          .insert([{
-            details: exp.details,
-            category: exp.cat,
-            amount: exp.amount
-          }]);
-        if (error) {
-          showDbError(error, 'Expense Insert');
-          return false;
-        }
-        console.log('Expense inserted to Supabase:', data);
-        return true;
-      } catch (err) {
-        showDbError(err, 'Expense Insert Exception');
-        return false;
-      }
-    }
-
-    // --- ADD / EDIT functions with Supabase calls ---
-
+    // --- ADD FUNCTIONS ---
     async function addCow() {
       let tag = document.getElementById('cTag').value.trim();
       let breed = document.getElementById('cBreed').value.trim();
@@ -1775,42 +1373,29 @@
       if (cond === 'Pregnant' && !pDate) return openModal('Input Alert', 'Kripya Insemination date dalein!', null);
       if (cond === 'Pregnant' && pDate) {
         const today = new Date().toISOString().split('T')[0];
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const oneYearAgo = new Date(); oneYearAgo.setFullYear(oneYearAgo.getFullYear()-1);
         const minStr = oneYearAgo.toISOString().split('T')[0];
         if (pDate > today) return openModal('Date Error', 'Future date allowed nahi hai!', null);
         if (pDate < minStr) return openModal('Date Error', 'Date 1 year se pehle ki nahi ho sakti!', null);
       }
       if (window.eC !== null) {
-        // edit mode: update local + supabase
         window.cows[window.eC] = { tag, breed, cond, pDate };
-        window.eC = null;
-        document.getElementById('cBtn').innerText = "Register Cow";
+        window.eC = null; document.getElementById('cBtn').innerText = "Register Cow";
         syncDB();
         try {
-          const { error } = await supabase
-            .from('cattle')
-            .update({ tag, breed, condition: cond, preg_date: pDate || null })
-            .eq('tag', tag);
-          if (error) showDbError(error, 'Cow Update');
-        } catch (err) { showDbError(err, 'Cow Update Exception'); }
+          await supabase.from('cattle').update({ tag, breed, condition: cond, preg_date: pDate || null }).eq('tag', tag);
+        } catch(err) { showDbError(err, 'Cow Update'); }
       } else {
-        if (window.cows.some(c => c.tag.toLowerCase() === tag.toLowerCase()))
-          return openModal('Duplicate Alert', 'Tag pehle se add hai!', null);
+        if (window.cows.some(c => c.tag.toLowerCase() === tag.toLowerCase())) return openModal('Duplicate Alert', 'Tag pehle se add hai!', null);
         let newCow = { tag, breed, cond, pDate };
         window.cows.unshift(newCow);
         syncDB();
         await insertCowToSupabase(newCow);
       }
-      document.getElementById('cTag').value = '';
-      document.getElementById('cBreed').value = '';
-      document.getElementById('cBreedDisplay').value = '';
-      document.getElementById('cPregDate').value = '';
-      document.getElementById('cCond').value = 'Healthy';
-      document.getElementById('cCondDisplay').value = 'Healthy';
+      document.getElementById('cTag').value = ''; document.getElementById('cBreed').value = ''; document.getElementById('cBreedDisplay').value = '';
+      document.getElementById('cPregDate').value = ''; document.getElementById('cCond').value = 'Healthy'; document.getElementById('cCondDisplay').value = 'Healthy';
       document.getElementById('pDateDiv').classList.add('hidden');
-      rCat();
-      calc();
+      rCat(); calc();
     }
 
     function edC(i) {
@@ -1821,17 +1406,14 @@
       document.getElementById('cCond').value = e.cond;
       document.getElementById('cCondDisplay').value = e.cond;
       document.getElementById('cPregDate').value = e.pDate || '';
-      if (e.cond === 'Pregnant') { document.getElementById('pDateDiv').classList.remove('hidden');
-        setPregDateConstraints(); } else { document.getElementById('pDateDiv').classList.add('hidden'); }
-      window.eC = i;
-      document.getElementById('cBtn').innerText = "Update Cow";
-      tab('dash');
+      if (e.cond === 'Pregnant') { document.getElementById('pDateDiv').classList.remove('hidden'); setPregDateConstraints(); }
+      else { document.getElementById('pDateDiv').classList.add('hidden'); }
+      window.eC = i; document.getElementById('cBtn').innerText = "Update Cow"; tab('dash');
     }
 
     async function addMilk() {
       if (window.cows.length === 0) {
-        openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Milk entry tabhi possible hai jab cattle inventory mein koi cow ho.',
-          null);
+        openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Milk entry tabhi possible hai jab cattle inventory mein koi cow ho.', null);
         return;
       }
       let tag = document.getElementById('mSelect').value;
@@ -1842,39 +1424,24 @@
       if (parseFloat(liters) < 0) liters = '0';
       if (!liters || !fat || !snf) return openModal('Input Alert', 'Kripya saari milk details enter karein!', null);
       if (parseFloat(liters) === 0) return openModal('Input Alert', 'Liters 0 se zyada hona chahiye!', null);
-      let fatNum = parseFloat(fat),
-        snfNum = parseFloat(snf);
+      let fatNum = parseFloat(fat), snfNum = parseFloat(snf);
       if (isNaN(fatNum) || isNaN(snfNum)) return openModal('Input Alert', 'Fat aur SNF sahi se enter karein!', null);
-      let d = new Date();
-      let dStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
-      let dayName = dayNames[d.getDay()];
+      let d = new Date(); let dStr = `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`; let dayName = dayNames[d.getDay()];
       let record = { tag, liters: parseFloat(liters), shift, fat: fatNum, snf: snfNum, date: dStr, day: dayName };
       if (window.eM !== null) {
-        window.milk[window.eM] = record;
-        window.eM = null;
-        document.getElementById('mBtn').innerText = "Save Entry";
+        window.milk[window.eM] = record; window.eM = null; document.getElementById('mBtn').innerText = "Save Entry";
         syncDB();
         try {
-          const { error } = await supabase
-            .from('milk')
-            .update({ liters: record.liters, shift: record.shift, fat: record.fat, snf: record.snf,
-              date: record.date, day: record.day })
-            .eq('id', window.milk[window.eM]?.id || 0);
-          if (error) showDbError(error, 'Milk Update');
-        } catch (err) { showDbError(err, 'Milk Update Exception'); }
+          await supabase.from('milk').update({ liters: record.liters, shift: record.shift, fat: record.fat, snf: record.snf, date: record.date, day: record.day }).eq('id', window.milk[window.eM]?.id || 0);
+        } catch(err) { showDbError(err, 'Milk Update'); }
       } else {
-        window.milk.unshift(record);
-        syncDB();
-        await insertMilkToSupabase(record);
+        window.milk.unshift(record); syncDB(); await insertMilkToSupabase(record);
       }
-      document.getElementById('mLiters').value = '';
-      document.getElementById('mFat').value = '';
-      document.getElementById('mSnf').value = '';
+      document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
       window.currentShift = window.currentShift === 'Morning' ? 'Evening' : 'Morning';
       document.getElementById('mShift').value = window.currentShift;
       document.getElementById('mShiftDisplay').value = window.currentShift;
-      rMilk();
-      calc();
+      rMilk(); calc();
     }
 
     function edM(i) {
@@ -1887,46 +1454,32 @@
       window.currentShift = e.shift;
       document.getElementById('mFat').value = e.fat;
       document.getElementById('mSnf').value = e.snf;
-      window.eM = i;
-      document.getElementById('mBtn').innerText = "Update Entry";
-      tab('dash');
+      window.eM = i; document.getElementById('mBtn').innerText = "Update Entry"; tab('dash');
     }
 
     async function addExpense() {
       if (window.cows.length === 0) {
-        openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Expense tabhi add kar sakte hain jab cattle inventory mein koi cow ho.',
-          null);
+        openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Expense tabhi add kar sakte hain jab cattle inventory mein koi cow ho.', null);
         return;
       }
       let details = document.getElementById('exDetails').value.trim();
       let cat = document.getElementById('exCat').value;
       let amount = document.getElementById('exAmount').value.trim();
       if (parseFloat(amount) < 0) amount = '0';
-      if (!details || !amount) return openModal('Input Alert', 'Kripya expense details aur amount fill karein!',
-        null);
+      if (!details || !amount) return openModal('Input Alert', 'Kripya expense details aur amount fill karein!', null);
       if (parseFloat(amount) === 0) return openModal('Input Alert', 'Amount 0 se zyada hona chahiye!', null);
       let record = { details, cat, amount: parseFloat(amount) };
       if (window.eE !== null) {
-        window.expenses[window.eE] = record;
-        window.eE = null;
-        document.getElementById('exBtn').innerText = "Add Log";
+        window.expenses[window.eE] = record; window.eE = null; document.getElementById('exBtn').innerText = "Add Log";
         syncDB();
         try {
-          const { error } = await supabase
-            .from('expenses')
-            .update({ details: record.details, category: record.cat, amount: record.amount })
-            .eq('id', window.expenses[window.eE]?.id || 0);
-          if (error) showDbError(error, 'Expense Update');
-        } catch (err) { showDbError(err, 'Expense Update Exception'); }
+          await supabase.from('expenses').update({ details: record.details, category: record.cat, amount: record.amount }).eq('id', window.expenses[window.eE]?.id || 0);
+        } catch(err) { showDbError(err, 'Expense Update'); }
       } else {
-        window.expenses.unshift(record);
-        syncDB();
-        await insertExpenseToSupabase(record);
+        window.expenses.unshift(record); syncDB(); await insertExpenseToSupabase(record);
       }
-      document.getElementById('exDetails').value = '';
-      document.getElementById('exAmount').value = '';
-      rExp();
-      calc();
+      document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
+      rExp(); calc();
     }
 
     function edEx(i) {
@@ -1935,68 +1488,54 @@
       document.getElementById('exCat').value = e.cat;
       document.getElementById('exCatDisplay').value = e.cat;
       document.getElementById('exAmount').value = e.amount;
-      window.eE = i;
-      document.getElementById('exBtn').innerText = "Update Log";
-      tab('dash');
+      window.eE = i; document.getElementById('exBtn').innerText = "Update Log"; tab('dash');
     }
 
     function updatePassword() {
       let currPass = document.getElementById('setCurrentPass').value;
       let newPass = document.getElementById('setNewPass').value;
       let confirmPass = document.getElementById('setConfirmPass').value;
-      if (!currPass || !newPass || !confirmPass) return openModal('Input Alert',
-        'Kripya saare password fields fill karein!', null);
-      if (currPass !== window.userProfile.pass) return openModal('Password Error', 'Current Password galat hai!',
-        null);
+      if (!currPass || !newPass || !confirmPass) return openModal('Input Alert', 'Kripya saare password fields fill karein!', null);
+      if (currPass !== window.userProfile.pass) return openModal('Password Error', 'Current Password galat hai!', null);
       if (newPass !== confirmPass) return openModal('Password Alert', 'New Password match nahi ho rahe!', null);
       window.userProfile.pass = newPass;
       syncDB();
-      document.getElementById('setCurrentPass').value = '';
-      document.getElementById('setNewPass').value = '';
-      document.getElementById('setConfirmPass').value = '';
+      document.getElementById('setCurrentPass').value = ''; document.getElementById('setNewPass').value = ''; document.getElementById('setConfirmPass').value = '';
       document.getElementById('setCurrentPass').type = 'password';
       document.getElementById('setNewPass').type = 'password';
       document.getElementById('setConfirmPass').type = 'password';
-      const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
-      wrappers.forEach(w => {
-        const eye = w.querySelector('.eye-toggle');
-        if (eye) eye.textContent = "👁️";
-      });
+      document.querySelectorAll('#page-set .pass-wrapper .eye-toggle').forEach(e => e.textContent = "👁️");
       openModal('Success', 'Password successfully change ho gaya!', null);
     }
 
     function handleLogout() {
       openModal('Secure Log Out', 'क्या आप सच में App से Log Out करना चाहते हैं?', function() {
-        localStorage.setItem('dairy_logged', 'false');
-        window.isLogged = false;
+        localStorage.setItem('dairy_logged', 'false'); window.isLogged = false;
         document.getElementById('app-workspace-view').classList.add('hidden');
         document.getElementById('auth-login-view').classList.remove('hidden');
-        document.getElementById('loginUser').value = '';
-        document.getElementById('loginPass').value = '';
-        ensureModalsHidden();
-        tab('dash');
+        document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
+        ensureModalsHidden(); tab('dash');
       });
     }
 
+    // --- CHARTS ---
     function updateChart() {
       if (window.updatePending) return;
       window.updatePending = true;
       requestAnimationFrame(() => {
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        const dayTotals = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
-        window.milk.forEach(e => { if (dayTotals.hasOwnProperty(e.day)) dayTotals[e.day] += parseFloat(e
-            .liters) || 0; });
+        const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const dayTotals = { Mon:0, Tue:0, Wed:0, Thu:0, Fri:0, Sat:0, Sun:0 };
+        window.milk.forEach(e => { if(dayTotals.hasOwnProperty(e.day)) dayTotals[e.day] += parseFloat(e.liters)||0; });
         let maxVal = Math.max(...Object.values(dayTotals), 1);
         days.forEach(day => {
           const val = dayTotals[day];
           const bar = document.getElementById(`b-${day}`);
           const valDisplay = document.getElementById(`v-${day}`);
-          if (bar) { const pct = (val / maxVal) * 100;
-            bar.style.height = val > 0 ? `${Math.max(pct,4)}%` : '0%'; }
-          if (valDisplay) valDisplay.textContent = val.toFixed(1);
+          if(bar) { const pct = (val/maxVal)*100; bar.style.height = val>0 ? `${Math.max(pct,4)}%` : '0%'; }
+          if(valDisplay) valDisplay.textContent = val.toFixed(1);
         });
-        const total = Object.values(dayTotals).reduce((a, b) => a + b, 0);
-        const avg = total / 7;
+        const total = Object.values(dayTotals).reduce((a,b)=>a+b,0);
+        const avg = total/7;
         document.getElementById('weekTotal').textContent = `📊 Total: ${total.toFixed(1)} L`;
         document.getElementById('weekAvg').textContent = `📈 Avg: ${avg.toFixed(1)} L`;
         window.updatePending = false;
@@ -2006,54 +1545,44 @@
     function updateQualityCircle() {
       requestAnimationFrame(() => {
         const circumference = 2 * Math.PI * 55;
-        let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-        let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
-        let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
-        let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+        let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+        let tF = window.milk.reduce((s,e) => s + (parseFloat(e.fat)||0), 0);
+        let tS = window.milk.reduce((s,e) => s + (parseFloat(e.snf)||0), 0);
+        let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
         let priceInput = document.getElementById('milkPriceInput');
         let rate = 35;
-        if (priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(
-          priceInput.value);
+        if(priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(priceInput.value);
         let totalIncome = tM * rate;
-        const fatAvg = window.milk.length > 0 ? tF / window.milk.length : 0;
-        const snfAvg = window.milk.length > 0 ? tS / window.milk.length : 0;
-        const maxFat = 9.9,
-          maxSnf = 9.9,
-          maxIncome = Math.max(totalIncome, 1),
-          maxExpenses = Math.max(tE, 1);
-        const fatPercent = Math.min((fatAvg / maxFat) * 100, 100);
-        const snfPercent = Math.min((snfAvg / maxSnf) * 100, 100);
-        const incomePercent = Math.min((totalIncome / maxIncome) * 100, 100);
-        const expensesPercent = Math.min((tE / maxExpenses) * 100, 100);
-        const fatOffset = circumference - (fatPercent / 100) * circumference;
-        const snfOffset = circumference - (snfPercent / 100) * circumference;
-        const incomeOffset = circumference - (incomePercent / 100) * circumference;
-        const expensesOffset = circumference - (expensesPercent / 100) * circumference;
-        document.getElementById('circle-fat').setAttribute('stroke-dasharray',
-          `${circumference - fatOffset}, ${circumference}`);
-        document.getElementById('circle-snf').setAttribute('stroke-dasharray',
-          `${circumference - snfOffset}, ${circumference}`);
-        document.getElementById('circle-income').setAttribute('stroke-dasharray',
-          `${circumference - incomeOffset}, ${circumference}`);
-        document.getElementById('circle-expenses').setAttribute('stroke-dasharray',
-          `${circumference - expensesOffset}, ${circumference}`);
+        const fatAvg = window.milk.length > 0 ? tF/window.milk.length : 0;
+        const snfAvg = window.milk.length > 0 ? tS/window.milk.length : 0;
+        const maxFat = 9.9, maxSnf = 9.9, maxIncome = Math.max(totalIncome,1), maxExpenses = Math.max(tE,1);
+        const fatPercent = Math.min((fatAvg/maxFat)*100,100);
+        const snfPercent = Math.min((snfAvg/maxSnf)*100,100);
+        const incomePercent = Math.min((totalIncome/maxIncome)*100,100);
+        const expensesPercent = Math.min((tE/maxExpenses)*100,100);
+        const fatOffset = circumference - (fatPercent/100)*circumference;
+        const snfOffset = circumference - (snfPercent/100)*circumference;
+        const incomeOffset = circumference - (incomePercent/100)*circumference;
+        const expensesOffset = circumference - (expensesPercent/100)*circumference;
+        document.getElementById('circle-fat').setAttribute('stroke-dasharray', `${circumference - fatOffset}, ${circumference}`);
+        document.getElementById('circle-snf').setAttribute('stroke-dasharray', `${circumference - snfOffset}, ${circumference}`);
+        document.getElementById('circle-income').setAttribute('stroke-dasharray', `${circumference - incomeOffset}, ${circumference}`);
+        document.getElementById('circle-expenses').setAttribute('stroke-dasharray', `${circumference - expensesOffset}, ${circumference}`);
         document.getElementById('legendFat').textContent = fatAvg.toFixed(1) + '%';
         document.getElementById('legendSnf').textContent = snfAvg.toFixed(1) + '%';
         document.getElementById('legendIncome').textContent = '₹' + totalIncome.toFixed(0);
         document.getElementById('legendExpenses').textContent = '₹' + tE.toFixed(0);
-        const overallQuality = Math.round((fatPercent + snfPercent + (totalIncome > 0 ? 100 : 0) + (tE > 0 ?
-          100 : 0)) / 4);
+        const overallQuality = Math.round((fatPercent + snfPercent + (totalIncome>0?100:0) + (tE>0?100:0)) / 4);
         document.getElementById('qualityMainValue').textContent = overallQuality + '%';
       });
     }
 
+    // --- SHARE ---
     function shareWhatsApp(type) {
       const farmName = window.userProfile.farmName || "My Farm Dairy";
       const ownerName = window.userProfile.name || "Owner";
-      const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit',
-        year: 'numeric' });
-      let message =
-        `🏠 *${farmName}* | 👤 ${ownerName}\n📅 ${dateStr}\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
+      const dateStr = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'2-digit', year:'numeric' });
+      let message = `🏠 *${farmName}* | 👤 ${ownerName}\n📅 ${dateStr}\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
       if (type === 'cattle' || type === 'all') {
         message += `\n🐄 *CATTLE INVENTORY* (${window.cows.length})\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
         if (window.cows.length === 0) message += `No cattle records found.\n`;
@@ -2069,42 +1598,37 @@
         if (window.milk.length === 0) message += `No milk records found.\n`;
         else window.milk.forEach(m => {
           let id = m.tag === 'ALL_COWS' ? 'All Cows' : m.tag;
-          message +=
-            `▸ ${id} | ${m.day} | ${m.shift} | ${m.liters}L | F:${m.fat}% S:${m.snf}% | ${m.date}\n`;
+          message += `▸ ${id} | ${m.day} | ${m.shift} | ${m.liters}L | F:${m.fat}% S:${m.snf}% | ${m.date}\n`;
         });
-        let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-        let tF = window.milk.reduce((s, e) => s + (parseFloat(e.fat) || 0), 0);
-        let tS = window.milk.reduce((s, e) => s + (parseFloat(e.snf) || 0), 0);
-        message +=
-          `\n📊 *Summary:* Total ${tM.toFixed(1)}L | Avg Fat ${window.milk.length>0 ? (tF/window.milk.length).toFixed(1) : 0}% | Avg SNF ${window.milk.length>0 ? (tS/window.milk.length).toFixed(1) : 0}%\n`;
+        let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+        let tF = window.milk.reduce((s,e) => s + (parseFloat(e.fat)||0), 0);
+        let tS = window.milk.reduce((s,e) => s + (parseFloat(e.snf)||0), 0);
+        message += `\n📊 *Summary:* Total ${tM.toFixed(1)}L | Avg Fat ${window.milk.length>0 ? (tF/window.milk.length).toFixed(1) : 0}% | Avg SNF ${window.milk.length>0 ? (tS/window.milk.length).toFixed(1) : 0}%\n`;
       }
       if (type === 'expenses' || type === 'all') {
         message += `\n💸 *EXPENSE LEDGER* (${window.expenses.length})\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
         if (window.expenses.length === 0) message += `No expense records found.\n`;
         else window.expenses.forEach(e => { message += `▸ ${e.details} | ${e.cat} | ₹${e.amount}\n`; });
-        let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+        let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
         message += `\n📊 *Total Expenses:* ₹${tE.toLocaleString('en-IN')}\n`;
       }
       if (type === 'all') {
-        let tM = window.milk.reduce((s, e) => s + (parseFloat(e.liters) || 0), 0);
-        let tE = window.expenses.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+        let tM = window.milk.reduce((s,e) => s + (parseFloat(e.liters)||0), 0);
+        let tE = window.expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
         let priceInput = document.getElementById('milkPriceInput');
         let rate = 35;
-        if (priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(
-          priceInput.value);
+        if(priceInput && priceInput.value !== '' && parseFloat(priceInput.value) >= 0) rate = parseFloat(priceInput.value);
         let totalIncome = tM * rate;
         let netBalance = totalIncome - tE;
         message += `\n📈 *FARM SUMMARY*\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n`;
-        message +=
-          `🐄 Total Cattle: ${window.cows.length}\n🥛 Total Milk: ${tM.toFixed(1)}L\n💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits:2})}\n💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits:2})}\n`;
+        message += `🐄 Total Cattle: ${window.cows.length}\n🥛 Total Milk: ${tM.toFixed(1)}L\n💰 Milk Income: ₹${totalIncome.toLocaleString('en-IN', {maximumFractionDigits:2})}\n💸 Total Expenses: ₹${tE.toLocaleString('en-IN')}\n💎 Net Balance: ₹${netBalance.toLocaleString('en-IN', {maximumFractionDigits:2})}\n`;
       }
       message += `\n━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━ ━\n📱 *🐄 Dairy Mangement*`;
       window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
     }
 
-    document.addEventListener('focusin', function(e) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') ensureModalsHidden();
-    });
+    // --- EVENTS ---
+    document.addEventListener('focusin', function(e) { if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') ensureModalsHidden(); });
     document.addEventListener('touchstart', function(e) { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
     let lastTapTime = 0;
     document.addEventListener('touchend', function(e) {
@@ -2113,10 +1637,9 @@
       lastTapTime = now;
     }, false);
     document.addEventListener('wheel', function(e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) e.preventDefault();
-    });
+    document.addEventListener('keydown', function(e) { if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) e.preventDefault(); });
 
+    // --- ONLOAD ---
     window.onload = function() {
       loadDB();
       if (window.isLogged) launchWorkspace();
@@ -2132,8 +1655,7 @@
       document.getElementById('cCondDisplay').value = 'Healthy';
       document.getElementById('cBreedDisplay').value = '';
       document.getElementById('cBreed').value = '';
-      setTimeout(() => { updateChart();
-        updateQualityCircle(); }, 150);
+      setTimeout(() => { updateChart(); updateQualityCircle(); }, 150);
     };
   </script>
 </body>
