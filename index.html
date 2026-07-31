@@ -1709,6 +1709,7 @@
           showDbError(error, 'Cow Insert');
           return false;
         }
+        console.log('Cow inserted to Supabase:', data);
         return true;
       } catch (err) {
         showDbError(err, 'Cow Insert Exception');
@@ -1733,6 +1734,7 @@
           showDbError(error, 'Milk Insert');
           return false;
         }
+        console.log('Milk inserted to Supabase:', data);
         return true;
       } catch (err) {
         showDbError(err, 'Milk Insert Exception');
@@ -1753,6 +1755,7 @@
           showDbError(error, 'Expense Insert');
           return false;
         }
+        console.log('Expense inserted to Supabase:', data);
         return true;
       } catch (err) {
         showDbError(err, 'Expense Insert Exception');
