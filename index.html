@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* ===== FIX 3: SCROLLING FIX - No extra blank space ===== */
+        /* ===== FIX 2: SCROLLING FIX - No extra blank space ===== */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -812,9 +812,7 @@
                                         <input type="hidden" id="mShift" value="Morning">
                                     </div>
                                     <div class="form-flex">
-                                        <!-- ===== FIX 2: FAT INPUT WITH DECIMAL AUTO-CORRECTION ===== -->
                                         <input type="number" id="mFat" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'mSnf')">
-                                        <!-- ===== FIX 2: SNF INPUT WITH DECIMAL AUTO-CORRECTION ===== -->
                                         <input type="number" id="mSnf" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'MILK_TRIGGER')">
                                     </div>
                                     <button id="mBtn" onclick="addMilk()" class="btn-purple">Save Entry</button>
@@ -997,52 +995,9 @@
 
     <script>
         // =============================================
-        // FIX 2: FAT/SNF DECIMAL AUTO-CORRECTION (Value / 10)
-        // =============================================
-        function handleFatSnfInput(input) {
-            // Get raw value and remove any non-numeric except decimal
-            let val = input.value.replace(/[^0-9.]/g, '');
-            
-            if (val === '' || val === '.') {
-                input.value = '';
-                return;
-            }
-            
-            // Check if it's a whole number (like 85 or 55)
-            let num = parseFloat(val);
-            if (!isNaN(num)) {
-                // If value is greater than 9.9, divide by 10
-                if (num > 9.9) {
-                    let divided = (num / 10);
-                    // Round to 1 decimal place
-                    let finalVal = divided.toFixed(1);
-                    input.value = finalVal;
-                    return;
-                }
-                
-                // If value has more than 1 decimal place, round it
-                let parts = val.split('.');
-                if (parts.length > 1 && parts[1].length > 1) {
-                    let rounded = parseFloat(val).toFixed(1);
-                    input.value = rounded;
-                    return;
-                }
-                
-                // Ensure value doesn't exceed 9.9
-                if (num > 9.9) {
-                    input.value = '9.9';
-                    return;
-                }
-                
-                // Keep the value as is if it's valid
-                input.value = val;
-            }
-        }
-
-        // =============================================
         // FIX 1: GOOGLE SHEET - CLEAN STRUCTURE, SILENT SAVE
         // =============================================
-        const GOOGLE_SCRIPT_URL = 'https://google.com';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzW47q13kbb6uqTnhZKXnsuUjz6T0oK0OfBKtP1yjzuWpmXV_DyDRDKGzo8cdMU96s/exec';
 
         function postToGoogleSheet(sheetName, dataArray, action = 'add') {
             if (!sheetName || typeof sheetName !== 'string') {
@@ -1108,7 +1063,7 @@
             postToGoogleSheet(currentUser, data, 'add');
         }
 
-        // 2. Save Milk Entry (FIX 2: Fat/SNF already corrected)
+        // 2. Save Milk Entry
         function saveMilkEntry(tag, liters, shift, fat, snf, date, day, isEdit = false) {
             let currentUser = getCurrentUsername();
             let data = [
@@ -1181,6 +1136,37 @@
                 'Balance Update' // Type/Note
             ];
             postToGoogleSheet(currentUser, data, 'add');
+        }
+
+        // =============================================
+        // FAT/SNF INPUT HANDLER (ALREADY FIXED)
+        // =============================================
+        function handleFatSnfInput(input) {
+            let val = input.value.replace(/[^0-9.]/g, '');
+            if (val === '' || val === '.') {
+                input.value = '';
+                return;
+            }
+            let num = parseFloat(val);
+            if (!isNaN(num)) {
+                if (num > 9.9) {
+                    let divided = (num / 10);
+                    let finalVal = divided.toFixed(1);
+                    input.value = finalVal;
+                    return;
+                }
+                let parts = val.split('.');
+                if (parts.length > 1 && parts[1].length > 1) {
+                    let rounded = parseFloat(val).toFixed(1);
+                    input.value = rounded;
+                    return;
+                }
+                if (num > 9.9) {
+                    input.value = '9.9';
+                    return;
+                }
+                input.value = val;
+            }
         }
 
         // =============================================
