@@ -990,90 +990,49 @@
 
     <script>
         // =============================================
-        // GOOGLE APPS SCRIPT DATA POST FUNCTION
+        // GOOGLE APPS SCRIPT - SILENT SAVE (No Popup)
         // =============================================
-        // Is function ko apne existing JavaScript code mein add karein
-        // Aur apne form submit events mein isko call karein
-
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTCzTUswpMKGUggrnDFC3wAq7wDvJ9WB_l0-0oJbntrlDd8wBgRR17712md5KPuFA/exec';
 
-        /**
-         * Google Apps Script mein data post karne ka function
-         * @param {string} sheetName - Sheet ka naam (Users, Cows, Milk_Entry, Expenses)
-         * @param {Array} dataArray - Data array jisme pehla element date-time ho
-         * @param {Function} onSuccess - Success callback (optional)
-         * @param {Function} onError - Error callback (optional)
-         */
-        function postToGoogleSheet(sheetName, dataArray, onSuccess, onError) {
-            // Validate inputs
+        function postToGoogleSheet(sheetName, dataArray) {
             if (!sheetName || typeof sheetName !== 'string') {
-                alert('❌ Error: Sheet name required!');
+                console.error('Sheet name required');
                 return;
             }
-            
             if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
-                alert('❌ Error: Valid data array required!');
+                console.error('Valid data array required');
                 return;
             }
             
-            // Ensure first element is date-time
-            // Agar pehla element date-time nahi hai toh add karein
             let finalData = [...dataArray];
             if (!(finalData[0] instanceof Date) && typeof finalData[0] !== 'string') {
                 finalData.unshift(new Date().toLocaleString());
             }
             
-            // Construct URL with sheetName as query parameter
             const url = GOOGLE_SCRIPT_URL + '?sheetName=' + encodeURIComponent(sheetName);
             
-            // Show loading state (optional)
-            console.log('📤 Sending data to:', sheetName);
-            console.log('📦 Data:', finalData);
-            
-            // Send data using Fetch API
             fetch(url, {
                 method: 'POST',
-                mode: 'no-cors', // Important for Google Apps Script
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(finalData)
             })
-            .then(response => {
-                // With no-cors, we can't read response body, but we know it was sent
-                console.log('✅ Data sent successfully to:', sheetName);
-                
-                // Success alert
-                alert('✅ Data successfully saved to "' + sheetName + '" sheet!');
-                
-                // Call success callback if provided
-                if (typeof onSuccess === 'function') {
-                    onSuccess();
-                }
+            .then(() => {
+                // Silent success - only console log
+                console.log('✅ Data saved to:', sheetName);
             })
             .catch(error => {
-                console.error('❌ Error sending data:', error);
-                
-                // User-friendly error message
-                let errorMsg = '❌ Error saving data to Google Sheet!\n\n';
-                errorMsg += 'Sheet: ' + sheetName + '\n';
-                errorMsg += 'Error: ' + (error.message || 'Unknown error') + '\n\n';
-                errorMsg += '💡 Please check:\n';
-                errorMsg += '1. Internet connection\n';
-                errorMsg += '2. Google Apps Script URL is correct\n';
-                errorMsg += '3. You have permission to write to this sheet';
-                
-                alert(errorMsg);
-                
-                // Call error callback if provided
-                if (typeof onError === 'function') {
-                    onError(error);
-                }
+                console.error('❌ Error:', error);
+                // Only show error popup if there's a problem
+                alert('❌ Error saving to Google Sheet!\n\n' + 
+                      'Sheet: ' + sheetName + '\n' +
+                      'Error: ' + (error.message || 'Unknown error') + '\n\n' +
+                      '💡 Check internet connection and try again.');
             });
         }
 
         // =============================================
-        // ORIGINAL APP CODE (MODIFIED WITH SHEET INTEGRATION)
+        // ORIGINAL APP CODE (WITH SILENT SHEET SAVE)
         // =============================================
 
         window.cows = []; 
@@ -1145,7 +1104,6 @@
             if (event.target === document.getElementById('appModal')) closeModal();
         }
 
-        // Toggle single password field
         function togglePassView(id) {
             let el = document.getElementById(id);
             if(!el) return;
@@ -1157,7 +1115,6 @@
             }
         }
 
-        // Toggle ONLY Current Password (Settings)
         function toggleCurrentPassword() {
             let el = document.getElementById('setCurrentPass');
             if(!el) return;
@@ -1169,7 +1126,6 @@
             }
         }
 
-        // Toggle New Password + Confirm Password together (Settings)
         function toggleNewAndConfirm() {
             let newPass = document.getElementById('setNewPass');
             let confirmPass = document.getElementById('setConfirmPass');
@@ -1189,7 +1145,6 @@
             }
         }
 
-        // Toggle New Password + Confirm Password together (Registration)
         function toggleRegPasswords() {
             let newPass = document.getElementById('regPass');
             let confirmPass = document.getElementById('regConfirmPass');
@@ -1247,7 +1202,6 @@
             }
         }
 
-        // ===== BREED =====
         function openBreedModal() { document.getElementById('breedModal').classList.remove('hidden'); }
         function closeBreedModal(e) { 
             if (!e || e.target === document.getElementById('breedModal') || e.target === document.querySelector('#breedModal .btn-dark')) 
@@ -1259,7 +1213,6 @@
             closeBreedModal();
         }
 
-        // ===== AUTH =====
         function handleLogin() {
             let u = document.getElementById('loginUser').value.trim();
             let p = document.getElementById('loginPass').value;
@@ -1282,14 +1235,12 @@
             window.userProfile = { name: n, farmName: f, user: u, pass: p };
             syncDB();
             
-            // ===== POST TO GOOGLE SHEET =====
-            let userData = [n, f, u, p];
-            postToGoogleSheet('Users', userData);
+            // Silent save to Google Sheet
+            postToGoogleSheet('Users', [n, f, u, p]);
             
             openModal('Success', 'Account ban gaya! Sign In karein.', function() { toggleAuthScreens('login'); document.getElementById('loginUser').value = u; });
         }
 
-        // ===== DB =====
         function loadDB() {
             try {
                 window.cows = JSON.parse(localStorage.getItem('dairy_cows')) || [];
@@ -1308,7 +1259,6 @@
             } catch(err) { console.error("DB save error", err); }
         }
 
-        // ===== LAUNCH =====
         function launchWorkspace() {
             document.getElementById('auth-login-view').classList.add('hidden');
             document.getElementById('auth-register-view').classList.add('hidden');
@@ -1330,7 +1280,6 @@
             setTimeout(() => { calc(); updateChart(); updateQualityCircle(); }, 100);
         }
 
-        // ===== TABS =====
         function tab(t) {
             ['dash','milk','cat','exp','set','export'].forEach(id => {
                 let btn = document.getElementById('t-'+id); let pg = document.getElementById('page-'+id);
@@ -1353,19 +1302,16 @@
                 document.getElementById('setNewPass').value = '';
                 document.getElementById('setConfirmPass').value = '';
                 
-                // Reset password field types to password
                 document.getElementById('setCurrentPass').type = 'password';
                 document.getElementById('setNewPass').type = 'password';
                 document.getElementById('setConfirmPass').type = 'password';
                 
-                // Reset all eye icons
                 const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
                 wrappers.forEach(w => {
                     const eye = w.querySelector('.eye-toggle');
                     if (eye) eye.textContent = "👁️";
                 });
                 
-                // Reset registration form eye icon
                 const regWrapper = document.querySelector('#auth-register-view .pass-wrapper .eye-toggle');
                 if (regWrapper) regWrapper.textContent = "👁️";
                 document.getElementById('regPass').type = 'password';
@@ -1381,7 +1327,6 @@
         }
         function catTab() { tab('cat'); }
 
-        // ===== POPUPS =====
         function openShiftPopup() { document.getElementById('shiftModal').classList.remove('hidden'); }
         function closeShiftPopup(e) { if (!e || e.target === document.getElementById('shiftModal') || e.target === document.querySelector('#shiftModal .btn-dark')) document.getElementById('shiftModal').classList.add('hidden'); }
         function selectShift(shift) { window.currentShift = shift; document.getElementById('mShift').value = shift; document.getElementById('mShiftDisplay').value = shift; closeShiftPopup(); }
@@ -1409,7 +1354,6 @@
             toggleEdit(type);
         }
 
-        // ===== SETTINGS EDIT =====
         function toggleEdit(field) {
             let input, btn;
             if (field === 'farmName') { input = document.getElementById('setFarmName'); btn = document.getElementById('btnFarmName'); }
@@ -1453,7 +1397,6 @@
             }
         });
 
-        // ===== EDIT MODAL =====
         function openEditModal(msg, callback) {
             document.getElementById('editModalMsg').textContent = msg || 'Kya aap is record ko edit karna chahte hain?';
             document.getElementById('editModal').classList.remove('hidden');
@@ -1470,7 +1413,6 @@
             closeEditModal();
         };
 
-        // ===== CALC =====
         function calcPreg(dStr) {
             if(!dStr) return { dStr: '-', rStr: '-' };
             let d = new Date(dStr); if(isNaN(d.getTime())) return { dStr: '-', rStr: '-' };
@@ -1502,7 +1444,6 @@
             });
         }
 
-        // ===== RENDER =====
         function rMilk() {
             let html = '';
             window.milk.forEach((e, i) => {
@@ -1537,7 +1478,6 @@
             document.getElementById('tb-expenses').innerHTML = html;
         }
 
-        // ===== CONFIRM DELETE/EDIT =====
         function confirmDeleteMilk(i) { openModal('Confirm Delete', 'क्या आप सच में यह Milk Log डिलीट करना चाहते हैं?', function() { window.milk.splice(i,1); syncDB(); calc(); rMilk(); }); }
         function confirmEditMilk(i) { openEditModal('Kya aap is milk record ko edit karna chahte hain?', function() { edM(i); }); }
         function confirmDeleteCow(i) { openModal('Confirm Delete', 'क्या आप सच में यह Cow Record डिलीट करना चाहते हैं?', function() { let t = window.cows[i].tag; window.cows.splice(i,1); window.milk = window.milk.filter(m=>m.tag!==t); syncDB(); calc(); rCat(); rMilk(); }); }
@@ -1545,7 +1485,6 @@
         function confirmDeleteExpense(i) { openModal('Confirm Delete', 'क्या आप सच में यह Expense Log डिलीट करना चाहते हैं?', function() { window.expenses.splice(i,1); syncDB(); calc(); rExp(); }); }
         function confirmEditExpense(i) { openEditModal('Kya aap is expense record ko edit karna chahte hain?', function() { edEx(i); }); }
 
-        // ===== ADD/EDIT =====
         function addCow() {
             let tag = document.getElementById('cTag').value.trim();
             let breed = document.getElementById('cBreed').value.trim();
@@ -1570,9 +1509,8 @@
             }
             syncDB();
             
-            // ===== POST TO GOOGLE SHEET =====
-            let cowData = [tag, breed, cond, pDate || 'N/A'];
-            postToGoogleSheet('Cows', cowData);
+            // Silent save to Google Sheet
+            postToGoogleSheet('Cows', [tag, breed, cond, pDate || 'N/A']);
             
             document.getElementById('cTag').value = ''; document.getElementById('cBreed').value = ''; document.getElementById('cBreedDisplay').value = '';
             document.getElementById('cPregDate').value = ''; document.getElementById('cCond').value = 'Healthy'; document.getElementById('cCondDisplay').value = 'Healthy';
@@ -1593,9 +1531,7 @@
             window.eC = i; document.getElementById('cBtn').innerText = "Update Cow"; tab('dash');
         }
 
-        // ===== ADD MILK - WITH VALIDATION =====
         function addMilk() {
-            // CHECK: Kya koi cow registered hai?
             if (window.cows.length === 0) {
                 openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Milk entry tabhi possible hai jab cattle inventory mein koi cow ho.', null);
                 return;
@@ -1617,9 +1553,8 @@
             else { window.milk.unshift(record); }
             syncDB();
             
-            // ===== POST TO GOOGLE SHEET =====
-            let milkData = [tag, liters, shift, fat, snf, dStr, dayName];
-            postToGoogleSheet('Milk_Entry', milkData);
+            // Silent save to Google Sheet
+            postToGoogleSheet('Milk_Entry', [tag, liters, shift, fat, snf, dStr, dayName]);
             
             document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
             window.currentShift = window.currentShift === 'Morning' ? 'Evening' : 'Morning';
@@ -1641,9 +1576,7 @@
             window.eM = i; document.getElementById('mBtn').innerText = "Update Entry"; tab('dash');
         }
 
-        // ===== ADD EXPENSE - WITH VALIDATION =====
         function addExpense() {
-            // CHECK: Kya koi cow registered hai?
             if (window.cows.length === 0) {
                 openModal('⚠️ No Cattle', 'Pehle ek cow register karein! Expense tabhi add kar sakte hain jab cattle inventory mein koi cow ho.', null);
                 return;
@@ -1660,9 +1593,8 @@
             else { window.expenses.unshift(record); }
             syncDB();
             
-            // ===== POST TO GOOGLE SHEET =====
-            let expenseData = [details, cat, amount];
-            postToGoogleSheet('Expenses', expenseData);
+            // Silent save to Google Sheet
+            postToGoogleSheet('Expenses', [details, cat, amount]);
             
             document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
             rExp(); calc();
@@ -1677,7 +1609,6 @@
             window.eE = i; document.getElementById('exBtn').innerText = "Update Log"; tab('dash');
         }
 
-        // ===== PASSWORD =====
         function updatePassword() {
             let currPass = document.getElementById('setCurrentPass').value;
             let newPass = document.getElementById('setNewPass').value;
@@ -1689,12 +1620,10 @@
             syncDB();
             document.getElementById('setCurrentPass').value = ''; document.getElementById('setNewPass').value = ''; document.getElementById('setConfirmPass').value = '';
             
-            // Reset password field types
             document.getElementById('setCurrentPass').type = 'password';
             document.getElementById('setNewPass').type = 'password';
             document.getElementById('setConfirmPass').type = 'password';
             
-            // Reset all eye icons
             const wrappers = document.querySelectorAll('#page-set .pass-wrapper');
             wrappers.forEach(w => {
                 const eye = w.querySelector('.eye-toggle');
@@ -1713,7 +1642,6 @@
             });
         }
 
-        // ===== CHART & QUALITY =====
         function updateChart() {
             if (window.updatePending) return;
             window.updatePending = true;
@@ -1772,7 +1700,6 @@
             });
         }
 
-        // ===== SHARE =====
         function shareWhatsApp(type) {
             const farmName = window.userProfile.farmName || "My Farm Dairy";
             const ownerName = window.userProfile.name || "Owner";
@@ -1822,7 +1749,6 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // ===== EVENTS =====
         document.addEventListener('focusin', function(e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') ensureModalsHidden();
         });
@@ -1838,7 +1764,6 @@
             if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) e.preventDefault();
         });
 
-        // ===== ONLOAD =====
         window.onload = function() {
             loadDB();
             if (window.isLogged) launchWorkspace();
