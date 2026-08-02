@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* ===== FIX 2: SCROLLING FIX - No extra blank space ===== */
+        /* ===== FIX 2: STRICT SCROLLING - NO EXTRA SPACE ===== */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -29,18 +29,29 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
-        html, body {
+        html {
             width: 100%;
-            min-height: 100%;
+            min-height: 100vh;
+            height: auto;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        body {
+            width: 100%;
+            min-height: 100vh;
             height: auto;
             margin: 0;
             padding: 0;
             background: #0a0a12;
             font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            overflow-y: auto;
             overflow-x: hidden;
+            overflow-y: auto;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            display: flex;
+            flex-direction: column;
         }
         body::before {
             content: '';
@@ -60,7 +71,7 @@
             -webkit-backdrop-filter: blur(35px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             width: 100%;
-            min-height: 100%;
+            min-height: 100vh;
             height: auto;
             margin: 0;
             padding: 0;
@@ -995,23 +1006,23 @@
 
     <script>
         // =============================================
-        // FIX 1: GOOGLE SHEET - CLEAN STRUCTURE, SILENT SAVE
+        // FIX 1: GOOGLE SHEET - CLEAN ARRAY DATA FORMAT
         // =============================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzW47q13kbb6uqTnhZKXnsuUjz6T0oK0OfBKtP1yjzuWpmXV_DyDRDKGzo8cdMU96s/exec';
 
-        function postToGoogleSheet(sheetName, dataArray, action = 'add') {
+        function postToGoogleSheet(sheetName, rowData, action = 'add') {
             if (!sheetName || typeof sheetName !== 'string') {
                 console.error('Sheet name required');
                 return;
             }
             
-            if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
+            if (!rowData || !Array.isArray(rowData) || rowData.length === 0) {
                 console.error('Valid data array required');
                 return;
             }
             
             // Ensure first element is date-time
-            let finalData = [...dataArray];
+            let finalData = [...rowData];
             if (!(finalData[0] instanceof Date) && typeof finalData[0] !== 'string') {
                 finalData.unshift(new Date().toLocaleString());
             }
@@ -1043,99 +1054,96 @@
         }
 
         // ===== FORM SPECIFIC SAVE FUNCTIONS =====
-        // FIX 1: Clean column sequence: A:Date/Time, B:Username, C:Password, D:Milk Entry, E:Cow Entry, F:Expenses, G:Payment Received, H:Net Balance
+        // FIX 1: Clean array format: [dateTime, username, password, milk, cow, expense, payment, balance]
+        // All fields are separate, no string merging
         
         // 1. Save User Registration
         function saveUserRegistration(name, farm, username, password) {
             let currentUser = getCurrentUsername();
-            let data = [
-                name,           // Will be used as username in sheet
-                farm,           // Will be used as farm in sheet
-                username,       // Username
-                password,       // Password
-                '',             // D: Milk Entry (Ltrs)
-                '',             // E: Cow Entry (ID/Breed)
-                '',             // F: Expenses (Rs)
-                '',             // G: Payment Received
-                '',             // H: Net Balance (Rs)
-                'Registration'  // Type/Note
+            // FIX 1: Clean array with empty strings for unused fields
+            const rowData = [
+                name,      // Will be used as username in sheet
+                farm,      // Will be used as farm in sheet
+                username,  // Username
+                password,  // Password
+                '',        // D: Milk Entry (Ltrs) - EMPTY STRING
+                '',        // E: Cow Entry (ID/Breed) - EMPTY STRING
+                '',        // F: Expenses (Rs) - EMPTY STRING
+                ''         // G: Payment Received - EMPTY STRING
+                // H: Net Balance will be calculated in sheet
             ];
-            postToGoogleSheet(currentUser, data, 'add');
+            postToGoogleSheet(currentUser, rowData, 'add');
         }
 
         // 2. Save Milk Entry
         function saveMilkEntry(tag, liters, shift, fat, snf, date, day, isEdit = false) {
             let currentUser = getCurrentUsername();
-            let data = [
-                '',             // Name
-                '',             // Farm
-                '',             // Username
-                '',             // Password
+            // FIX 1: Clean array - milk data goes to column D only
+            const rowData = [
+                '',        // Name
+                '',        // Farm
+                '',        // Username
+                '',        // Password
                 tag + ' | ' + liters + 'L | ' + shift + ' | F:' + fat + '% S:' + snf + '%', // D: Milk Entry
-                '',             // E: Cow Entry
-                '',             // F: Expenses
-                '',             // G: Payment Received
-                '',             // H: Net Balance
-                'Milk Entry'    // Type/Note
+                '',        // E: Cow Entry - EMPTY STRING
+                '',        // F: Expenses - EMPTY STRING
+                ''         // G: Payment Received - EMPTY STRING
             ];
             let action = isEdit ? 'edit' : 'add';
-            postToGoogleSheet(currentUser, data, action);
+            postToGoogleSheet(currentUser, rowData, action);
         }
 
         // 3. Save Cow Entry
         function saveCowEntry(tag, breed, condition, pregnancyDate, isEdit = false) {
             let currentUser = getCurrentUsername();
-            let data = [
-                '',             // Name
-                '',             // Farm
-                '',             // Username
-                '',             // Password
-                '',             // D: Milk Entry
+            // FIX 1: Clean array - cow data goes to column E only
+            const rowData = [
+                '',        // Name
+                '',        // Farm
+                '',        // Username
+                '',        // Password
+                '',        // D: Milk Entry - EMPTY STRING
                 tag + ' | ' + breed + ' | ' + condition + ' | ' + (pregnancyDate || 'N/A'), // E: Cow Entry
-                '',             // F: Expenses
-                '',             // G: Payment Received
-                '',             // H: Net Balance
-                'Cow Entry'     // Type/Note
+                '',        // F: Expenses - EMPTY STRING
+                ''         // G: Payment Received - EMPTY STRING
             ];
             let action = isEdit ? 'edit' : 'add';
-            postToGoogleSheet(currentUser, data, action);
+            postToGoogleSheet(currentUser, rowData, action);
         }
 
         // 4. Save Expense Entry
         function saveExpenseEntry(details, category, amount, isEdit = false) {
             let currentUser = getCurrentUsername();
-            let data = [
-                '',             // Name
-                '',             // Farm
-                '',             // Username
-                '',             // Password
-                '',             // D: Milk Entry
-                '',             // E: Cow Entry
+            // FIX 1: Clean array - expense data goes to column F only
+            const rowData = [
+                '',        // Name
+                '',        // Farm
+                '',        // Username
+                '',        // Password
+                '',        // D: Milk Entry - EMPTY STRING
+                '',        // E: Cow Entry - EMPTY STRING
                 details + ' | ' + category + ' | ₹' + amount, // F: Expenses
-                '',             // G: Payment Received
-                '',             // H: Net Balance
-                'Expense'       // Type/Note
+                ''         // G: Payment Received - EMPTY STRING
             ];
             let action = isEdit ? 'edit' : 'add';
-            postToGoogleSheet(currentUser, data, action);
+            postToGoogleSheet(currentUser, rowData, action);
         }
 
         // 5. Save Net Balance
         function saveNetBalance(income, expenses, balance) {
             let currentUser = getCurrentUsername();
-            let data = [
-                '',             // Name
-                '',             // Farm
-                '',             // Username
-                '',             // Password
-                '',             // D: Milk Entry
-                '',             // E: Cow Entry
-                '',             // F: Expenses
-                '',             // G: Payment Received
-                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2), // H: Net Balance
-                'Balance Update' // Type/Note
+            // FIX 1: Clean array - balance goes to column H
+            const rowData = [
+                '',        // Name
+                '',        // Farm
+                '',        // Username
+                '',        // Password
+                '',        // D: Milk Entry - EMPTY STRING
+                '',        // E: Cow Entry - EMPTY STRING
+                '',        // F: Expenses - EMPTY STRING
+                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2) // H: Net Balance
             ];
-            postToGoogleSheet(currentUser, data, 'add');
+            postToGoogleSheet(currentUser, rowData, 'add');
         }
 
         // =============================================
