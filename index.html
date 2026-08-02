@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* ===== FIX 2: SCROLLING FIX - No extra blank space ===== */
+        /* ===== BUG 2: SCROLLING FIX - No extra blank space ===== */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -31,7 +31,7 @@
         }
         html, body {
             width: 100%;
-            min-height: 100vh;
+            min-height: 100%;
             height: auto;
             margin: 0;
             padding: 0;
@@ -60,7 +60,7 @@
             -webkit-backdrop-filter: blur(35px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             width: 100%;
-            min-height: 100vh;
+            min-height: 100%;
             height: auto;
             margin: 0;
             padding: 0;
@@ -812,10 +812,10 @@
                                         <input type="hidden" id="mShift" value="Morning">
                                     </div>
                                     <div class="form-flex">
-                                        <!-- ===== FIX 3: FIXED FAT INPUT - NO 9.9 BUG ===== -->
-                                        <input type="number" id="mFat" placeholder="Fat %" inputmode="decimal" step="0.1" min="0" max="9.9" oninput="formatFatSnf(this)" onkeydown="handleEnterNav(event, 'mSnf')">
-                                        <!-- ===== FIX 3: FIXED SNF INPUT - NO 9.9 BUG ===== -->
-                                        <input type="number" id="mSnf" placeholder="SNF %" inputmode="decimal" step="0.1" min="0" max="9.9" oninput="formatFatSnf(this)" onkeydown="handleEnterNav(event, 'MILK_TRIGGER')">
+                                        <!-- ===== BUG 1: FIXED FAT INPUT - NO 9.9 DEFAULT ===== -->
+                                        <input type="number" id="mFat" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'mSnf')">
+                                        <!-- ===== BUG 1: FIXED SNF INPUT - NO 9.9 DEFAULT ===== -->
+                                        <input type="number" id="mSnf" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'MILK_TRIGGER')">
                                     </div>
                                     <button id="mBtn" onclick="addMilk()" class="btn-purple">Save Entry</button>
                                 </div>
@@ -997,19 +997,65 @@
 
     <script>
         // =============================================
-        // FIX 1 & 4: GOOGLE SHEET STRUCTURE + EDIT FEATURE
+        // BUG 1: FIXED FAT/SNF INPUT - NO 9.9 DEFAULT
         // =============================================
-        const GOOGLE_SCRIPT_URL = 'https://google.com';
+        function handleFatSnfInput(input) {
+            // Remove any non-numeric characters except decimal point
+            let val = input.value.replace(/[^0-9.]/g, '');
+            
+            // If empty, set to empty string
+            if (val === '') {
+                input.value = '';
+                return;
+            }
+            
+            // Ensure only one decimal point
+            let parts = val.split('.');
+            if (parts.length > 2) {
+                val = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Limit to 2 digits before decimal
+            if (parts[0].length > 2) {
+                parts[0] = parts[0].slice(0, 2);
+                val = parts[0] + (parts.length > 1 ? '.' + parts[1] : '');
+            }
+            
+            // Limit to 1 digit after decimal
+            if (parts.length > 1 && parts[1].length > 1) {
+                val = parts[0] + '.' + parts[1].slice(0, 1);
+            }
+            
+            // Validate number
+            let num = parseFloat(val);
+            if (!isNaN(num)) {
+                if (num < 0) {
+                    input.value = '0';
+                } else {
+                    input.value = val;
+                }
+            } else {
+                // If parsing fails, keep the cleaned value
+                input.value = val;
+            }
+            
+            // Store the original value in a data attribute for reference
+            input.dataset.originalValue = input.value;
+        }
 
-        // Main function to post data to Google Sheets
+        // =============================================
+        // BUG 3: GOOGLE SHEET SAVE - SILENT (NO POPUP)
+        // =============================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvWo-RKjofvWcgI73PzLJJVFfjyi83XO5Gwu5-4UqQguKXe6VfGt0PDHLqFFmc0tw/exec';
+
         function postToGoogleSheet(sheetName, dataArray, action = 'add') {
             if (!sheetName || typeof sheetName !== 'string') {
-                alert('❌ Error: Sheet name (username) required!');
+                console.error('Sheet name required');
                 return;
             }
             
             if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
-                alert('❌ Error: Valid data array required!');
+                console.error('Valid data array required');
                 return;
             }
             
@@ -1019,9 +1065,9 @@
                 finalData.unshift(new Date().toLocaleString());
             }
             
-            // Construct URL with sheetName and action as query parameters
             const url = GOOGLE_SCRIPT_URL + '?sheetName=' + encodeURIComponent(sheetName) + '&action=' + encodeURIComponent(action);
             
+            // SILENT SAVE - NO ALERT POPUP
             fetch(url, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -1031,13 +1077,12 @@
                 body: JSON.stringify(finalData)
             })
             .then(() => {
+                // Silent success - only console log, no alert
                 console.log('✅ Data saved for user:', sheetName, 'Action:', action);
-                let msg = action === 'edit' ? 'updated' : 'saved';
-                alert('✅ Data successfully ' + msg + ' to your personal sheet!\nUser: ' + sheetName);
             })
             .catch(error => {
-                console.error('❌ Error:', error);
-                alert('❌ Error saving data!\n\nUser: ' + sheetName + '\nError: ' + (error.message || 'Unknown error'));
+                // Silent error - only console log, no alert
+                console.error('❌ Error saving data:', error);
             });
         }
 
@@ -1046,15 +1091,15 @@
             return window.userProfile ? window.userProfile.user : 'Guest_' + Date.now();
         }
 
-        // ===== FORM SPECIFIC SAVE FUNCTIONS (FIX SEQUENCE) =====
-        // FIX 1: Data sequence: [Date & Time, Username, Password, Milk Entry (Ltrs), Cow Entry (ID/Breed), Expenses (Rs), Payment Received, Net Balance (Rs)]
+        // ===== FORM SPECIFIC SAVE FUNCTIONS =====
+        // Data sequence: [Date & Time, Username, Password, Milk Entry (Ltrs), Cow Entry (ID/Breed), Expenses (Rs), Payment Received, Net Balance (Rs)]
         
         // 1. Save User Registration
         function saveUserRegistration(name, farm, username, password) {
             let currentUser = getCurrentUsername();
             let data = [
-                name,           // Full Name (will be overwritten by username in sheet)
-                farm,           // Farm Name (will be overwritten)
+                name,           // Full Name
+                farm,           // Farm Name
                 username,       // Username
                 password,       // Password
                 '',             // Milk Entry (Ltrs)
@@ -1067,7 +1112,7 @@
             postToGoogleSheet(currentUser, data, 'add');
         }
 
-        // 2. Save Milk Entry (FIX 4: Edit support)
+        // 2. Save Milk Entry
         function saveMilkEntry(tag, liters, shift, fat, snf, date, day, isEdit = false) {
             let currentUser = getCurrentUsername();
             let data = [
@@ -1075,18 +1120,18 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                tag + ' | ' + liters + 'L | ' + shift + ' | F:' + fat + '% S:' + snf + '%', // Milk Entry (Ltrs)
-                '',             // Cow Entry (ID/Breed)
-                '',             // Expenses (Rs)
+                tag + ' | ' + liters + 'L | ' + shift + ' | F:' + fat + '% S:' + snf + '%', // Milk Entry
+                '',             // Cow Entry
+                '',             // Expenses
                 '',             // Payment Received
-                '',             // Net Balance (Rs)
+                '',             // Net Balance
                 'Milk Entry'    // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
             postToGoogleSheet(currentUser, data, action);
         }
 
-        // 3. Save Cow Entry (FIX 4: Edit support)
+        // 3. Save Cow Entry
         function saveCowEntry(tag, breed, condition, pregnancyDate, isEdit = false) {
             let currentUser = getCurrentUsername();
             let data = [
@@ -1094,18 +1139,18 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry (Ltrs)
-                tag + ' | ' + breed + ' | ' + condition + ' | ' + (pregnancyDate || 'N/A'), // Cow Entry (ID/Breed)
-                '',             // Expenses (Rs)
+                '',             // Milk Entry
+                tag + ' | ' + breed + ' | ' + condition + ' | ' + (pregnancyDate || 'N/A'), // Cow Entry
+                '',             // Expenses
                 '',             // Payment Received
-                '',             // Net Balance (Rs)
+                '',             // Net Balance
                 'Cow Entry'     // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
             postToGoogleSheet(currentUser, data, action);
         }
 
-        // 4. Save Expense Entry (FIX 4: Edit support)
+        // 4. Save Expense Entry
         function saveExpenseEntry(details, category, amount, isEdit = false) {
             let currentUser = getCurrentUsername();
             let data = [
@@ -1113,11 +1158,11 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry (Ltrs)
-                '',             // Cow Entry (ID/Breed)
-                details + ' | ' + category + ' | ₹' + amount, // Expenses (Rs)
+                '',             // Milk Entry
+                '',             // Cow Entry
+                details + ' | ' + category + ' | ₹' + amount, // Expenses
                 '',             // Payment Received
-                '',             // Net Balance (Rs)
+                '',             // Net Balance
                 'Expense'       // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
@@ -1132,18 +1177,18 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry (Ltrs)
-                '',             // Cow Entry (ID/Breed)
-                '',             // Expenses (Rs)
+                '',             // Milk Entry
+                '',             // Cow Entry
+                '',             // Expenses
                 '',             // Payment Received
-                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2), // Net Balance (Rs)
+                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2), // Net Balance
                 'Balance Update' // Type/Note
             ];
             postToGoogleSheet(currentUser, data, 'add');
         }
 
         // =============================================
-        // ORIGINAL APP CODE (MODIFIED WITH SHEET SAVES)
+        // ORIGINAL APP CODE (MODIFIED)
         // =============================================
 
         window.cows = []; 
@@ -1180,42 +1225,6 @@
         function debounceCalc() {
             if (window.calcTimeout) clearTimeout(window.calcTimeout);
             window.calcTimeout = setTimeout(() => calc(), 200);
-        }
-
-        // ===== FIX 3: FIXED FORMAT FUNCTION - NO 9.9 BUG =====
-        function formatFatSnf(input) {
-            let val = input.value.replace(/[^0-9.]/g, '');
-            if (val === '') { input.value = ''; return; }
-            // Allow only one decimal point
-            let parts = val.split('.');
-            if (parts.length > 2) {
-                val = parts[0] + '.' + parts.slice(1).join('');
-            }
-            // Limit to 2 digits before decimal and 1 after
-            if (parts[0].length > 2) {
-                parts[0] = parts[0].slice(0, 2);
-                val = parts[0] + (parts.length > 1 ? '.' + parts[1] : '');
-            }
-            if (parts.length > 1 && parts[1].length > 1) {
-                val = parts[0] + '.' + parts[1].slice(0, 1);
-            }
-            // Only set value if not empty and not just a decimal point
-            if (val !== '' && val !== '.') {
-                let num = parseFloat(val);
-                if (!isNaN(num)) {
-                    if (num > 9.9) {
-                        input.value = '9.9';
-                    } else if (num < 0) {
-                        input.value = '0';
-                    } else {
-                        input.value = val;
-                    }
-                } else {
-                    input.value = '';
-                }
-            } else {
-                input.value = '';
-            }
         }
 
         function validateNonNegative(input) {
@@ -1371,7 +1380,7 @@
             window.userProfile = { name: n, farmName: f, user: u, pass: p };
             syncDB();
             
-            // ===== FIX 1: Save to Google Sheet =====
+            // Silent save to Google Sheet
             saveUserRegistration(n, f, u, p);
             
             openModal('Success', 'Account ban gaya! Sign In karein.', function() { 
@@ -1581,7 +1590,7 @@
                 }
                 document.getElementById('mAvg').innerText = "Avg: " + (window.cows.length > 0 ? (tM / window.cows.length).toFixed(1) : 0) + "L/cow";
                 
-                // ===== FIX 1: Save net balance to Google Sheet =====
+                // Silent save net balance
                 if (window.isLogged && window.userProfile) {
                     saveNetBalance(totalIncome, tE, netBalance);
                 }
@@ -1654,7 +1663,7 @@
             }
             syncDB();
             
-            // ===== FIX 1 & 4: Save to Google Sheet with edit flag =====
+            // Silent save to Google Sheet
             saveCowEntry(tag, breed, cond, pDate, isEdit);
             
             document.getElementById('cTag').value = ''; document.getElementById('cBreed').value = ''; document.getElementById('cBreedDisplay').value = '';
@@ -1699,7 +1708,7 @@
             else { window.milk.unshift(record); }
             syncDB();
             
-            // ===== FIX 1 & 4: Save to Google Sheet with edit flag =====
+            // Silent save to Google Sheet
             saveMilkEntry(tag, liters, shift, fat, snf, dStr, dayName, isEdit);
             
             document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
@@ -1740,7 +1749,7 @@
             else { window.expenses.unshift(record); }
             syncDB();
             
-            // ===== FIX 1 & 4: Save to Google Sheet with edit flag =====
+            // Silent save to Google Sheet
             saveExpenseEntry(details, cat, amount, isEdit);
             
             document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
