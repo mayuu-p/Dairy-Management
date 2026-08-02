@@ -989,6 +989,93 @@
     </div>
 
     <script>
+        // =============================================
+        // GOOGLE APPS SCRIPT DATA POST FUNCTION
+        // =============================================
+        // Is function ko apne existing JavaScript code mein add karein
+        // Aur apne form submit events mein isko call karein
+
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTCzTUswpMKGUggrnDFC3wAq7wDvJ9WB_l0-0oJbntrlDd8wBgRR17712md5KPuFA/exec';
+
+        /**
+         * Google Apps Script mein data post karne ka function
+         * @param {string} sheetName - Sheet ka naam (Users, Cows, Milk_Entry, Expenses)
+         * @param {Array} dataArray - Data array jisme pehla element date-time ho
+         * @param {Function} onSuccess - Success callback (optional)
+         * @param {Function} onError - Error callback (optional)
+         */
+        function postToGoogleSheet(sheetName, dataArray, onSuccess, onError) {
+            // Validate inputs
+            if (!sheetName || typeof sheetName !== 'string') {
+                alert('❌ Error: Sheet name required!');
+                return;
+            }
+            
+            if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
+                alert('❌ Error: Valid data array required!');
+                return;
+            }
+            
+            // Ensure first element is date-time
+            // Agar pehla element date-time nahi hai toh add karein
+            let finalData = [...dataArray];
+            if (!(finalData[0] instanceof Date) && typeof finalData[0] !== 'string') {
+                finalData.unshift(new Date().toLocaleString());
+            }
+            
+            // Construct URL with sheetName as query parameter
+            const url = GOOGLE_SCRIPT_URL + '?sheetName=' + encodeURIComponent(sheetName);
+            
+            // Show loading state (optional)
+            console.log('📤 Sending data to:', sheetName);
+            console.log('📦 Data:', finalData);
+            
+            // Send data using Fetch API
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors', // Important for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(finalData)
+            })
+            .then(response => {
+                // With no-cors, we can't read response body, but we know it was sent
+                console.log('✅ Data sent successfully to:', sheetName);
+                
+                // Success alert
+                alert('✅ Data successfully saved to "' + sheetName + '" sheet!');
+                
+                // Call success callback if provided
+                if (typeof onSuccess === 'function') {
+                    onSuccess();
+                }
+            })
+            .catch(error => {
+                console.error('❌ Error sending data:', error);
+                
+                // User-friendly error message
+                let errorMsg = '❌ Error saving data to Google Sheet!\n\n';
+                errorMsg += 'Sheet: ' + sheetName + '\n';
+                errorMsg += 'Error: ' + (error.message || 'Unknown error') + '\n\n';
+                errorMsg += '💡 Please check:\n';
+                errorMsg += '1. Internet connection\n';
+                errorMsg += '2. Google Apps Script URL is correct\n';
+                errorMsg += '3. You have permission to write to this sheet';
+                
+                alert(errorMsg);
+                
+                // Call error callback if provided
+                if (typeof onError === 'function') {
+                    onError(error);
+                }
+            });
+        }
+
+        // =============================================
+        // ORIGINAL APP CODE (MODIFIED WITH SHEET INTEGRATION)
+        // =============================================
+
         window.cows = []; 
         window.milk = []; 
         window.expenses = [];
@@ -1194,6 +1281,11 @@
             if(p !== cp) return openModal('Password Alert', 'Passwords match nahi ho rahe hain!', null);
             window.userProfile = { name: n, farmName: f, user: u, pass: p };
             syncDB();
+            
+            // ===== POST TO GOOGLE SHEET =====
+            let userData = [n, f, u, p];
+            postToGoogleSheet('Users', userData);
+            
             openModal('Success', 'Account ban gaya! Sign In karein.', function() { toggleAuthScreens('login'); document.getElementById('loginUser').value = u; });
         }
 
@@ -1477,6 +1569,11 @@
                 window.cows.unshift({ tag, breed, cond, pDate });
             }
             syncDB();
+            
+            // ===== POST TO GOOGLE SHEET =====
+            let cowData = [tag, breed, cond, pDate || 'N/A'];
+            postToGoogleSheet('Cows', cowData);
+            
             document.getElementById('cTag').value = ''; document.getElementById('cBreed').value = ''; document.getElementById('cBreedDisplay').value = '';
             document.getElementById('cPregDate').value = ''; document.getElementById('cCond').value = 'Healthy'; document.getElementById('cCondDisplay').value = 'Healthy';
             document.getElementById('pDateDiv').classList.add('hidden');
@@ -1519,6 +1616,11 @@
             if(window.eM !== null) { window.milk[window.eM] = record; window.eM = null; document.getElementById('mBtn').innerText = "Save Entry"; }
             else { window.milk.unshift(record); }
             syncDB();
+            
+            // ===== POST TO GOOGLE SHEET =====
+            let milkData = [tag, liters, shift, fat, snf, dStr, dayName];
+            postToGoogleSheet('Milk_Entry', milkData);
+            
             document.getElementById('mLiters').value = ''; document.getElementById('mFat').value = ''; document.getElementById('mSnf').value = '';
             window.currentShift = window.currentShift === 'Morning' ? 'Evening' : 'Morning';
             document.getElementById('mShift').value = window.currentShift;
@@ -1557,6 +1659,11 @@
             if(window.eE !== null) { window.expenses[window.eE] = record; window.eE = null; document.getElementById('exBtn').innerText = "Add Log"; }
             else { window.expenses.unshift(record); }
             syncDB();
+            
+            // ===== POST TO GOOGLE SHEET =====
+            let expenseData = [details, cat, amount];
+            postToGoogleSheet('Expenses', expenseData);
+            
             document.getElementById('exDetails').value = ''; document.getElementById('exAmount').value = '';
             rExp(); calc();
         }
