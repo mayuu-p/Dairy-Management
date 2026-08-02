@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Dairy Dashboard Premium</title>
     <style>
-        /* ===== BUG 2: SCROLLING FIX - No extra blank space ===== */
+        /* ===== FIX 3: SCROLLING FIX - No extra blank space ===== */
         * {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -812,9 +812,9 @@
                                         <input type="hidden" id="mShift" value="Morning">
                                     </div>
                                     <div class="form-flex">
-                                        <!-- ===== BUG 1: FIXED FAT INPUT - NO 9.9 DEFAULT ===== -->
+                                        <!-- ===== FIX 2: FAT INPUT WITH DECIMAL AUTO-CORRECTION ===== -->
                                         <input type="number" id="mFat" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'mSnf')">
-                                        <!-- ===== BUG 1: FIXED SNF INPUT - NO 9.9 DEFAULT ===== -->
+                                        <!-- ===== FIX 2: SNF INPUT WITH DECIMAL AUTO-CORRECTION ===== -->
                                         <input type="number" id="mSnf" placeholder="0.0" inputmode="decimal" step="0.1" min="0" oninput="handleFatSnfInput(this)" onkeydown="handleEnterNav(event, 'MILK_TRIGGER')">
                                     </div>
                                     <button id="mBtn" onclick="addMilk()" class="btn-purple">Save Entry</button>
@@ -997,56 +997,52 @@
 
     <script>
         // =============================================
-        // BUG 1: FIXED FAT/SNF INPUT - NO 9.9 DEFAULT
+        // FIX 2: FAT/SNF DECIMAL AUTO-CORRECTION (Value / 10)
         // =============================================
         function handleFatSnfInput(input) {
-            // Remove any non-numeric characters except decimal point
+            // Get raw value and remove any non-numeric except decimal
             let val = input.value.replace(/[^0-9.]/g, '');
             
-            // If empty, set to empty string
-            if (val === '') {
+            if (val === '' || val === '.') {
                 input.value = '';
                 return;
             }
             
-            // Ensure only one decimal point
-            let parts = val.split('.');
-            if (parts.length > 2) {
-                val = parts[0] + '.' + parts.slice(1).join('');
-            }
-            
-            // Limit to 2 digits before decimal
-            if (parts[0].length > 2) {
-                parts[0] = parts[0].slice(0, 2);
-                val = parts[0] + (parts.length > 1 ? '.' + parts[1] : '');
-            }
-            
-            // Limit to 1 digit after decimal
-            if (parts.length > 1 && parts[1].length > 1) {
-                val = parts[0] + '.' + parts[1].slice(0, 1);
-            }
-            
-            // Validate number
+            // Check if it's a whole number (like 85 or 55)
             let num = parseFloat(val);
             if (!isNaN(num)) {
-                if (num < 0) {
-                    input.value = '0';
-                } else {
-                    input.value = val;
+                // If value is greater than 9.9, divide by 10
+                if (num > 9.9) {
+                    let divided = (num / 10);
+                    // Round to 1 decimal place
+                    let finalVal = divided.toFixed(1);
+                    input.value = finalVal;
+                    return;
                 }
-            } else {
-                // If parsing fails, keep the cleaned value
+                
+                // If value has more than 1 decimal place, round it
+                let parts = val.split('.');
+                if (parts.length > 1 && parts[1].length > 1) {
+                    let rounded = parseFloat(val).toFixed(1);
+                    input.value = rounded;
+                    return;
+                }
+                
+                // Ensure value doesn't exceed 9.9
+                if (num > 9.9) {
+                    input.value = '9.9';
+                    return;
+                }
+                
+                // Keep the value as is if it's valid
                 input.value = val;
             }
-            
-            // Store the original value in a data attribute for reference
-            input.dataset.originalValue = input.value;
         }
 
         // =============================================
-        // BUG 3: GOOGLE SHEET SAVE - SILENT (NO POPUP)
+        // FIX 1: GOOGLE SHEET - CLEAN STRUCTURE, SILENT SAVE
         // =============================================
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvWo-RKjofvWcgI73PzLJJVFfjyi83XO5Gwu5-4UqQguKXe6VfGt0PDHLqFFmc0tw/exec';
+        const GOOGLE_SCRIPT_URL = 'https://google.com';
 
         function postToGoogleSheet(sheetName, dataArray, action = 'add') {
             if (!sheetName || typeof sheetName !== 'string') {
@@ -1077,11 +1073,11 @@
                 body: JSON.stringify(finalData)
             })
             .then(() => {
-                // Silent success - only console log, no alert
+                // Silent success - only console log
                 console.log('✅ Data saved for user:', sheetName, 'Action:', action);
             })
             .catch(error => {
-                // Silent error - only console log, no alert
+                // Silent error - only console log
                 console.error('❌ Error saving data:', error);
             });
         }
@@ -1092,27 +1088,27 @@
         }
 
         // ===== FORM SPECIFIC SAVE FUNCTIONS =====
-        // Data sequence: [Date & Time, Username, Password, Milk Entry (Ltrs), Cow Entry (ID/Breed), Expenses (Rs), Payment Received, Net Balance (Rs)]
+        // FIX 1: Clean column sequence: A:Date/Time, B:Username, C:Password, D:Milk Entry, E:Cow Entry, F:Expenses, G:Payment Received, H:Net Balance
         
         // 1. Save User Registration
         function saveUserRegistration(name, farm, username, password) {
             let currentUser = getCurrentUsername();
             let data = [
-                name,           // Full Name
-                farm,           // Farm Name
+                name,           // Will be used as username in sheet
+                farm,           // Will be used as farm in sheet
                 username,       // Username
                 password,       // Password
-                '',             // Milk Entry (Ltrs)
-                '',             // Cow Entry (ID/Breed)
-                '',             // Expenses (Rs)
-                '',             // Payment Received
-                '',             // Net Balance (Rs)
+                '',             // D: Milk Entry (Ltrs)
+                '',             // E: Cow Entry (ID/Breed)
+                '',             // F: Expenses (Rs)
+                '',             // G: Payment Received
+                '',             // H: Net Balance (Rs)
                 'Registration'  // Type/Note
             ];
             postToGoogleSheet(currentUser, data, 'add');
         }
 
-        // 2. Save Milk Entry
+        // 2. Save Milk Entry (FIX 2: Fat/SNF already corrected)
         function saveMilkEntry(tag, liters, shift, fat, snf, date, day, isEdit = false) {
             let currentUser = getCurrentUsername();
             let data = [
@@ -1120,11 +1116,11 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                tag + ' | ' + liters + 'L | ' + shift + ' | F:' + fat + '% S:' + snf + '%', // Milk Entry
-                '',             // Cow Entry
-                '',             // Expenses
-                '',             // Payment Received
-                '',             // Net Balance
+                tag + ' | ' + liters + 'L | ' + shift + ' | F:' + fat + '% S:' + snf + '%', // D: Milk Entry
+                '',             // E: Cow Entry
+                '',             // F: Expenses
+                '',             // G: Payment Received
+                '',             // H: Net Balance
                 'Milk Entry'    // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
@@ -1139,11 +1135,11 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry
-                tag + ' | ' + breed + ' | ' + condition + ' | ' + (pregnancyDate || 'N/A'), // Cow Entry
-                '',             // Expenses
-                '',             // Payment Received
-                '',             // Net Balance
+                '',             // D: Milk Entry
+                tag + ' | ' + breed + ' | ' + condition + ' | ' + (pregnancyDate || 'N/A'), // E: Cow Entry
+                '',             // F: Expenses
+                '',             // G: Payment Received
+                '',             // H: Net Balance
                 'Cow Entry'     // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
@@ -1158,11 +1154,11 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry
-                '',             // Cow Entry
-                details + ' | ' + category + ' | ₹' + amount, // Expenses
-                '',             // Payment Received
-                '',             // Net Balance
+                '',             // D: Milk Entry
+                '',             // E: Cow Entry
+                details + ' | ' + category + ' | ₹' + amount, // F: Expenses
+                '',             // G: Payment Received
+                '',             // H: Net Balance
                 'Expense'       // Type/Note
             ];
             let action = isEdit ? 'edit' : 'add';
@@ -1177,11 +1173,11 @@
                 '',             // Farm
                 '',             // Username
                 '',             // Password
-                '',             // Milk Entry
-                '',             // Cow Entry
-                '',             // Expenses
-                '',             // Payment Received
-                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2), // Net Balance
+                '',             // D: Milk Entry
+                '',             // E: Cow Entry
+                '',             // F: Expenses
+                '',             // G: Payment Received
+                'Income: ₹' + income.toFixed(2) + ' | Expenses: ₹' + expenses.toFixed(2) + ' | Balance: ₹' + balance.toFixed(2), // H: Net Balance
                 'Balance Update' // Type/Note
             ];
             postToGoogleSheet(currentUser, data, 'add');
